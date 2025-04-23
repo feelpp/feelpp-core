@@ -194,7 +194,7 @@ jobs:
     - name: Delete untagged containers
       uses: actions/delete-package-versions@v5
       with:
-        package-name: ${{ steps.meta.outputs.labels }}
+        package-name: 'feelpp-core'
         package-type: 'container'
         min-versions-to-keep: 4
         delete-only-untagged-versions: 'true'
