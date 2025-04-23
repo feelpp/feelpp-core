@@ -191,6 +191,14 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         file: ./Dockerfile
+    - name: Delete untagged containers
+      uses: actions/delete-package-versions@v5
+      with:
+        package-name: ${{ steps.meta.outputs.labels }}
+        package-type: 'container'
+        min-versions-to-keep: 4
+        delete-only-untagged-versions: 'true'
+
   release:
     runs-on: self-feelpp
     name: Release
