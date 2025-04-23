@@ -25,11 +25,15 @@ cmake_minimum_required(VERSION 3.21.0)
 
 project(
   feelpp-core
-  VERSION 3.3.0 )
+  VERSION 0.1.0 )
 
 set(EXTRA_VERSION "")
-set(PROJECT_SHORTNAME "fc")
+set(PROJECT_SHORTNAME "feelpp-core")
 
+set(FEELPP_CORE_CMAKE_PREFIX "FEELPP_CORE")
+set(FEELPP_CORE_EXECUTABLE_PREFIX "feelpp_core")
+set(FEELPP_CORE_LIBRARY "feelpp_core")
+set(FEELPP_CORE_LIBRARY_PREFIX "feelpp_core")
 include(GNUInstallDirs)
 
 if (POLICY CMP0077)
@@ -37,16 +41,52 @@ if (POLICY CMP0077)
   set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 endif()
 
-find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
-find_package(pybind11 CONFIG REQUIRED)
+option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TEST_SUITE "Enable test suite" ${PROJECT_IS_TOP_LEVEL})
 
-find_package(Feel++ COMPONENTS Toolboxes PATHS ${FEELPP_DIR}/share/feelpp/feel/cmake/modules $ENV{FEELPP_DIR}/share/feelpp/feel/cmake/modules /usr/share/feelpp/feel/cmake/modules /usr/local/share/feelpp/feel/cmake/modules )
-if(NOT FEELPP_FOUND)
-  message(FATAL_ERROR "Feel++ was not found on your system. Make sure to install it and specify the FEELPP_DIR to reference the installation directory.")
+# mandatory dependencies
+option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NAPP "use NAPP from system" OFF)
+
+if( NOT CMAKE_BUILD_TYPE )
+  set( CMAKE_BUILD_TYPE Release CACHE STRING "Select build type" FORCE )
 endif()
-if ( NOT FEELPP_TOOLBOXES_FOUND )
-  message(WARNING "Feel++ Toolboxes SDK is not found on your system. The toolbox application is now disabled.")
+
+# Choose static or shared libraries by default.
+if ( EMSCRIPTEN )
+  option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
+else()
+  option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 endif()
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
+# find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
+# find_package(pybind11 CONFIG REQUIRED)
+
+# find_package(Feel++ COMPONENTS Toolboxes PATHS ${FEELPP_DIR}/share/feelpp/feel/cmake/modules $ENV{FEELPP_DIR}/share/feelpp/feel/cmake/modules /usr/share/feelpp/feel/cmake/modules /usr/local/share/feelpp/feel/cmake/modules )
+# if(NOT FEELPP_FOUND)
+#   message(FATAL_ERROR "Feel++ was not found on your system. Make sure to install it and specify the FEELPP_DIR to reference the installation directory.")
+# endif()
+# if ( NOT FEELPP_TOOLBOXES_FOUND )
+#   message(WARNING "Feel++ Toolboxes SDK is not found on your system. The toolbox application is now disabled.")
+# endif()
+
+
+
+if(NOT DEFINED FEELPP_CORE_CONFIG_INSTALL_DIR )
+  set(FEELPP_CORE_CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_SHORTNAME}" CACHE INTERNAL "")
+endif()
+
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/macro.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/dependencies.cmake)
+feelpp_set_options( ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} "HAS" )
+
+
+
 
 enable_testing()
 
@@ -57,6 +97,33 @@ endif()
 
 add_subdirectory( src )
 #add_subdirectory( docs )
+
+
+
+# generate and install package config
+include(CMakePackageConfigHelpers)
+configure_package_config_file(cmake/${PROJECT_NAME}Config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}Config.cmake
+  INSTALL_DESTINATION ${FEELPP_CORE_CONFIG_INSTALL_DIR}
+  PATH_VARS FEELPP_CORE_CONFIG_INSTALL_DIR #INCLUDE_INSTALL_DIR SYSCONFIG_INSTALL_DIR
+  )
+write_basic_package_version_file(
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion
+  )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}Config.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake
+  DESTINATION ${FEELPP_CORE_CONFIG_INSTALL_DIR}
+  )
+
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/macro.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/dependencies.cmake
+  DESTINATION ${FEELPP_CORE_CONFIG_INSTALL_DIR}
+  )
+
+
+
 
 # extra ignored files
 list(APPEND CPACK_SOURCE_IGNORE_FILES
@@ -82,14 +149,8 @@ set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
 set(CPACK_GENERATOR "TGZ;DEB")
 set(CPACK_SOURCE_GENERATOR "TGZ")
 
-
 set(CPACK_DEBIAN_PACKAGE_NAME "${PROJECT_NAME}")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_CONTACT}")
-if ( USE_FEELPP_TOOLBOXES )
-  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libfeelpp1 (>= 0.109)") # add depends with relevant toolbox lib
-else()
-  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libfeelpp1 (>= 0.109)")
-endif()
 set(CPACK_DEBIAN_PACKAGE_DESCRIPTION_SUMMARY "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}")
 set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION}")
 set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
