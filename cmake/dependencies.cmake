@@ -28,20 +28,23 @@ endfunction()
 #--------------------------------------
 # Napp
 #--------------------------------------
-printDependencySectionBegin( "Napp" )
-# if ( ${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NAPP )
-#   find_package(napp REQUIRED)
-# else()
-#   FetchContent_Declare(napp GIT_REPOSITORY https://github.com/vincentchabannes/napp.git GIT_TAG v0.3.0 GIT_SHALLOW ON )
-#   FetchContent_MakeAvailable(napp)
-#   target_compile_definitions(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions INTERFACE ${FEELPP_CORE_CMAKE_PREFIX}_USE_INTERNAL_NAPP )
-# endif()
-if ( TARGET napp::napp )
-  target_link_libraries( ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies INTERFACE napp::napp )
-  target_compile_definitions( ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions INTERFACE ${FEELPP_CORE_CMAKE_PREFIX}_HAS_NAPP )
-endif()
-printDependencySectionEnd( "Napp" )
+function(importDependencyNapp _useSystem _target_dependencies _target_definitions)
+  printDependencySectionBegin( "Napp" )
+  if ( ${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NAPP )
+    find_package(napp REQUIRED)
+  else()
+    FetchContent_Declare(napp GIT_REPOSITORY https://github.com/vincentchabannes/napp.git GIT_TAG v0.3.0 GIT_SHALLOW ON )
+    FetchContent_MakeAvailable(napp)
+    target_compile_definitions(${_target_definitions} INTERFACE FEELPP_USE_INTERNAL_NAPP )
+  endif()
+  if ( TARGET napp::napp )
+    target_link_libraries( ${_target_dependencies} INTERFACE napp::napp )
+    target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_NAPP )
+  endif()
+  printDependencySectionEnd( "Napp" )
+endfunction(importDependencyNapp)
 
+importDependencyNapp( ${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NAPP ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
 
 
 

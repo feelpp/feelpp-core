@@ -1,5 +1,17 @@
 //!
 
+#include <cmath>
+#include <memory>
+#include <filesystem>
+// #include <boost/program_options.hpp>
+// #include <fmt/core.h>
+// #include <fmt/format.h>
+// #include <spdlog/spdlog.h>
+// #include <nlohmann/json.hpp>
+
+// #include <ktirio/geom/assert.hpp>
+#include <feel/feelcore/namedarguments.hpp>
+
 #pragma once
 
 #if defined _WIN32 || defined __CYGWIN__
