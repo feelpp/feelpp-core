@@ -1,17 +1,17 @@
 {
   "private": true,
-  "name": "feelpp-project",
-  "description": "The Feel++ Template Project documentation",
+  "name": "feelpp-core",
+  "description": "The Feelpp Core documentation",
   "version": "3.3.0",
   "license": "AGPL-3.0",
-  "author": "The Feel++ Template Project Team",
-  "homepage": "https://github.com/feelpp/feelpp-project#readme",
+  "author": "The Feelpp Core Team",
+  "homepage": "https://github.com/feelpp/feelpp-core#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/feelpp/feelpp-project.git"
+    "url": "git+https://github.com/feelpp/feelpp-core.git"
   },
   "bugs": {
-    "url": "https://github.com/feelpp/feelpp-project/issues"
+    "url": "https://github.com/feelpp/feelpp-core/issues"
   },
   "contributors": [
     {

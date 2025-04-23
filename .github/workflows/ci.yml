@@ -112,9 +112,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         # Artifact name
-        name: feelpp-project-artifacts
+        name: feelpp-core-artifacts
         # Directory containing files to upload
-        path: build/default/assets/feelpp-project-*
+        path: build/default/assets/feelpp-core-*
     - name: Upload Fin Datasets
       uses: actions/upload-artifact@v4
       with:
@@ -134,7 +134,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         # Artifact name
-        name: feelpp-project-artifacts
+        name: feelpp-core-artifacts
         path: artifacts/
     -
         name: Docker meta
@@ -142,7 +142,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/feelpp/feelpp-project
+            ghcr.io/feelpp/feelpp-core
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -184,7 +184,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           # Artifact name
-          name: feelpp-project-artifacts
+          name: feelpp-core-artifacts
           path: artifacts/
       - name: Download Wheel Packages
         uses: actions/download-artifact@v4

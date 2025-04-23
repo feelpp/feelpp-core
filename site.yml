@@ -1,7 +1,7 @@
 site:
-  title: Feel++ Template Project
-  url: https://feelpp.github.io/feelpp-project/
-  start_page: feelpp-project::index.adoc
+  title: Feelpp Core
+  url: https://feelpp.github.io/feelpp-core/
+  start_page: feelpp-core::index.adoc
 content:
   sources:
   - url: .

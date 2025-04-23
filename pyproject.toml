@@ -4,9 +4,9 @@ build-backend = "scikit_build_core.build"
 
 
 [project]
-name = "feelpp-project"
+name = "feelpp-core"
 version = "3.3.0"
-description="Feel++ Template Project"
+description="Feelpp Core"
 readme = "README.md"
 authors = [
   { name = "Christophe Prud'homme", email = "christophe.prudhomme@cemosis.fr" },
