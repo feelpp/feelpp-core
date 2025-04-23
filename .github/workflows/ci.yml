@@ -12,7 +12,7 @@ on:
 jobs:
 
   build_wheel:
-    runs-on: self-ubuntu-22.04
+    runs-on: self-feelpp
     name: Build wheel
     if: "!contains(github.event.head_commit.message, 'wheel skip')"
     steps:
@@ -44,7 +44,7 @@ jobs:
 
 
   docs:
-    runs-on: self-ubuntu-22.04
+    runs-on: self-feelpp
     name: Build Antora Site
     needs: build_wheel
     if: "!contains(github.event.head_commit.message, 'docs skip')"
@@ -83,7 +83,7 @@ jobs:
           branch: gh-pages # The branch the action should deploy to.
           folder: public # The folder the action should deploy.
   build_code:
-    runs-on: self-ubuntu-22.04
+    runs-on: self-feelpp
     name: Build, Install, Package code
     if: "!contains(github.event.head_commit.message, 'code skip')"
     steps:
@@ -120,8 +120,29 @@ jobs:
       with:
         name: datasets
         path: build/default/datasets/
+
+  build-wasm:
+    if: "!contains(github.event.head_commit.message, 'wasm skip')"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: self-feelpp, jobs: 10, preset: wasm-linux, arch: amd64, allow-failure: false }
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.allow-failure }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        lfs: true
+        submodules: 'recursive'
+    - name: Build
+      run: |
+        cmake --preset wasm-linux
+        cmake --build --preset wasm-linux
+
   deliver:
-    runs-on: self-ubuntu-22.04
+    runs-on: self-feelpp
     needs: build_code
     name: Build docker, tag and push
 
@@ -171,7 +192,7 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         file: ./Dockerfile
   release:
-    runs-on: self-ubuntu-22.04
+    runs-on: self-feelpp
     name: Release
     needs: [build_wheel, build_code]
     if: startsWith(github.ref ,'refs/tags/v')
@@ -179,7 +200,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           lfs: true
-          submodules: 'recursive'      
+          submodules: 'recursive'
       - name: Download Deb Packages
         uses: actions/download-artifact@v4
         with:

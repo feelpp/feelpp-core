@@ -39,6 +39,27 @@
                     "autoFormat": true
                 }
             }
+        },
+        {
+            "name": "wasm-linux",
+            "displayName": "Wasm linux Config",
+            "description": "Build Wasm using linux",
+            "generator": "Unix Makefiles",
+            "toolchainFile": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+            "binaryDir": "${sourceDir}/build/wasm-linux",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/wasm-linux/install/",
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_PREFIX_PATH": "/opt/emscripten-additional-ports/install/lib/cmake",
+                "Boost_DIR": "/opt/emscripten-additional-ports/install/lib/cmake/Boost-$env{_BOOST_VERSION}",
+                "boost_headers_DIR":"/opt/emscripten-additional-ports/install/lib/cmake/boost_headers-$env{_BOOST_VERSION}",
+                "boost_program_options_DIR":"/opt/emscripten-additional-ports/install/lib/cmake/boost_program_options-$env{_BOOST_VERSION}"
+            },
+            "environment": {
+                "EMSDK": "/opt/emsdk",
+                "EMSDK_NODE":"$ENV{EMSDK}/node/16.20.0_64bit/bin/node",
+                "_BOOST_VERSION":"1.86.0"
+            }
         }
     ],
     "buildPresets": [
@@ -54,6 +75,11 @@
             "targets": [
                 "all","install","package"
             ]
+        },
+        {
+            "name": "wasm-linux",
+            "configurePreset": "wasm-linux",
+            "jobs": 10
         }
     ],
     "testPresets": [
