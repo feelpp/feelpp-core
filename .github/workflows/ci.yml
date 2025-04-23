@@ -198,6 +198,7 @@ jobs:
         package-type: 'container'
         min-versions-to-keep: 4
         delete-only-untagged-versions: 'true'
+        token: ${{ secrets.GITHUB_TOKEN }}
 
   release:
     runs-on: self-feelpp
