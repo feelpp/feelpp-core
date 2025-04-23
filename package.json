@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@antora/cli": "^3.1",
-    "@antora/collector-extension": "^1.0.0-alpha.6",
+    "@antora/collector-extension": "^1.0.1",
     "@antora/site-generator": "^3.1",
     "@antora/site-generator-default": "^3.1",
     "@asciidoctor/core": "^2.2.6",
@@ -38,10 +38,10 @@
     "handlebars": "^4.7.8",
     "handlebars-utils": "^1.0.6",
     "package": "^1.0.1",
-    "@feelpp/asciidoctor-extensions": "1.0.0-rc.11"
+    "@feelpp/asciidoctor-extensions": "1.0.0-rc.15"
   },
   "devDependencies": {
-    "broken-link-checker": "^0.6.7",
+    "broken-link-checker": "^0.7.8",
     "http-server": "^14.1.1",
     "write-good": "^1.0.8"
   },
