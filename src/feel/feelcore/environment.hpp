@@ -1,21 +1,21 @@
 //!
 
+#pragma once
+
 #include <cmath>
 #include <memory>
 #include <filesystem>
-// #include <boost/program_options.hpp>
-// #include <fmt/core.h>
-// #include <fmt/format.h>
-// #include <spdlog/spdlog.h>
-// #include <nlohmann/json.hpp>
+#include <boost/program_options.hpp>
+#include <fmt/core.h>
+#include <fmt/format.h>
+#include <spdlog/spdlog.h>
+#include <nlohmann/json.hpp>
 
-// #include <ktirio/geom/assert.hpp>
+#include <feel/feelcore/assert.hpp>
 #include <feel/feelcore/namedarguments.hpp>
 
-#pragma once
-
 #if defined _WIN32 || defined __CYGWIN__
-  #if defined(KTIRIO_GEOM_LIB_LIBRARY_EXPORTING)
+  #if defined(FEELPP_CORE_LIB_LIBRARY_EXPORTING)
     #ifdef __GNUC__
       #define FEELPP_DECL_EXPORT __attribute__ ((dllexport))
     #else
@@ -41,10 +41,10 @@
   #endif
 #endif
 
-#if defined(KTIRIO_GEOM_LIB_LIBRARY_EXPORTING)
-#define KTIRIO_GEOM_EXPORT FEELPP_DECL_EXPORT
+#if defined(FEELPP_CORE_LIB_LIBRARY_EXPORTING)
+#define FEELPP_CORE_EXPORT FEELPP_DECL_EXPORT
 #else
-#define KTIRIO_GEOM_EXPORT FEELPP_DECL_IMPORT
+#define FEELPP_CORE_EXPORT FEELPP_DECL_IMPORT
 #endif
 
 
@@ -52,7 +52,7 @@ namespace Feel
 {
 
   //! class build as singleton that represent environment
-  class KTIRIO_GEOM_EXPORT Environment
+  class FEELPP_CORE_EXPORT Environment
     {
     public:
     Environment();

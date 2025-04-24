@@ -45,6 +45,21 @@ option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TEST_SUITE "Enable test suite" ${PROJE
 
 # mandatory dependencies
 option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NAPP "use NAPP from system" OFF)
+option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_FMT "use FMT from system" OFF)
+option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NLOHMANN_JSON "use nlohmann_json from system" OFF)
+option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_SPDLOG "use spdlog from system" OFF)
+option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_EIGEN3 "use Eigen3 from system" OFF)
+
+# optional dependencies
+option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_THIRD_PARTY_CPR "enable third party CPR" ON)
+option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_CPR "use CPR from system" OFF)
+if (EMSCRIPTEN)
+  set(${FEELPP_CORE_CMAKE_PREFIX}_ENBALE_DEFAULT_OPTION_LIBASSERT OFF)
+else()
+  set(${FEELPP_CORE_CMAKE_PREFIX}_ENBALE_DEFAULT_OPTION_LIBASSERT ON)
+endif()
+option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_THIRD_PARTY_LIBASSERT "enable third party libassert" ${${FEELPP_CORE_CMAKE_PREFIX}_ENBALE_DEFAULT_OPTION_LIBASSERT})
+option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_LIBASSERT "use libassert from system" OFF )
 
 if( NOT CMAKE_BUILD_TYPE )
   set( CMAKE_BUILD_TYPE Release CACHE STRING "Select build type" FORCE )
@@ -61,18 +76,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-# find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
-# find_package(pybind11 CONFIG REQUIRED)
-
-# find_package(Feel++ COMPONENTS Toolboxes PATHS ${FEELPP_DIR}/share/feelpp/feel/cmake/modules $ENV{FEELPP_DIR}/share/feelpp/feel/cmake/modules /usr/share/feelpp/feel/cmake/modules /usr/local/share/feelpp/feel/cmake/modules )
-# if(NOT FEELPP_FOUND)
-#   message(FATAL_ERROR "Feel++ was not found on your system. Make sure to install it and specify the FEELPP_DIR to reference the installation directory.")
-# endif()
-# if ( NOT FEELPP_TOOLBOXES_FOUND )
-#   message(WARNING "Feel++ Toolboxes SDK is not found on your system. The toolbox application is now disabled.")
-# endif()
-
-
 
 if(NOT DEFINED FEELPP_CORE_CONFIG_INSTALL_DIR )
   set(FEELPP_CORE_CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_SHORTNAME}" CACHE INTERNAL "")
@@ -82,6 +85,8 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/macro.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/importDependenciesHelpers.cmake)
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/dependencies.cmake)
 feelpp_set_options( ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} "HAS" )
 
@@ -158,6 +163,6 @@ set(CPACK_DEBIAN_PACKAGE_SECTION "science")
 set(CPACK_DEBIAN_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}${EXTRA_VERSION}")
 set(CPACK_DEBIAN_ARCHITECTURE "${CMAKE_SYSTEM_PROCESSOR}")
 # set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_SOURCE_DIR}/cmake/debian/postinst")
-  
+
 include(CPack)
 

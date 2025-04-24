@@ -1,3 +1,4 @@
+
 include(FetchContent)
 
 add_library(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies INTERFACE)
@@ -8,44 +9,19 @@ if (WIN32)
   target_compile_definitions(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions INTERFACE _USE_MATH_DEFINES )
 endif()
 
-function(printDependencySection DEPNAME IS_BEGIN )
-  if (${IS_BEGIN})
-    set(SECTION_STATE "started")
-  else()
-    set(SECTION_STATE "finished")
-  endif()
-  message(STATUS "============================================================")
-  message(STATUS "||----> ${DEPNAME} : configure ${SECTION_STATE}")
-  message(STATUS "============================================================")
-endfunction()
-function(printDependencySectionBegin DEPNAME )
-  printDependencySection( ${DEPNAME} TRUE)
-endfunction()
-function(printDependencySectionEnd DEPNAME )
-  printDependencySection( ${DEPNAME} FALSE)
-endfunction()
 
-#--------------------------------------
-# Napp
-#--------------------------------------
-function(importDependencyNapp _useSystem _target_dependencies _target_definitions)
-  printDependencySectionBegin( "Napp" )
-  if ( ${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NAPP )
-    find_package(napp REQUIRED)
-  else()
-    FetchContent_Declare(napp GIT_REPOSITORY https://github.com/vincentchabannes/napp.git GIT_TAG v0.3.0 GIT_SHALLOW ON )
-    FetchContent_MakeAvailable(napp)
-    target_compile_definitions(${_target_definitions} INTERFACE FEELPP_USE_INTERNAL_NAPP )
-  endif()
-  if ( TARGET napp::napp )
-    target_link_libraries( ${_target_dependencies} INTERFACE napp::napp )
-    target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_NAPP )
-  endif()
-  printDependencySectionEnd( "Napp" )
-endfunction(importDependencyNapp)
+importDependencyNapp( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NAPP} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
+importDependencyFmt( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_FMT} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
+importDependencyBoost( ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
+importDependencyNlohmannJson( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NLOHMANN_JSON} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
+importDependencySpdlog( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_SPDLOG} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
 
-importDependencyNapp( ${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NAPP ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
-
+if ( ${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_THIRD_PARTY_CPR )
+  importDependencyCpr( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_CPR} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
+endif()
+if ( ${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_THIRD_PARTY_LIBASSERT )
+  importDependencyLibassert( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_LIBASSERT} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
+endif()
 
 
 # install and export dependencies and definitions targets
@@ -58,11 +34,11 @@ foreach( _suffix dependencies definitions )
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
   install(EXPORT ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_${_suffix}-targets
-    NAMESPACE Ktirio-Geom::
+    NAMESPACE Feelpp::
     DESTINATION ${FEELPP_CORE_CONFIG_INSTALL_DIR}
     )
   export(EXPORT ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_${_suffix}-targets
     FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/${FEELPP_CORE_LIBRARY_PREFIX}_third_party_${_suffix}Targets.cmake"
-    NAMESPACE Ktirio-Geom::
+    NAMESPACE Feelpp::
     )
 endforeach()
