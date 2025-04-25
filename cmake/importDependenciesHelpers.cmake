@@ -18,53 +18,51 @@ endfunction()
 #--------------------------------------
 # Napp
 #--------------------------------------
-function(importDependencyNapp _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_NAPP _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin( "Napp" )
   if ( _useSystem )
     find_package(napp REQUIRED)
   else()
     FetchContent_Declare(napp GIT_REPOSITORY https://github.com/vincentchabannes/napp.git GIT_TAG v0.3.0 GIT_SHALLOW ON )
     FetchContent_MakeAvailable(napp)
-    #target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_USE_INTERNAL_NAPP )
   endif()
   if ( TARGET napp::napp )
     target_link_libraries( ${_target_dependencies} INTERFACE napp::napp )
     target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_NAPP )
-    set( ${_cmakeVariablePrefix}_MANAGE_NAPP ON PARENT_SCOPE )
+    set( ${_cmakeVariablePrefix}_MANAGE_NAPP ON )
     if ( NOT _useSystem )
-      set( ${_cmakeVariablePrefix}_USE_INTERNAL_NAPP ON PARENT_SCOPE )
+      set( ${_cmakeVariablePrefix}_USE_INTERNAL_NAPP ON )
     endif()
   endif()
   printDependencySectionEnd( "Napp" )
-endfunction(importDependencyNapp)
+endmacro(importDependency_NAPP)
 
 #--------------------------------------
 # Fmt
 #--------------------------------------
-function(importDependencyFmt _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_FMT _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin( "Fmt" )
   if ( _useSystem )
     find_package(fmt REQUIRED)
   else()
     FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git GIT_TAG 10.2.1 GIT_SHALLOW ON )
     FetchContent_MakeAvailable(fmt)
-    target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_USE_INTERNAL_FMT )
   endif()
   if ( TARGET fmt::fmt )
     target_link_libraries( ${_target_dependencies} INTERFACE fmt::fmt )
     target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_FMT )
-    set( ${_cmakeVariablePrefix}_MANAGE_FMT ON PARENT_SCOPE )
+    set( ${_cmakeVariablePrefix}_MANAGE_FMT ON )
     if ( NOT _useSystem )
-      set( ${_cmakeVariablePrefix}_USE_INTERNAL_FMT ON PARENT_SCOPE )
+      set( ${_cmakeVariablePrefix}_USE_INTERNAL_FMT ON )
     endif()
   endif()
   printDependencySectionEnd( "Fmt" )
-endfunction(importDependencyFmt)
+endmacro(importDependency_FMT)
 
 #--------------------------------------
 # Boost
 #--------------------------------------
-function(importDependencyBoost _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_BOOST _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin( "Boost" )
   SET(BOOST_MIN_VERSION "1.74.0")
   set(BOOST_COMPONENTS program_options)
@@ -74,18 +72,15 @@ function(importDependencyBoost _target_dependencies _target_definitions _cmakeVa
   # if ( Boost_program_options_FOUND )
   #   target_compile_definitions( ${_target_definitions}  INTERFACE FEELPP_HAS_BOOST_PROGRAM_OPTIONS )
   # endif()
-  set( ${_cmakeVariablePrefix}_MANAGE_BOOST ON PARENT_SCOPE )
-  # forward variables scope (required in package config)
-  set(BOOST_MIN_VERSION ${BOOST_MIN_VERSION} PARENT_SCOPE)
-  set(BOOST_COMPONENTS ${BOOST_COMPONENTS} PARENT_SCOPE )
+  set( ${_cmakeVariablePrefix}_MANAGE_BOOST ON )
   printDependencySectionEnd( "Boost" )
-endfunction(importDependencyBoost)
+endmacro(importDependency_BOOST)
 
 
 #--------------------------------------
 # Cpr
 #--------------------------------------
-function(importDependencyCpr _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_CPR _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin( "Cpr" )
   if ( _useSystem )
     find_package(cpr REQUIRED)
@@ -100,7 +95,6 @@ function(importDependencyCpr _useSystem _target_dependencies _target_definitions
     #   set( CPR_USE_SYSTEM_CURL OFF )
     # endif()
     FetchContent_MakeAvailable(cpr)
-    target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_USE_INTERNAL_CPR )
     export(TARGETS cpr
       FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/${_target_dependencies}_cprTargets.cmake"
       NAMESPACE cpr::
@@ -109,18 +103,18 @@ function(importDependencyCpr _useSystem _target_dependencies _target_definitions
   if ( TARGET cpr::cpr )
     target_link_libraries( ${_target_dependencies} INTERFACE cpr::cpr )
     target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_CPR )
-    set( ${_cmakeVariablePrefix}_MANAGE_CPR ON PARENT_SCOPE )
+    set( ${_cmakeVariablePrefix}_MANAGE_CPR ON )
     if ( NOT _useSystem )
-      set( ${_cmakeVariablePrefix}_USE_INTERNAL_CPR ON PARENT_SCOPE )
+      set( ${_cmakeVariablePrefix}_USE_INTERNAL_CPR ON )
     endif()
   endif()
   printDependencySectionEnd( "Cpr" )
-endfunction(importDependencyCpr)
+endmacro(importDependency_CPR)
 
 #--------------------------------------
 # nlohmann_json
 #--------------------------------------
-function(importDependencyNlohmannJson _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_NLOHMANN_JSON _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin( "nlohmann_json" )
   if ( _useSystem )
     find_package(nlohmann_json REQUIRED)
@@ -130,23 +124,22 @@ function(importDependencyNlohmannJson _useSystem _target_dependencies _target_de
     #  set(NLOHMANN_JSON_CONFIG_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/nlohmann_json CACHE )
     #  set(NLOHMANN_JSON_PKGCONFIG_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
     FetchContent_MakeAvailable(json)
-    target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_USE_INTERNAL_NLOHMANN_JSON )
   endif()
   if ( TARGET nlohmann_json::nlohmann_json )
     target_link_libraries( ${_target_dependencies} INTERFACE nlohmann_json::nlohmann_json )
     target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_NLOHMANN_JSON )
-    set( ${_cmakeVariablePrefix}_MANAGE_NLOHMANN_JSON ON PARENT_SCOPE )
+    set( ${_cmakeVariablePrefix}_MANAGE_NLOHMANN_JSON ON )
     if ( NOT _useSystem )
-      set( ${_cmakeVariablePrefix}_USE_INTERNAL_NLOHMANN_JSON ON PARENT_SCOPE )
+      set( ${_cmakeVariablePrefix}_USE_INTERNAL_NLOHMANN_JSON ON )
     endif()
   endif()
   printDependencySectionEnd( "nlohmann_json" )
-endfunction(importDependencyNlohmannJson)
+endmacro(importDependency_NLOHMANN_JSON)
 
 #--------------------------------------
 # spdlog
 #--------------------------------------
-function(importDependencySpdlog _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_SPDLOG _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin( "spdlog" )
   if ( _useSystem )
     find_package(spdlog REQUIRED)
@@ -155,23 +148,22 @@ function(importDependencySpdlog _useSystem _target_dependencies _target_definiti
       GIT_TAG v1.14.1 GIT_SHALLOW ON )
     set( SPDLOG_INSTALL ON)
     FetchContent_MakeAvailable(spdlog)
-    target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_USE_INTERNAL_SPDLOG )
   endif()
   if ( TARGET spdlog::spdlog )
     target_link_libraries( ${_target_dependencies} INTERFACE spdlog::spdlog )
     target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_SPDLOG )
-    set( ${_cmakeVariablePrefix}_MANAGE_SPDLOG ON PARENT_SCOPE )
+    set( ${_cmakeVariablePrefix}_MANAGE_SPDLOG ON )
     if ( NOT _useSystem )
-      set( ${_cmakeVariablePrefix}_USE_INTERNAL_SPDLOG ON PARENT_SCOPE )
+      set( ${_cmakeVariablePrefix}_USE_INTERNAL_SPDLOG ON )
     endif()
   endif()
   printDependencySectionEnd( "spdlog" )
-endfunction(importDependencySpdlog)
+endmacro(importDependency_SPDLOG)
 
 #--------------------------------------
 # libassert
 #--------------------------------------
-function(importDependencyLibassert _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_LIBASSERT _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin( "libassert" )
   if ( _useSystem )
     find_package(libassert REQUIRED)
@@ -184,23 +176,22 @@ function(importDependencyLibassert _useSystem _target_dependencies _target_defin
       FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/${_target_dependencies}_assertTargets.cmake"
       NAMESPACE libassert::
     )
-    target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_USE_INTERNAL_LIBASSERT )
   endif()
   if ( TARGET libassert::assert )
     target_link_libraries( ${_target_dependencies} INTERFACE libassert::assert )
     target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_LIBASSERT )
-    set( ${_cmakeVariablePrefix}_MANAGE_LIBASSERT ON PARENT_SCOPE )
+    set( ${_cmakeVariablePrefix}_MANAGE_LIBASSERT ON )
     if ( NOT _useSystem )
-      set( ${_cmakeVariablePrefix}_USE_INTERNAL_LIBASSERT ON PARENT_SCOPE )
+      set( ${_cmakeVariablePrefix}_USE_INTERNAL_LIBASSERT ON )
     endif()
   endif()
   printDependencySectionEnd( "libassert" )
-endfunction(importDependencyLibassert)
+endmacro(importDependency_LIBASSERT)
 
 #--------------------------------------
 # Eigen3
 #--------------------------------------
-function(importDependencyEigen3 _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_EIGEN3 _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin( "Eigen3" )
   if ( _useSystem )
     find_package(Eigen3 3.1.0 REQUIRED) #(3.1.0 or greater)
@@ -213,24 +204,23 @@ function(importDependencyEigen3 _useSystem _target_dependencies _target_definiti
     set(EIGEN_BUILD_CMAKE_PACKAGE ON)
     set(EIGEN_BUILD_PKGCONFIG ON)
     FetchContent_MakeAvailable(eigen3)
-    target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_USE_INTERNAL_EIGEN3 )
   endif()
   if ( TARGET Eigen3::Eigen )
     set( EIGEN3_FOUND ON )
     target_link_libraries( ${_target_dependencies} INTERFACE Eigen3::Eigen)
     target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_EIGEN3 )
-    set( ${_cmakeVariablePrefix}_MANAGE_EIGEN3 ON PARENT_SCOPE )
+    set( ${_cmakeVariablePrefix}_MANAGE_EIGEN3 ON )
     if ( NOT _useSystem )
-      set( ${_cmakeVariablePrefix}_USE_INTERNAL_EIGEN3 ON PARENT_SCOPE )
+      set( ${_cmakeVariablePrefix}_USE_INTERNAL_EIGEN3 ON )
     endif()
   endif()
   printDependencySectionEnd( "Eigen3" )
-endfunction(importDependencyEigen3)
+endmacro(importDependencyEigen3)
 
 #--------------------------------------
 # CGAL
 #--------------------------------------
-function(importDependencyCGAL _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin( "CGAL" )
   if ( _useSystem )
     find_package(CGAL REQUIRED COMPONENTS Core)
@@ -243,7 +233,6 @@ function(importDependencyCGAL _useSystem _target_dependencies _target_definition
     set( WITH_CGAL_Qt5 OFF )
     FetchContent_MakeAvailable(cgal)
     set( CGAL_DIR ${CGAL_BINARY_DIR})
-    target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_USE_INTERNAL_CGAL )
     find_package(CGAL PATHS ${CGAL_BINARY_DIR} NO_DEFAULT_PATH REQUIRED COMPONENTS Core )
     if(WIN32 AND NOT UNIX) # Fix windows deploy of dll gmp and mpfr
       install(
@@ -261,43 +250,42 @@ function(importDependencyCGAL _useSystem _target_dependencies _target_definition
     endif()
     target_link_libraries( ${_target_dependencies} INTERFACE CGAL::CGAL CGAL::CGAL_Core CGAL::Eigen3_support)
     target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_CGAL )
-    set( ${_cmakeVariablePrefix}_MANAGE_CGAL ON PARENT_SCOPE )
+    set( ${_cmakeVariablePrefix}_MANAGE_CGAL ON )
     if ( NOT _useSystem )
-      set( ${_cmakeVariablePrefix}_USE_INTERNAL_CGAL ON PARENT_SCOPE )
+      set( ${_cmakeVariablePrefix}_USE_INTERNAL_CGAL ON )
     endif()
   else()
     message( WARNING "ThirdParty CGAL not found")
   endif()
   printDependencySectionEnd( "CGAL" )
-endfunction(importDependencyCGAL)
+endmacro(importDependency_CGAL)
 
 #--------------------------------------
 # BVH
 #--------------------------------------
-function(importDependencyBVH _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_BVH _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin( "BVH" )
   if ( _useSystem )
     find_package(bvh REQUIRED)
   else()
     FetchContent_Declare(bvh GIT_REPOSITORY https://github.com/feelpp/bvh.git GIT_TAG 327b67b1d8d798e4dab1686b0dd022a1e0cbcefe)
     FetchContent_MakeAvailable(bvh)
-    target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_USE_INTERNAL_BVH )
   endif()
   if ( TARGET bvh )
     target_link_libraries( ${_target_dependencies} INTERFACE bvh )
     target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_BVH )
-    set( ${_cmakeVariablePrefix}_MANAGE_BVH ON PARENT_SCOPE )
+    set( ${_cmakeVariablePrefix}_MANAGE_BVH ON )
     if ( NOT _useSystem )
-      set( ${_cmakeVariablePrefix}_USE_INTERNAL_BVH ON PARENT_SCOPE )
+      set( ${_cmakeVariablePrefix}_USE_INTERNAL_BVH ON )
     endif()
   endif()
   printDependencySectionEnd( "BVH" )
-endfunction(importDependencyBVH)
+endmacro(importDependency_BVH)
 
 # #--------------------------------------
 # # CURL
 # #--------------------------------------
-# function(importDependencyCURL _target_dependencies _target_definitions)
+# macro(importDependency_CURL _target_dependencies _target_definitions)
 # if ( NOT EMSCRIPTEN )
 # printDependencySectionBegin("CURL")
 # find_package(CURL REQUIRED)
@@ -309,21 +297,21 @@ endfunction(importDependencyBVH)
 # endif()
 # printDependencySectionEnd("CURL")
 # endif()
-# endfunction(importDependencyCURL)
+# endmacro(importDependency_CURL)
 
 #--------------------------------------
 # PNG
 #--------------------------------------
-function(importDependencyPNG _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_PNG _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin("PNG")
   find_package(PNG REQUIRED)
   if (PNG_FOUND)
     target_include_directories( ${_target_dependencies} INTERFACE ${PNG_INCLUDE_DIRS})
     target_link_libraries( ${_target_dependencies}INTERFACE ${PNG_LIBRARIES})
     target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_PNG)
-    set( ${_cmakeVariablePrefix}_MANAGE_PNG ON PARENT_SCOPE )
+    set( ${_cmakeVariablePrefix}_MANAGE_PNG ON )
   else()
     message(WARNING "ThirdParty PNG not found")
   endif()
   printDependencySectionEnd("PNG")
-endfunction(importDependencyPNG)
+endmacro(importDependency_PNG)

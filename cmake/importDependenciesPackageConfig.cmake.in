@@ -4,7 +4,8 @@
 # - FEELPP_TEMPLATE_CMAKE_PREFIX
 
 
-function(importDependenciesPackageConfig _TARGET_LIBRARY _LIBRARY_PREFIX _CONFIG_INSTALL_DIR )
+
+macro(importDependenciesPackageConfigImpl _TARGET_LIBRARY _LIBRARY_PREFIX _CONFIG_INSTALL_DIR )
   set( _MANAGE_NAPP "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_MANAGE_NAPP@" )
   set( _USE_INTERNAL_NAPP "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_USE_INTERNAL_NAPP@" )
   set( _MANAGE_FMT "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_MANAGE_FMT@" )
@@ -27,14 +28,6 @@ function(importDependenciesPackageConfig _TARGET_LIBRARY _LIBRARY_PREFIX _CONFIG
   set( _USE_INTERNAL_BVH "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_USE_INTERNAL_BVH@" )
   set( _MANAGE_PNG "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_MANAGE_PNG@" )
   set( _USE_INTERNAL_PNG "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_USE_INTERNAL_PNG@" )
-
-
-  if ( TARGET Feelpp::${_TARGET_LIBRARY} )
-    return()
-  endif()
-  include(${_CONFIG_INSTALL_DIR}/${_LIBRARY_PREFIX}_third_party_definitions-targets.cmake)
-  feelpp_set_options( Feelpp::${_LIBRARY_PREFIX}_third_party_definitions FEELPP "HAS" )
-  #feelpp_set_options( Feelpp::${_LIBRARY_PREFIX}_third_party_definitions FEELPP "USE_INTERNAL" )
 
   if ( _MANAGE_NAPP )
     if ( _USE_INTERNAL_NAPP )
@@ -120,4 +113,14 @@ function(importDependenciesPackageConfig _TARGET_LIBRARY _LIBRARY_PREFIX _CONFIG
   include(${_CONFIG_INSTALL_DIR}/${_LIBRARY_PREFIX}_third_party_dependencies-targets.cmake)
   include(${_CONFIG_INSTALL_DIR}/${_TARGET_LIBRARY}-targets.cmake)
 
-endfunction(importDependenciesPackageConfig)
+endmacro(importDependenciesPackageConfigImpl)
+
+
+
+macro(importDependenciesPackageConfig _TARGET_LIBRARY _LIBRARY_PREFIX _CONFIG_INSTALL_DIR )
+  if ( NOT TARGET Feelpp::${_TARGET_LIBRARY} )
+    include(${_CONFIG_INSTALL_DIR}/${_LIBRARY_PREFIX}_third_party_definitions-targets.cmake)
+    feelpp_set_options( Feelpp::${_LIBRARY_PREFIX}_third_party_definitions FEELPP "HAS" )
+    importDependenciesPackageConfigImpl( ${_TARGET_LIBRARY} ${_LIBRARY_PREFIX} ${_CONFIG_INSTALL_DIR} )
+  endif()
+endmacro(importDependenciesPackageConfig)
