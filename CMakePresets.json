@@ -33,7 +33,6 @@
             "binaryDir": "${sourceDir}/build/x86_64-linux",
             "cacheVariables": {
                 "CMAKE_INSTALL_PREFIX" : "${sourceDir}/build/x86_64-linux/install/",
-                "CMAKE_INSTALL_PREFIX": "/usr/local",
                 "FEELPP_CORE_USE_SYSTEM_EIGEN3": true
             },
             "vendor": {
