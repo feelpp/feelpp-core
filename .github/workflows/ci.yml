@@ -107,7 +107,7 @@ jobs:
     -
       name: Package
       run: |
-        cmake --build --preset default -t x86_64-linux
+        cmake --build --preset x86_64-linux -t package
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
