@@ -89,7 +89,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/macro.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/importDependenciesHelpers.cmake)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/dependencies.cmake)
-feelpp_set_options( ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} "HAS" )
 
 
 # create importDependenciesPackageConfig.cmake (need to apply configure_file twice)

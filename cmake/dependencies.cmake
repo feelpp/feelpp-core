@@ -25,6 +25,8 @@ if ( ${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_THIRD_PARTY_LIBASSERT )
   importDependency_LIBASSERT( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_LIBASSERT} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
 endif()
 
+# update cmake variables FEELPP_HAS_<...>
+feelpp_set_options( ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions FEELPP "HAS" )
 
 # install and export dependencies and definitions targets
 foreach( _suffix dependencies definitions )
