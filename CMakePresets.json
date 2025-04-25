@@ -25,14 +25,16 @@
             }
         },
         {
-            "name": "install-local",
+            "name": "x86_64-linux",
             "inherits": "default",
-            "displayName": "Build and Install system",
-            "description": "Build and Install in /usr/local",
+            "displayName": "x86_64-linux config",
+            "description": "x86_64-linux config",
             "generator": "Unix Makefiles",
-            "binaryDir": "${sourceDir}/build/install-local",
+            "binaryDir": "${sourceDir}/build/x86_64-linux",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "/usr/local"
+                "CMAKE_INSTALL_PREFIX" : "${sourceDir}/build/x86_64-linux/install/",
+                "CMAKE_INSTALL_PREFIX": "/usr/local",
+                "FEELPP_CORE_USE_SYSTEM_EIGEN3": true
             },
             "vendor": {
                 "example.com/ExampleIDE/1.0": {
@@ -69,8 +71,8 @@
             "jobs": 10
         },
         {
-            "name": "install-local",
-            "configurePreset": "install-local",
+            "name": "x86_64-linux",
+            "configurePreset": "x86_64-linux",
             "inherits": "default",
             "targets": [
                 "all","install","package"
