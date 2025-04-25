@@ -92,6 +92,10 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/dependencies.cmake)
 feelpp_set_options( ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} "HAS" )
 
 
+# create importDependenciesPackageConfig.cmake (need to apply configure_file twice)
+set(FEELPP_TEMPLATE_CMAKE_PREFIX ${FEELPP_CORE_CMAKE_PREFIX})
+configure_file(cmake/importDependenciesPackageConfig.cmake.in  cmake/importDependenciesPackageConfig.cmake.in  @ONLY)
+configure_file(${CMAKE_CURRENT_BINARY_DIR}/cmake/importDependenciesPackageConfig.cmake.in  cmake/importDependenciesPackageConfig.cmake  @ONLY)
 
 
 enable_testing()
@@ -124,7 +128,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}Config.cmake
   )
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/macro.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/dependencies.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/importDependenciesHelpers.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/importDependenciesPackageConfig.cmake
   DESTINATION ${FEELPP_CORE_CONFIG_INSTALL_DIR}
   )
 

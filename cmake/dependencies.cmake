@@ -9,18 +9,20 @@ if (WIN32)
   target_compile_definitions(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions INTERFACE _USE_MATH_DEFINES )
 endif()
 
+# required dependencies
+importDependencyNapp( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NAPP} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
+importDependencyFmt( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_FMT} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX})
+importDependencyBoost( ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
+importDependencyNlohmannJson( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NLOHMANN_JSON} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
+importDependencySpdlog( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_SPDLOG} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
+importDependencyEigen3( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_EIGEN3} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
 
-importDependencyNapp( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NAPP} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
-importDependencyFmt( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_FMT} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
-importDependencyBoost( ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
-importDependencyNlohmannJson( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NLOHMANN_JSON} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
-importDependencySpdlog( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_SPDLOG} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
-
+# optional dependencies
 if ( ${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_THIRD_PARTY_CPR )
-  importDependencyCpr( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_CPR} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
+  importDependencyCpr( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_CPR} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
 endif()
 if ( ${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_THIRD_PARTY_LIBASSERT )
-  importDependencyLibassert( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_LIBASSERT} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
+  importDependencyLibassert( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_LIBASSERT} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
 endif()
 
 
