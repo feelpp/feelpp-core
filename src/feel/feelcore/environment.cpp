@@ -69,9 +69,12 @@ Environment::options() const
 
 }
 
-fs::path Environment::dataDir() const
+fs::path Environment::dataDir( std::string const& key ) const
 {
-    return fs::path( BOOST_PP_STRINGIZE(FEELPP_CORE_DATA_DIR) );
+    if ( key.empty() )
+        return fs::path( BOOST_PP_STRINGIZE(FEELPP_CORE_DATA_DIR) );
+    else
+        return M_plugins.at( key ).dataDir();
 }
 
 std::string

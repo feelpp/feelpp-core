@@ -57,6 +57,21 @@ namespace log = spdlog;
 namespace nl = nlohmann;
 //using json = nl::json;
 
+
+class FEELPP_CORE_EXPORT EnvironmentPlugin
+{
+  public:
+  EnvironmentPlugin( std::string const& name, fs::path const& dataDir ) : M_name( name), M_dataDir( dataDir ) {}
+  EnvironmentPlugin( EnvironmentPlugin const& ) = default;
+  EnvironmentPlugin( EnvironmentPlugin && ) = default;
+  std::string const& name() const { return M_name; }
+  fs::path const& dataDir() const { return M_dataDir; }
+  private:
+  std::string M_name;
+  fs::path M_dataDir;
+};
+
+
 //! class build as singleton that represent environment
 class FEELPP_CORE_EXPORT Environment
 {
@@ -73,10 +88,13 @@ class FEELPP_CORE_EXPORT Environment
   po::options_description options() const;
 
   //! return data directory (Warning currently defined on sources directory)
-  fs::path dataDir() const;
+  fs::path dataDir( std::string const& key = "" ) const;
 
   //! return string by expanding some keyword of format ${key}
   std::string expand( std::string const& expr ) const;
+
+  template <typename T>
+  void appendPlugin( T && plugin ) { M_plugins.emplace( plugin.name(), std::forward<T>( plugin ) ); }
 
   private:
   //! return singleton instance
@@ -88,7 +106,10 @@ class FEELPP_CORE_EXPORT Environment
   private:
   static std::unique_ptr<Environment> S_instance;
   po::variables_map M_vm;
+  std::map<std::string,EnvironmentPlugin> M_plugins;
 };
+
+
 
 FEELPP_CORE_EXPORT Environment* createEnvironment( int argc, char* argv[], po::options_description const& optionsDescription = {} );
 
