@@ -15,18 +15,15 @@
 #include <feel/feelcore/namedarguments.hpp>
 
 #if defined _WIN32 || defined __CYGWIN__
-#if defined(FEELPP_CORE_LIB_LIBRARY_EXPORTING)
 #ifdef __GNUC__
 #define FEELPP_DECL_EXPORT __attribute__ ((dllexport))
 #else
 #define FEELPP_DECL_EXPORT __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
 #endif
-#else
 #ifdef __GNUC__
 #define FEELPP_DECL_IMPORT __attribute__ ((dllimport))
 #else
 #define FEELPP_DECL_IMPORT __declspec(dllimport) // Note: actually gcc seems to also supports this syntax.
-#endif
 #endif
 #define FEELPP_DECL_HIDDEN
 #else
