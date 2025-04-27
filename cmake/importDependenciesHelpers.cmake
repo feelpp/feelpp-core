@@ -158,13 +158,13 @@ macro(importDependency_LIBASSERT _useSystem _target_dependencies _target_definit
     find_package(libassert REQUIRED)
   else()
     FetchContent_Declare(libassert GIT_REPOSITORY https://github.com/jeremy-rifkin/libassert.git
-      GIT_TAG v2.1.0 GIT_SHALLOW ON )
+      GIT_TAG v2.1.5 GIT_SHALLOW ON )
     set(CPPTRACE_USE_EXTERNAL_ZSTD ON)
     FetchContent_MakeAvailable(libassert)
-    export(TARGETS libassert-lib cpptrace-lib dwarf
-      FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/${_target_dependencies}_assertTargets.cmake"
-      NAMESPACE libassert::
-    )
+    # export(TARGETS libassert-lib cpptrace-lib dwarf
+    #   FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/${_target_dependencies}_assertTargets.cmake"
+    #   NAMESPACE libassert::
+    # )
   endif()
   if ( TARGET libassert::assert )
     feelpp_updateImportDependencyForUse( LIBASSERT libassert::assert ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
