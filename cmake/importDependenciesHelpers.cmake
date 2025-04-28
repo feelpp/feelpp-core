@@ -1,3 +1,38 @@
+
+
+function(setupCmakeOptionDependencies)
+  set(options USE_SYSTEM)
+  #set(oneValueArgs PREFIX)
+  set(multiValueArgs REQUIRED OPTIONAL)
+  cmake_parse_arguments(PARSE_ARGV 0 arg
+    "${options}" "${oneValueArgs}" "${multiValueArgs}"
+  )
+
+  set(_use_system OFF)
+  if( arg_USE_SYSTEM)
+    set(_use_system ON)
+  endif()
+
+  if ( arg_REQUIRED )
+    foreach(_dep IN LISTS arg_REQUIRED)
+      option(FEELPP_USE_SYSTEM_${_dep} "use ${_dep} from system" ${_use_system})
+    endforeach()
+  endif()
+
+  if ( arg_OPTIONAL )
+    foreach(_dep IN LISTS arg_OPTIONAL)
+      set(_enabled ON)
+      if ( DEFINED FEELPP_ENBALE_DEFAULT_OPTION_${_dep} )
+        set(_enabled ${FEELPP_ENBALE_DEFAULT_OPTION_${_dep}})
+      endif()
+      option(FEELPP_ENABLE_${_dep} "enable third party ${_dep}" ${_enabled})
+      option(FEELPP_USE_SYSTEM_${_dep} "use ${_dep} from system" ${_use_system})
+    endforeach()
+  endif()
+endfunction()
+
+
+
 function(printDependencySection DEPNAME IS_BEGIN )
   if (${IS_BEGIN})
     set(SECTION_STATE "started")
@@ -20,7 +55,7 @@ function(feelpp_updateImportDependencyForUse _depName _depTarget _useSystem _tar
   target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_${_depName} )
   set( ${_cmakeVariablePrefix}_MANAGE_${_depName} 1 PARENT_SCOPE )
   if ( NOT ${_useSystem} )
-    set( ${_cmakeVariablePrefix}_USE_INTERNAL_${_depName} 1 PARENT_SCOPE )
+    set( FEELPP_USE_INTERNAL_${_depName} 1 PARENT_SCOPE )
   endif()
   set( FEELPP_HAS_${_depName} 1 PARENT_SCOPE)
 endfunction()
@@ -141,6 +176,9 @@ macro(importDependency_SPDLOG _useSystem _target_dependencies _target_definition
     FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
       GIT_TAG v1.14.1 GIT_SHALLOW ON )
     set( SPDLOG_INSTALL ON)
+    if ( FEELPP_HAS_FMT )
+      set(SPDLOG_FMT_EXTERNAL ON)
+    endif()
     FetchContent_MakeAvailable(spdlog)
   endif()
   if ( TARGET spdlog::spdlog )

@@ -1,6 +1,22 @@
 
 include(FetchContent)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/macro.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/importDependenciesHelpers.cmake)
 
+
+# disable dependencies with EMSCRIPTEN
+if (EMSCRIPTEN)
+  set(FEELPP_ENBALE_DEFAULT_OPTION_LIBASSERT OFF)
+endif()
+
+# setup dependencies options
+setupCmakeOptionDependencies(
+  #PREFIX ${FEELPP_CORE_CMAKE_PREFIX}
+  REQUIRED NAPP FMT NLOHMANN_JSON SPDLOG EIGEN3
+  OPTIONAL CPR LIBASSERT
+)
+
+# create interface lib
 add_library(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies INTERFACE)
 add_library(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions INTERFACE)
 target_link_libraries(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies INTERFACE ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions )
@@ -10,19 +26,19 @@ if (WIN32)
 endif()
 
 # required dependencies
-importDependency_NAPP( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NAPP} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
-importDependency_FMT( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_FMT} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX})
+importDependency_NAPP( ${FEELPP_USE_SYSTEM_NAPP} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
+importDependency_FMT( ${FEELPP_USE_SYSTEM_FMT} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX})
 importDependency_BOOST( ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
-importDependency_NLOHMANN_JSON( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NLOHMANN_JSON} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
-importDependency_SPDLOG( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_SPDLOG} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
-importDependency_EIGEN3( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_EIGEN3} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
+importDependency_NLOHMANN_JSON( ${FEELPP_USE_SYSTEM_NLOHMANN_JSON} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
+importDependency_SPDLOG( ${FEELPP_USE_SYSTEM_SPDLOG} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
+importDependency_EIGEN3( ${FEELPP_USE_SYSTEM_EIGEN3} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
 
 # optional dependencies
-if ( ${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_THIRD_PARTY_CPR )
-  importDependency_CPR( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_CPR} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
+if ( FEELPP_ENABLE_CPR )
+  importDependency_CPR( ${FEELPP_USE_SYSTEM_CPR} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
 endif()
-if ( ${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_THIRD_PARTY_LIBASSERT )
-  importDependency_LIBASSERT( ${${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_LIBASSERT} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
+if ( FEELPP_ENABLE_LIBASSERT )
+  importDependency_LIBASSERT( ${FEELPP_USE_SYSTEM_LIBASSERT} ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions ${FEELPP_CORE_CMAKE_PREFIX} )
 endif()
 
 # install and export dependencies and definitions targets

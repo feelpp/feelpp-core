@@ -41,25 +41,8 @@ if (POLICY CMP0077)
   set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 endif()
 
+
 option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TEST_SUITE "Enable test suite" ${PROJECT_IS_TOP_LEVEL})
-
-# mandatory dependencies
-option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NAPP "use NAPP from system" OFF)
-option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_FMT "use FMT from system" OFF)
-option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_NLOHMANN_JSON "use nlohmann_json from system" OFF)
-option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_SPDLOG "use spdlog from system" OFF)
-option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_EIGEN3 "use Eigen3 from system" OFF)
-
-# optional dependencies
-option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_THIRD_PARTY_CPR "enable third party CPR" ON)
-option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_CPR "use CPR from system" OFF)
-if (EMSCRIPTEN)
-  set(${FEELPP_CORE_CMAKE_PREFIX}_ENBALE_DEFAULT_OPTION_LIBASSERT OFF)
-else()
-  set(${FEELPP_CORE_CMAKE_PREFIX}_ENBALE_DEFAULT_OPTION_LIBASSERT ON)
-endif()
-option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_THIRD_PARTY_LIBASSERT "enable third party libassert" ${${FEELPP_CORE_CMAKE_PREFIX}_ENBALE_DEFAULT_OPTION_LIBASSERT})
-option(${FEELPP_CORE_CMAKE_PREFIX}_USE_SYSTEM_LIBASSERT "use libassert from system" OFF )
 
 if( NOT CMAKE_BUILD_TYPE )
   set( CMAKE_BUILD_TYPE Release CACHE STRING "Select build type" FORCE )
@@ -85,9 +68,9 @@ endif()
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/macro.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/importDependenciesHelpers.cmake)
 
+
+# Get dependencies
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/dependencies.cmake)
 
 
