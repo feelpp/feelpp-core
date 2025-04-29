@@ -36,14 +36,12 @@ set(FEELPP_CORE_LIBRARY "feelpp_core")
 set(FEELPP_CORE_LIBRARY_PREFIX "feelpp_core")
 include(GNUInstallDirs)
 
-if (POLICY CMP0077)
-  cmake_policy(SET CMP0077 NEW)
-  set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
-  # require a recent cmake
-  #  cmake_policy(SET CMP0167 NEW)
-  #  set(CMAKE_POLICY_DEFAULT_CMP0167 NEW)
-endif()
-
+foreach( _policy IN ITEMS CMP0077 CMP0167 )
+  if (POLICY ${_policy})
+    cmake_policy(SET ${_policy} NEW)
+    set(CMAKE_POLICY_DEFAULT_${_policy} NEW)
+  endif()
+endforeach()
 
 if( NOT CMAKE_BUILD_TYPE )
   set( CMAKE_BUILD_TYPE Release CACHE STRING "Select build type" FORCE )
