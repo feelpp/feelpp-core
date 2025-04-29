@@ -39,8 +39,9 @@ include(GNUInstallDirs)
 if (POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
   set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
-  cmake_policy(SET CMP0167 NEW)
-  set(CMAKE_POLICY_DEFAULT_CMP0167 NEW)
+  # require a recent cmake
+  #  cmake_policy(SET CMP0167 NEW)
+  #  set(CMAKE_POLICY_DEFAULT_CMP0167 NEW)
 endif()
 
 
