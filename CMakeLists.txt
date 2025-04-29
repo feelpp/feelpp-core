@@ -39,10 +39,10 @@ include(GNUInstallDirs)
 if (POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
   set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+  cmake_policy(SET CMP0167 NEW)
+  set(CMAKE_POLICY_DEFAULT_CMP0167 NEW)
 endif()
 
-
-option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TEST_SUITE "Enable test suite" ${PROJECT_IS_TOP_LEVEL})
 
 if( NOT CMAKE_BUILD_TYPE )
   set( CMAKE_BUILD_TYPE Release CACHE STRING "Select build type" FORCE )
@@ -57,6 +57,8 @@ endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TEST_SUITE "Enable test suite" ${PROJECT_IS_TOP_LEVEL})
 
 # Set a path to the data directory
 set( ${FEELPP_CORE_CMAKE_PREFIX}_DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data )

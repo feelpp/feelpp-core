@@ -10,7 +10,7 @@
             "name": "default",
             "displayName": "Default Config",
             "description": "Default config",
-            "generator": "Unix Makefiles",
+            "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/default",
             "cacheVariables": {
                 "CMAKE_CXX_COMPILER": "clang++",
@@ -29,7 +29,7 @@
             "inherits": "default",
             "displayName": "x86_64-linux config",
             "description": "x86_64-linux config",
-            "generator": "Unix Makefiles",
+            "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/x86_64-linux",
             "cacheVariables": {
                 "CMAKE_INSTALL_PREFIX" : "${sourceDir}/build/x86_64-linux/install/",
@@ -45,7 +45,7 @@
             "name": "wasm-linux",
             "displayName": "Wasm linux Config",
             "description": "Build Wasm using linux",
-            "generator": "Unix Makefiles",
+            "generator": "Ninja",
             "toolchainFile": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
             "binaryDir": "${sourceDir}/build/wasm-linux",
             "cacheVariables": {
