@@ -1,0 +1,12 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0d8226b9..2194d651 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -7,6 +7,7 @@ if(NOT DEFINED PROJECT_NAME)
+ else()
+   set(NOT_SUBPROJECT OFF)
+ endif()
++set(NOT_SUBPROJECT ON)
+ 
+ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+ 
