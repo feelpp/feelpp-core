@@ -2,7 +2,7 @@
 
 function(setupCmakeOptionDependencies)
   set(options USE_SYSTEM)
-  #set(oneValueArgs PREFIX)
+  set(oneValueArgs "")
   set(multiValueArgs REQUIRED OPTIONAL)
   cmake_parse_arguments(PARSE_ARGV 0 arg
     "${options}" "${oneValueArgs}" "${multiValueArgs}"
@@ -32,6 +32,77 @@ function(setupCmakeOptionDependencies)
 endfunction()
 
 
+# call a function with a dynamic name
+function(feelpp_detail_callFunction _id)
+  if (NOT COMMAND ${_id})
+    message(FATAL_ERROR "Unsupported function/macro \"${_id}\"")
+  else()
+    set(_helper "${CMAKE_BINARY_DIR}/helpers/macro_helper_${_id}.cmake")
+    if (NOT EXISTS "${_helper}")
+      file(WRITE "${_helper}" "${_id}(\$\{ARGN\})\n")
+    endif()
+    include("${_helper}")
+  endif()
+endfunction()
+
+# call a macro with a dynamic name
+macro(feelpp_detail_callMacro)
+  set(options "")
+  set(oneValueArgs NAME)
+  set(multiValueArgs ARGUMENTS)
+  cmake_parse_arguments(arg_callMacro
+    "${options}" "${oneValueArgs}" "${multiValueArgs}"
+    ${ARGN}
+  )
+  set( _id ${arg_callMacro_NAME} )
+  set( _args ${arg_callMacro_ARGUMENTS})
+  message("_cmakeVariablePrefix=${_cmakeVariablePrefix} argn=${ARGN} ssss=${arg_callMacro_NAME}  arg=${arg_callMacro_ARGUMENTS}")
+  if (NOT COMMAND ${_id})
+    message(FATAL_ERROR "Unsupported function/macro \"${_id}\"")
+  else()
+    set(_helper "${CMAKE_BINARY_DIR}/helpers/macro_helper_${_id}.cmake")
+    if (NOT EXISTS "${_helper}")
+      file(WRITE "${_helper}" "${_id}(\$\{_args\} )\n")
+    endif()
+    include("${_helper}")
+  endif()
+endmacro()
+
+macro(importDependencies)
+  set(options "")
+  set(oneValueArgs PREFIX TARGET_DEPENDENCIES TARGET_DEFINITIONS)
+  set(multiValueArgs REQUIRED OPTIONAL)
+  cmake_parse_arguments(arg
+    "${options}" "${oneValueArgs}" "${multiValueArgs}"
+    ${ARGN}
+  )
+  set(_cmakePrefix ${arg_PREFIX})
+  set(_targetDependencies ${arg_TARGET_DEPENDENCIES})
+  set(_targetDefinitions ${arg_TARGET_DEFINITIONS})
+  if ( arg_REQUIRED )
+    foreach(_dep IN LISTS arg_REQUIRED)
+      feelpp_detail_callMacro(NAME importDependency_${_dep} ARGUMENTS ${FEELPP_USE_SYSTEM_${_dep}} ${_targetDependencies} ${_targetDefinitions} ${_cmakePrefix} )
+    endforeach()
+  endif()
+  if ( arg_OPTIONAL )
+    foreach(_dep IN LISTS arg_OPTIONAL)
+      if ( FEELPP_ENABLE_${_dep} )
+        feelpp_detail_callMacro(NAME importDependency_${_dep} ARGUMENTS ${FEELPP_USE_SYSTEM_${_dep}} ${_targetDependencies} ${_targetDefinitions} ${_cmakePrefix} )
+      endif( )
+    endforeach()
+  endif()
+endmacro(importDependencies)
+
+
+
+function(feelpp_configure_dependencies_package_config _cmakePrefix _outputDir )
+  # create importDependenciesPackageConfig.cmake (need to apply configure_file twice)
+  set(FEELPP_TEMPLATE_CMAKE_PREFIX ${_cmakePrefix})
+  configure_file(${CMAKE_CURRENT_FUNCTION_LIST_DIR}/importDependenciesPackageConfig.cmake.in  ${_outputDir}/importDependenciesPackageConfig.cmake.in  @ONLY)
+  configure_file(${_outputDir}/importDependenciesPackageConfig.cmake.in  ${_outputDir}/importDependenciesPackageConfig.cmake  @ONLY)
+endfunction()
+
+
 
 function(printDependencySection DEPNAME IS_BEGIN )
   if (${IS_BEGIN})
@@ -48,6 +119,17 @@ function(printDependencySectionBegin DEPNAME )
 endfunction()
 function(printDependencySectionEnd DEPNAME )
   printDependencySection( ${DEPNAME} FALSE)
+endfunction()
+
+
+function(feelpp_updateImportDependencyForUseBis _depName _useSystem _cmakeVariablePrefix)
+  #target_link_libraries( ${_target_dependencies} INTERFACE ${_depTarget} )
+  #target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_${_depName} )
+  set( ${_cmakeVariablePrefix}_MANAGE_${_depName} 1 PARENT_SCOPE )
+  if ( NOT ${_useSystem} )
+    set( FEELPP_USE_INTERNAL_${_depName} 1 PARENT_SCOPE )
+  endif()
+  set( FEELPP_HAS_${_depName} 1 PARENT_SCOPE)
 endfunction()
 
 function(feelpp_updateImportDependencyForUse _depName _depTarget _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
@@ -97,19 +179,22 @@ endmacro(importDependency_FMT)
 #--------------------------------------
 # Boost
 #--------------------------------------
-macro(importDependency_BOOST _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_BOOST _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin( "Boost" )
   SET(BOOST_MIN_VERSION "1.74.0")
   set(BOOST_COMPONENTS program_options)
-  find_package(Boost 1.74.0 REQUIRED COMPONENTS program_options) #OPTIONAL_COMPONENTS program_options)
-  # target_link_libraries( ${_target_dependencies} INTERFACE ${Boost_LIBRARIES})
-  # target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_BOOST )
-  # # if ( Boost_program_options_FOUND )
-  # #   target_compile_definitions( ${_target_definitions}  INTERFACE FEELPP_HAS_BOOST_PROGRAM_OPTIONS )
-  # # endif()
-  # set( ${_cmakeVariablePrefix}_MANAGE_BOOST ON )
-
-  set( _useSystem TRUE)
+  if ( ${_useSystem} )
+    find_package(Boost 1.74.0 REQUIRED COMPONENTS program_options) #OPTIONAL_COMPONENTS program_options)
+    # target_link_libraries( ${_target_dependencies} INTERFACE ${Boost_LIBRARIES})
+    # target_compile_definitions( ${_target_definitions} INTERFACE FEELPP_HAS_BOOST )
+    # # if ( Boost_program_options_FOUND )
+    # #   target_compile_definitions( ${_target_definitions}  INTERFACE FEELPP_HAS_BOOST_PROGRAM_OPTIONS )
+    # # endif()
+    # set( ${_cmakeVariablePrefix}_MANAGE_BOOST ON )
+  else()
+    message(FATAL_ERROR "Boost dependency onle from System")
+  endif()
+  #set( _useSystem TRUE)
   feelpp_updateImportDependencyForUse( BOOST ${Boost_LIBRARIES} ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
 
   printDependencySectionEnd( "Boost" )
@@ -325,3 +410,29 @@ macro(importDependency_PNG _target_dependencies _target_definitions _cmakeVariab
   endif()
   printDependencySectionEnd("PNG")
 endmacro(importDependency_PNG)
+
+
+#--------------------------------------
+# Catch2
+#--------------------------------------
+macro(importDependency_CATCH2 _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+  printDependencySectionBegin( "Catch2" )
+  if ( ${_useSystem} )
+    find_package(Catch2 3 REQUIRED)
+  else()
+    FetchContent_Declare(Catch2 GIT_REPOSITORY https://github.com/catchorg/Catch2.git GIT_TAG v3.8.1
+      PATCH_COMMAND git apply "${FEELPP_CORE_CMAKE_DIR}/catch2.patch" UPDATE_DISCONNECTED 1
+    )
+    FetchContent_MakeAvailable(Catch2)
+    export(TARGETS Catch2 Catch2WithMain
+      FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/${_target_dependencies}_catch2Targets.cmake"
+      NAMESPACE Catch2::
+    )
+  endif()
+  if ( TARGET Catch2::Catch2 )
+    feelpp_updateImportDependencyForUse( CATCH2  "Catch2::Catch2;Catch2::Catch2WithMain" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+  endif()
+  printDependencySectionEnd( "Catch2" )
+endmacro(importDependency_CATCH2)
+
+

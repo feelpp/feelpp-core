@@ -61,6 +61,7 @@ option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TEST_SUITE "Enable test suite" ${PROJE
 
 # Set a path to the data directory
 set( ${FEELPP_CORE_CMAKE_PREFIX}_DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data )
+set( ${FEELPP_CORE_CMAKE_PREFIX}_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
 
 if(NOT DEFINED FEELPP_CORE_CONFIG_INSTALL_DIR )
   set(FEELPP_CORE_CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_SHORTNAME}" CACHE INTERNAL "")
@@ -75,12 +76,6 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/dependencies.cmake)
 
 
-# create importDependenciesPackageConfig.cmake (need to apply configure_file twice)
-set(FEELPP_TEMPLATE_CMAKE_PREFIX ${FEELPP_CORE_CMAKE_PREFIX})
-configure_file(cmake/importDependenciesPackageConfig.cmake.in  cmake/importDependenciesPackageConfig.cmake.in  @ONLY)
-configure_file(${CMAKE_CURRENT_BINARY_DIR}/cmake/importDependenciesPackageConfig.cmake.in  cmake/importDependenciesPackageConfig.cmake  @ONLY)
-
-
 enable_testing()
 
 if ( NOT TARGET check )
@@ -92,6 +87,8 @@ add_subdirectory( src )
 #add_subdirectory( docs )
 
 
+# prepare package dependencies
+feelpp_configure_dependencies_package_config( ${FEELPP_CORE_CMAKE_PREFIX} ${CMAKE_CURRENT_BINARY_DIR}/cmake )
 
 # generate and install package config
 include(CMakePackageConfigHelpers)
@@ -113,6 +110,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}Config.cmake
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/macro.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/importDependenciesHelpers.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/cmake/importDependenciesPackageConfig.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/importDependenciesPackageConfig.cmake.in
   DESTINATION ${FEELPP_CORE_CONFIG_INSTALL_DIR}
   )
 

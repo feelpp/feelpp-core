@@ -26,8 +26,8 @@ macro(importDependenciesPackageConfigImpl _TARGET_LIBRARY _LIBRARY_PREFIX _CONFI
   set( _USE_INTERNAL_CGAL "@FEELPP_USE_INTERNAL_CGAL@" )
   set( _MANAGE_BVH "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_MANAGE_BVH@" )
   set( _USE_INTERNAL_BVH "@FEELPP_USE_INTERNAL_BVH@" )
-  set( _MANAGE_PNG "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_MANAGE_PNG@" )
-  set( _USE_INTERNAL_PNG "@FEELPP_USE_INTERNAL_PNG@" )
+  set( _MANAGE_CATCH2 "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_MANAGE_CATCH2@" )
+  set( _USE_INTERNAL_CATCH2 "@FEELPP_USE_INTERNAL_CATCH2@" )
 
   if ( _MANAGE_NAPP )
     if ( _USE_INTERNAL_NAPP )
@@ -107,6 +107,15 @@ macro(importDependenciesPackageConfigImpl _TARGET_LIBRARY _LIBRARY_PREFIX _CONFI
       find_dependency(CGAL COMPONENTS Core )
     endif()
     include(CGAL_Eigen3_support)
+  endif()
+
+
+  if ( _MANAGE_CATCH2 )
+    if ( _USE_INTERNAL_CATCH2 )
+      find_dependency(Catch2 3 PATHS ${_CONFIG_INSTALL_DIR}/../Catch2 NO_DEFAULT_PATH )
+    else()
+      find_dependency(Catch2 3)
+    endif()
   endif()
 
 
