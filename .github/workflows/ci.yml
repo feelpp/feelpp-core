@@ -16,72 +16,96 @@ jobs:
     name: Build wheel
     if: "!contains(github.event.head_commit.message, 'wheel skip')"
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        lfs: true
-        submodules: 'recursive'
-    -
-      name: Create Virtual Environment
-      run: |
-        python3 -m venv .venv
-        source .venv/bin/activate
-        pip3 install -I -r requirements.txt
-    -
-      name: Compile
-      run: |
-        pip3 wheel --no-deps --wheel-dir dist .
-      env:
-        CXX: clang++
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: 'recursive'
+          clean: true
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        # Artifact name
-        name: wheel-artifacts
-        # Directory containing files to upload
-        path: dist/*.whl
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install Python/Node Env
+        run: |
+          uv venv --system-site-packages
+          source .venv/bin/activate
+          uv pip install -r pyproject.toml --extra dev --extra test
+          npm install --verbose
+          npx downdoc README.adoc
+
+      - name: Build wheel
+        run: |
+          source .venv/bin/activate
+          pipx run build
+          uv pip install dist/*.whl
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Artifact name
+          name: artifacts-wheel
+          # Directory containing files to upload
+          path: dist/*.whl
 
 
-  docs:
+  build_docs:
     runs-on: self-feelpp
     name: Build Antora Site
     needs: build_wheel
     if: "!contains(github.event.head_commit.message, 'docs skip')"
     steps:
-    - uses: actions/checkout@v4
-      with:
-        lfs: true
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
         submodules: 'recursive'
-    - name: Install credentials
-      run: echo https://$GITHUB_OAUTH:@github.com > $HOME/.git-credentials
-      env:
-        GITHUB_OAUTH: ${{ secrets.CR_PAT_WORKFLOW }}
-    - name: Install NPM dependencies
-      run: npm install
-    - name: Download
-      uses: actions/download-artifact@v4
-      with:
-        # Artifact name
-        name: wheel-artifacts
-        path: dist/
-    - name: Install Python dependencies
-      run: |
-          python -m venv --system-site-packages .venv
-          source .venv/bin/activate
-          pip3 install -I -r requirements.txt
-          pip3 install dist/*.whl
-          tree .venv
-    - name: Build Antora Site
-      run: |
-          source .venv/bin/activate
-          npm run antora
-    - name: Deploy
-      if: ${{ github.ref_name == 'master' }}
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: public # The folder the action should deploy.
+        clean: true
+
+     - name: Install credentials
+        run: echo https://$GITHUB_OAUTH:@github.com > $HOME/.git-credentials
+        env:
+          GITHUB_OAUTH: ${{ secrets.CR_PAT_WORKFLOW }}
+
+     - name: Download Wheels
+       uses: actions/download-artifact@v4
+       with:
+         name: artifacts-wheel
+         path: dist/
+
+     - uses: actions/setup-node@v4
+       with:
+         node-version: 22
+
+     - name: Install uv
+       uses: astral-sh/setup-uv@v5
+
+     - name: Install Python deps
+       run: |
+         uv venv --system-site-packages
+         source .venv/bin/activate
+         uv pip install dist/*.whl
+
+     - name: Build Antora site
+       run: |
+         source .venv/bin/activate
+         npm install --verbose
+         npm run antora || true
+         npm run antora
+       env:
+         GIRDER_API_KEY: ${{ secrets.GIRDER }}
+
+     - name: Deploy to GitHub Pages
+       if: github.ref == 'refs/heads/master'
+       uses: JamesIves/github-pages-deploy-action@v4
+       with:
+         token: ${{ secrets.GITHUB_TOKEN }}
+         branch: gh-pages
+         folder: public
+
   build_code:
     runs-on: self-feelpp
     name: Build, Install, Package code
@@ -92,22 +116,24 @@ jobs:
       with:
         lfs: true
         submodules: 'recursive'
-    -
-      name: Build
+        clean: true
+
+    - name: Build
       run: |
         cmake --preset x86_64-linux
         cmake --build --preset x86_64-linux
-    -
-      name: Check
+
+    - name: Check
       run: |
         ctest --preset default
       env:
         OMPI_ALLOW_RUN_AS_ROOT: 1
         OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
-    -
-      name: Package
+
+    - name: Package
       run: |
         cmake --build --preset x86_64-linux -t package
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -115,6 +141,7 @@ jobs:
         name: feelpp-core-artifacts
         # Directory containing files to upload
         path: build/x86_64-linux/assets/feelpp-core-*
+
     - name: Upload Fin Datasets
       uses: actions/upload-artifact@v4
       with:
