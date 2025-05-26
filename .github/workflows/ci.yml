@@ -64,8 +64,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           lfs: true
-        submodules: 'recursive'
-        clean: true
+          submodules: 'recursive'
+          clean: true
 
       - name: Install credentials
         run: echo https://$GITHUB_OAUTH:@github.com > $HOME/.git-credentials
