@@ -1,13 +1,15 @@
+---
 name: CI
 
 on:
   push:
     branches:
-      - '**' # Push events on all branches
+      - '**'  # Push events on all branches
     paths-ignore:
       - '.github/workflows/init.yml'
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10 including semver
+      # Push events to matching v*, i.e. v1.0, v20.15.10 including semver
+      - 'v*'
 
 jobs:
 
@@ -65,88 +67,88 @@ jobs:
         submodules: 'recursive'
         clean: true
 
-     - name: Install credentials
+      - name: Install credentials
         run: echo https://$GITHUB_OAUTH:@github.com > $HOME/.git-credentials
         env:
           GITHUB_OAUTH: ${{ secrets.CR_PAT_WORKFLOW }}
 
-     - name: Download Wheels
-       uses: actions/download-artifact@v4
-       with:
-         name: artifacts-wheel
-         path: dist/
+      - name: Download Wheels
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts-wheel
+          path: dist/
 
-     - uses: actions/setup-node@v4
-       with:
-         node-version: 22
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
-     - name: Install uv
-       uses: astral-sh/setup-uv@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
-     - name: Install Python deps
-       run: |
-         uv venv --system-site-packages
-         source .venv/bin/activate
-         uv pip install dist/*.whl
+      - name: Install Python deps
+        run: |
+          uv venv --system-site-packages
+          source .venv/bin/activate
+          uv pip install dist/*.whl
 
-     - name: Build Antora site
-       run: |
-         source .venv/bin/activate
-         npm install --verbose
-         npm run antora || true
-         npm run antora
-       env:
-         GIRDER_API_KEY: ${{ secrets.GIRDER }}
+      - name: Build Antora site
+        run: |
+          source .venv/bin/activate
+          npm install --verbose
+          npm run antora || true
+          npm run antora
+        env:
+          GIRDER_API_KEY: ${{ secrets.GIRDER }}
 
-     - name: Deploy to GitHub Pages
-       if: github.ref == 'refs/heads/master'
-       uses: JamesIves/github-pages-deploy-action@v4
-       with:
-         token: ${{ secrets.GITHUB_TOKEN }}
-         branch: gh-pages
-         folder: public
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/master'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: public
 
   build_code:
     runs-on: self-feelpp
     name: Build, Install, Package code
     if: "!contains(github.event.head_commit.message, 'code skip')"
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        lfs: true
-        submodules: 'recursive'
-        clean: true
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: 'recursive'
+          clean: true
 
-    - name: Build
-      run: |
-        cmake --preset x86_64-linux
-        cmake --build --preset x86_64-linux
+      - name: Build
+        run: |
+          cmake --preset x86_64-linux
+          cmake --build --preset x86_64-linux
 
-    - name: Check
-      run: |
-        ctest --preset default
-      env:
-        OMPI_ALLOW_RUN_AS_ROOT: 1
-        OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+      - name: Check
+        run: |
+          ctest --preset default
+        env:
+          OMPI_ALLOW_RUN_AS_ROOT: 1
+          OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
 
-    - name: Package
-      run: |
-        cmake --build --preset x86_64-linux -t package
+      - name: Package
+        run: |
+          cmake --build --preset x86_64-linux -t package
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        # Artifact name
-        name: feelpp-core-artifacts
-        # Directory containing files to upload
-        path: build/x86_64-linux/assets/feelpp-core-*
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Artifact name
+          name: feelpp-core-artifacts
+          # Directory containing files to upload
+          path: build/x86_64-linux/assets/feelpp-core-*
 
-    - name: Upload Fin Datasets
-      uses: actions/upload-artifact@v4
-      with:
-        name: datasets
-        path: build/default/datasets/
+      - name: Upload Fin Datasets
+        uses: actions/upload-artifact@v4
+        with:
+          name: datasets
+          path: build/default/datasets/
 
   build-wasm:
     if: "!contains(github.event.head_commit.message, 'wasm skip')"
@@ -154,19 +156,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {os: self-feelpp, jobs: 10, preset: wasm-linux, arch: amd64, allow-failure: false }
+          - {os: self-feelpp, jobs: 10, preset: wasm-linux,
+             arch: amd64, allow-failure: false}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.allow-failure }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        lfs: true
-        submodules: 'recursive'
-    - name: Build
-      run: |
-        cmake --preset wasm-linux
-        cmake --build --preset wasm-linux
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: 'recursive'
+      - name: Build
+        run: |
+          cmake --preset wasm-linux
+          cmake --build --preset wasm-linux
 
   deliver:
     runs-on: self-feelpp
@@ -174,18 +177,18 @@ jobs:
     name: Build docker, tag and push
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        lfs: true
-        submodules: 'recursive'
-    - name: Download
-      uses: actions/download-artifact@v4
-      with:
-        # Artifact name
-        name: feelpp-core-artifacts
-        path: artifacts/
-    -
-        name: Docker meta
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: 'recursive'
+      - name: Download
+        uses: actions/download-artifact@v4
+        with:
+          # Artifact name
+          name: feelpp-core-artifacts
+          path: artifacts/
+
+      - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -196,36 +199,37 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-    -
-      name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
-    -
-      name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    -
-      name: Login to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.CR_PAT }}
-    -
-      name: Build container image
-      uses: docker/build-push-action@v6
-      with:
-        context: artifacts
-        push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        file: ./Dockerfile
-    - name: Delete untagged containers
-      uses: actions/delete-package-versions@v5
-      with:
-        package-name: 'feelpp-core'
-        package-type: 'container'
-        min-versions-to-keep: 4
-        delete-only-untagged-versions: 'true'
-        token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+
+      - name: Build container image
+        uses: docker/build-push-action@v6
+        with:
+          context: artifacts
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: ./Dockerfile
+
+      - name: Delete untagged containers
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'feelpp-core'
+          package-type: 'container'
+          min-versions-to-keep: 4
+          delete-only-untagged-versions: 'true'
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   release:
     runs-on: self-feelpp
@@ -263,7 +267,9 @@ jobs:
             dist/*.whl
             datasets/*
           draft: false
-          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc')}}
+          prerelease: ${{ contains(github.ref, 'alpha') ||
+                          contains(github.ref, 'beta') ||
+                          contains(github.ref, 'rc')}}
           name: Release ${{ github.ref_name }}
           generate_release_notes: true
           tag_name: ${{ github.ref }}
