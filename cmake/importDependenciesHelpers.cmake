@@ -191,7 +191,7 @@ macro(importDependency_BOOST _useSystem _target_dependencies _target_definitions
     # # endif()
     # set( ${_cmakeVariablePrefix}_MANAGE_BOOST ON )
   else()
-    message(FATAL_ERROR "Boost dependency onle from System")
+    message(FATAL_ERROR "Boost dependency can be enabled only from system")
   endif()
   #set( _useSystem TRUE)
   feelpp_updateImportDependencyForUse( BOOST ${Boost_LIBRARIES} ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
@@ -397,19 +397,18 @@ endmacro(importDependency_BVH)
 #--------------------------------------
 # PNG
 #--------------------------------------
-macro(importDependency_PNG _target_dependencies _target_definitions _cmakeVariablePrefix)
+macro(importDependency_PNG _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
   printDependencySectionBegin("PNG")
-  find_package(PNG REQUIRED)
-  if (PNG_FOUND)
-    target_include_directories( ${_target_dependencies} INTERFACE ${PNG_INCLUDE_DIRS})
-    set( _useSystem TRUE)
-    feelpp_updateImportDependencyForUse( PNG ${PNG_LIBRARIES} ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+  if ( ${_useSystem} )
+    find_package(PNG REQUIRED)
   else()
-    message(WARNING "ThirdParty PNG not found")
+    message(FATAL_ERROR "PNG dependency can be enabled only from system")
+  endif()
+  if ( TARGET PNG::PNG  )
+    feelpp_updateImportDependencyForUse( PNG PNG::PNG ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
   endif()
   printDependencySectionEnd("PNG")
 endmacro(importDependency_PNG)
-
 
 #--------------------------------------
 # Catch2
