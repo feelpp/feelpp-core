@@ -19,7 +19,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'wheel skip')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           lfs: true
           submodules: 'recursive'
@@ -61,7 +61,7 @@ jobs:
     needs: build_wheel
     if: "!contains(github.event.head_commit.message, 'docs skip')"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           lfs: true
           submodules: 'recursive'
@@ -114,7 +114,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'code skip')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           lfs: true
           submodules: 'recursive'
@@ -162,7 +162,7 @@ jobs:
     continue-on-error: ${{ matrix.allow-failure }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           lfs: true
           submodules: 'recursive'
@@ -177,7 +177,7 @@ jobs:
     name: Build docker, tag and push
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           lfs: true
           submodules: 'recursive'
@@ -237,7 +237,7 @@ jobs:
     needs: [build_wheel, build_code]
     if: startsWith(github.ref ,'refs/tags/v')
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           lfs: true
           submodules: 'recursive'
