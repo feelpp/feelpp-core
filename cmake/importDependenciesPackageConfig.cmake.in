@@ -10,6 +10,8 @@ macro(importDependenciesPackageConfigImpl _TARGET_LIBRARY _LIBRARY_PREFIX _CONFI
   set( _USE_INTERNAL_NAPP "@FEELPP_USE_INTERNAL_NAPP@" )
   set( _MANAGE_FMT "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_MANAGE_FMT@" )
   set( _USE_INTERNAL_FMT "@FEELPP_USE_INTERNAL_FMT@" )
+  set( _MANAGE_LIBZIP "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_MANAGE_LIBZIP@" )
+  set( _USE_INTERNAL_LIBZIP "@FEELPP_USE_INTERNAL_LIBZIP@" )
   set( _MANAGE_BOOST "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_MANAGE_BOOST@" )
   set( _USE_INTERNAL_BOOST "@FEELPP_USE_INTERNAL_BOOST@" )
   set( _MANAGE_CPR "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_MANAGE_CPR@" )
@@ -42,6 +44,14 @@ macro(importDependenciesPackageConfigImpl _TARGET_LIBRARY _LIBRARY_PREFIX _CONFI
       find_dependency(fmt PATHS ${_CONFIG_INSTALL_DIR}/../fmt NO_DEFAULT_PATH )
     else()
       find_dependency(fmt)
+    endif()
+  endif()
+
+  if ( _MANAGE_LIBZIP )
+    if ( _USE_INTERNAL_LIBZIP )
+      find_dependency(libzip PATHS ${_CONFIG_INSTALL_DIR}/../libzip NO_DEFAULT_PATH )
+    else()
+      find_dependency(libzip)
     endif()
   endif()
 
