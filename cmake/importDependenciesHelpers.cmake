@@ -175,6 +175,24 @@ macro(importDependency_FMT _useSystem _target_dependencies _target_definitions _
   printDependencySectionEnd( "Fmt" )
 endmacro(importDependency_FMT)
 
+
+#--------------------------------------
+# libzip
+#--------------------------------------
+macro(importDependency_LIBZIP _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+  printDependencySectionBegin( "libzip" )
+  if ( ${_useSystem} )
+    find_package(libzip REQUIRED)
+  else()
+    FetchContent_Declare(libzip GIT_REPOSITORY https://github.com/nih-at/libzip.git GIT_TAG v1.11.4 GIT_SHALLOW ON )
+    FetchContent_MakeAvailable(libzip)
+  endif()
+  if ( TARGET libzip::zip )
+    feelpp_updateImportDependencyForUse( LIBZIPP libzip::zip ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+  endif()
+  printDependencySectionEnd( "libzip" )
+endmacro(importDependency_LIBZIP)
+
 #--------------------------------------
 # Boost
 #--------------------------------------
