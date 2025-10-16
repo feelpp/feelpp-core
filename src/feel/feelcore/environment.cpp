@@ -82,6 +82,9 @@ Environment::expand( std::string const& expr ) const
 {
     std::string res = expr;
     std::vector<std::pair<std::string,std::string> > keyToValue = { std::make_pair( "${datadir}", this->dataDir().string() ) };
+    for ( auto const& [key,plugin] : M_plugins )
+        keyToValue.push_back( std::make_pair( fmt::format( "${{{}.datadir}}", key ), plugin.dataDir().string() ) );
+
     for ( auto const& [key,val] : keyToValue )
         boost::ireplace_all( res, key, val );
     return res;
