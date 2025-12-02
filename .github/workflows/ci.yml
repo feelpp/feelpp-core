@@ -156,8 +156,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {os: self-feelpp, jobs: 10, preset: wasm-linux,
-             arch: amd64, allow-failure: false}
+          - {os: self-feelpp, jobs: 10, preset: wasm32-linux, allow-failure: false}
+          - {os: self-feelpp, jobs: 10, preset: wasm64-linux, allow-failure: false}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.allow-failure }}
     steps:
@@ -168,8 +168,8 @@ jobs:
           submodules: 'recursive'
       - name: Build
         run: |
-          cmake --preset wasm-linux
-          cmake --build --preset wasm-linux
+          cmake --preset ${{ matrix.preset }}
+          cmake --build --preset ${{ matrix.preset }}
 
   deliver:
     runs-on: self-feelpp
