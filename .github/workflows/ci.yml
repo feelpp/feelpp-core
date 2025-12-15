@@ -47,7 +47,7 @@ jobs:
           uv pip install dist/*.whl
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           # Artifact name
           name: artifacts-wheel
@@ -137,7 +137,7 @@ jobs:
           cmake --build --preset x86_64-linux -t package
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           # Artifact name
           name: feelpp-core-artifacts
@@ -145,7 +145,7 @@ jobs:
           path: build/x86_64-linux/assets/feelpp-core-*
 
       - name: Upload Fin Datasets
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: datasets
           path: build/default/datasets/
