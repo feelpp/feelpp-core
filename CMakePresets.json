@@ -42,25 +42,49 @@
             }
         },
         {
-            "name": "wasm-linux",
-            "displayName": "Wasm linux Config",
-            "description": "Build Wasm using linux",
+            "name": "wasm-base-linux",
             "generator": "Ninja",
             "toolchainFile": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
-            "binaryDir": "${sourceDir}/build/wasm-linux",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/wasm-linux/install/",
                 "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_PREFIX_PATH": "/opt/emscripten-additional-ports/install/lib/cmake",
                 "FEELPP_USE_SYSTEM_LIBZIP": false,
-                "Boost_DIR": "/opt/emscripten-additional-ports/install/lib/cmake/Boost-$env{_BOOST_VERSION}",
-                "boost_headers_DIR":"/opt/emscripten-additional-ports/install/lib/cmake/boost_headers-$env{_BOOST_VERSION}",
-                "boost_program_options_DIR":"/opt/emscripten-additional-ports/install/lib/cmake/boost_program_options-$env{_BOOST_VERSION}"
+                "Boost_DIR": "$env{_EMSCRIPTEN_ADDITIONAL_PORTS}/lib/cmake/Boost-$env{_BOOST_VERSION}",
+                "boost_headers_DIR":"$env{_EMSCRIPTEN_ADDITIONAL_PORTS}/lib/cmake/boost_headers-$env{_BOOST_VERSION}",
+                "boost_program_options_DIR":"$env{_EMSCRIPTEN_ADDITIONAL_PORTS}/lib/cmake/boost_program_options-$env{_BOOST_VERSION}"
             },
             "environment": {
-                "EMSDK": "/opt/emsdk",
-                "EMSDK_NODE":"$ENV{EMSDK}/node/16.20.0_64bit/bin/node",
                 "_BOOST_VERSION":"1.86.0"
+            }
+        },
+        {
+            "name": "wasm32-linux",
+            "inherits": "wasm-base-linux",
+            "displayName": "Wasm 32bit linux Config",
+            "description": "Build Wasm 32bit using linux",
+            "binaryDir": "${sourceDir}/build/wasm32-linux",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/wasm32-linux/install/"
+            },
+            "environment": {
+                "EMSDK":"/opt/emscripten/3.1.70_wasm32/emsdk/",
+                "_EMSCRIPTEN_ADDITIONAL_PORTS":"/opt/emscripten/3.1.70_wasm32/emscripten-additional-ports/install/"
+            }
+        },
+        {
+            "name": "wasm64-linux",
+            "inherits": "wasm-base-linux",
+            "displayName": "Wasm 64bit linux Config",
+            "description": "Build Wasm 64bit using linux",
+            "binaryDir": "${sourceDir}/build/wasm64-linux",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/wasm64-linux/install/",
+                "CMAKE_C_FLAGS": "-sMEMORY64=1",
+                "CMAKE_CXX_FLAGS": "-sMEMORY64=1",
+                "CMAKE_EXE_LINKER_FLAGS": "-sMEMORY64=1 -mwasm64"
+            },
+            "environment": {
+                "EMSDK":"/opt/emscripten/4.0.7_wasm64/emsdk/",
+                "_EMSCRIPTEN_ADDITIONAL_PORTS":"/opt/emscripten/4.0.7_wasm64/emscripten-additional-ports/install/"
             }
         }
     ],
@@ -79,8 +103,13 @@
             ]
         },
         {
-            "name": "wasm-linux",
-            "configurePreset": "wasm-linux",
+            "name": "wasm32-linux",
+            "configurePreset": "wasm32-linux",
+            "jobs": 10
+        },
+        {
+            "name": "wasm64-linux",
+            "configurePreset": "wasm64-linux",
             "jobs": 10
         }
     ],
