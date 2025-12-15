@@ -25,12 +25,12 @@ jobs:
           submodules: 'recursive'
           clean: true
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
 
       - name: Install Python/Node Env
         run: |
@@ -47,7 +47,7 @@ jobs:
           uv pip install dist/*.whl
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           # Artifact name
           name: artifacts-wheel
@@ -73,17 +73,17 @@ jobs:
           GITHUB_OAUTH: ${{ secrets.CR_PAT_WORKFLOW }}
 
       - name: Download Wheels
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: artifacts-wheel
           path: dist/
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
 
       - name: Install Python deps
         run: |
@@ -137,7 +137,7 @@ jobs:
           cmake --build --preset x86_64-linux -t package
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           # Artifact name
           name: feelpp-core-artifacts
@@ -145,7 +145,7 @@ jobs:
           path: build/x86_64-linux/assets/feelpp-core-*
 
       - name: Upload Fin Datasets
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: datasets
           path: build/default/datasets/
@@ -156,8 +156,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {os: self-feelpp, jobs: 10, preset: wasm-linux,
-             arch: amd64, allow-failure: false}
+          - {os: self-feelpp, jobs: 10, preset: wasm32-linux, allow-failure: false}
+          - {os: self-feelpp, jobs: 10, preset: wasm64-linux, allow-failure: false}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.allow-failure }}
     steps:
@@ -168,8 +168,8 @@ jobs:
           submodules: 'recursive'
       - name: Build
         run: |
-          cmake --preset wasm-linux
-          cmake --build --preset wasm-linux
+          cmake --preset ${{ matrix.preset }}
+          cmake --build --preset ${{ matrix.preset }}
 
   deliver:
     runs-on: self-feelpp
@@ -182,7 +182,7 @@ jobs:
           lfs: true
           submodules: 'recursive'
       - name: Download
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           # Artifact name
           name: feelpp-core-artifacts
@@ -242,19 +242,19 @@ jobs:
           lfs: true
           submodules: 'recursive'
       - name: Download Deb Packages
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           # Artifact name
           name: feelpp-core-artifacts
           path: artifacts/
       - name: Download Wheel Packages
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           # Artifact name
           name: wheel-artifacts
           path: dist/
       - name: Download Datasets
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           # Artifact name
           name: datasets
