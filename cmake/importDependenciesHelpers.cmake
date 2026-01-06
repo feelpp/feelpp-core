@@ -486,9 +486,47 @@ macro(importDependency_ASSIMP _useSystem _target_dependencies _target_definition
     message(FATAL_ERROR "Assimp dependency can be enabled only from system")
   endif()
   if ( TARGET assimp::assimp )
-    feelpp_updateImportDependencyForUse( FTXUI  "assimp::assimp" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+    feelpp_updateImportDependencyForUse( ASSIMP  "assimp::assimp" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
   endif()
   printDependencySectionEnd( "ASSIMP" )
 endmacro(importDependency_ASSIMP)
+
+
+#--------------------------------------
+# MPI
+#--------------------------------------
+macro(importDependency_MPI _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+  printDependencySectionBegin( "MPI" )
+  if ( ${_useSystem} )
+    # Disable searching for MPI-2 C++ bindings
+    set(MPI_CXX_SKIP_MPICXX TRUE)
+    find_package(MPI REQUIRED)
+  else()
+    message(FATAL_ERROR "MPI dependency can be enabled only from system")
+  endif()
+  if ( TARGET MPI::MPI_C )
+    feelpp_updateImportDependencyForUse( MPI  "MPI::MPI_C" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+  endif()
+  printDependencySectionEnd( "MPI" )
+endmacro(importDependency_MPI)
+
+#--------------------------------------
+# HDF5
+#--------------------------------------
+macro(importDependency_HDF5 _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+  printDependencySectionBegin( "HDF5" )
+  if ( ${_useSystem} )
+    if ( NOT EMSCRIPTEN )
+      set(HDF5_PREFER_PARALLEL TRUE)
+    endif()
+    find_package(HDF5 REQUIRED)
+  else()
+    message(FATAL_ERROR "HDF5 dependency can be enabled only from system")
+  endif()
+  if ( TARGET HDF5::HDF5 )
+    feelpp_updateImportDependencyForUse( HDF5  "HDF5::HDF5" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+  endif()
+  printDependencySectionEnd( "HDF5" )
+endmacro(importDependency_HDF5)
 
 
