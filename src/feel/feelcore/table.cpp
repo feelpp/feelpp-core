@@ -4,6 +4,7 @@
 
 #include <iomanip>
 #include <algorithm>
+#include <sstream>
 
 #include <feel/feelcore/termcolor.hpp>
 
@@ -95,7 +96,7 @@ splitByLines( std::string const& input )
     return outputStringByLines;
 }
 #endif
-  
+
 
 
 Table::Table( int nRow, int nCol, Table::MemoryLayout ml )
