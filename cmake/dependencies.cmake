@@ -21,7 +21,7 @@ endif()
 # setup dependencies options
 setupCmakeOptionDependencies(
   #PREFIX ${FEELPP_CORE_CMAKE_PREFIX}
-  REQUIRED NAPP FMT NLOHMANN_JSON SPDLOG EIGEN3
+  REQUIRED NAPP FMT NLOHMANN_JSON SPDLOG EIGEN3 FTXUI
   OPTIONAL CPR LIBASSERT CATCH2
 )
 setupCmakeOptionDependencies(
@@ -32,9 +32,18 @@ importDependencies(
   PREFIX ${FEELPP_CORE_CMAKE_PREFIX}
   TARGET_DEPENDENCIES ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies
   TARGET_DEFINITIONS ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions
-  REQUIRED NAPP FMT LIBZIP NLOHMANN_JSON SPDLOG BOOST EIGEN3
+  REQUIRED NAPP FMT LIBZIP NLOHMANN_JSON SPDLOG BOOST EIGEN3 FTXUI
   OPTIONAL CPR LIBASSERT # CATCH2
 )
+
+if ( ${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TESTS )
+  importDependencies(
+    PREFIX ${FEELPP_CORE_CMAKE_PREFIX}
+    TARGET_DEPENDENCIES ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies
+    TARGET_DEFINITIONS ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions
+    REQUIRED CATCH2
+  )
+endif()
 
 # install and export dependencies and definitions targets
 foreach( _suffix dependencies definitions )

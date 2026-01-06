@@ -30,6 +30,8 @@ macro(importDependenciesPackageConfigImpl _TARGET_LIBRARY _LIBRARY_PREFIX _CONFI
   set( _USE_INTERNAL_BVH "@FEELPP_USE_INTERNAL_BVH@" )
   set( _MANAGE_CATCH2 "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_MANAGE_CATCH2@" )
   set( _USE_INTERNAL_CATCH2 "@FEELPP_USE_INTERNAL_CATCH2@" )
+  set( _MANAGE_FTXUI "@@FEELPP_TEMPLATE_CMAKE_PREFIX@_MANAGE_FTXUI@" )
+  set( _USE_INTERNAL_FTXUI "@FEELPP_USE_INTERNAL_FTXUI@" )
 
   if ( _MANAGE_NAPP )
     if ( _USE_INTERNAL_NAPP )
@@ -125,6 +127,14 @@ macro(importDependenciesPackageConfigImpl _TARGET_LIBRARY _LIBRARY_PREFIX _CONFI
       find_dependency(Catch2 3 PATHS ${_CONFIG_INSTALL_DIR}/../Catch2 NO_DEFAULT_PATH )
     else()
       find_dependency(Catch2 3)
+    endif()
+  endif()
+
+  if ( _MANAGE_FTXUI )
+    if ( _USE_INTERNAL_FTXUI )
+      find_dependency(ftxui PATHS ${_CONFIG_INSTALL_DIR}/../ftxui NO_DEFAULT_PATH )
+    else()
+      find_dependency(ftxui)
     endif()
   endif()
 
