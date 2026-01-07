@@ -51,7 +51,8 @@
                 "FEELPP_USE_SYSTEM_LIBZIP": false,
                 "Boost_DIR": "$env{_EMSCRIPTEN_ADDITIONAL_PORTS}/lib/cmake/Boost-$env{_BOOST_VERSION}",
                 "boost_headers_DIR":"$env{_EMSCRIPTEN_ADDITIONAL_PORTS}/lib/cmake/boost_headers-$env{_BOOST_VERSION}",
-                "boost_program_options_DIR":"$env{_EMSCRIPTEN_ADDITIONAL_PORTS}/lib/cmake/boost_program_options-$env{_BOOST_VERSION}"
+                "boost_program_options_DIR":"$env{_EMSCRIPTEN_ADDITIONAL_PORTS}/lib/cmake/boost_program_options-$env{_BOOST_VERSION}",
+                "HDF5_DIR": "$env{_EMSCRIPTEN_ADDITIONAL_PORTS}/cmake"
             },
             "environment": {
                 "_BOOST_VERSION":"1.86.0"

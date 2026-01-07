@@ -1,5 +1,3 @@
-
-
 function(setupCmakeOptionDependencies)
   set(options USE_SYSTEM)
   set(oneValueArgs "")
@@ -518,15 +516,19 @@ macro(importDependency_HDF5 _useSystem _target_dependencies _target_definitions 
   if ( ${_useSystem} )
     if ( NOT EMSCRIPTEN )
       set(HDF5_PREFER_PARALLEL TRUE)
+      find_package(HDF5 REQUIRED)
+    else()
+      find_package(HDF5 REQUIRED CONFIG)
     endif()
-    find_package(HDF5 REQUIRED)
   else()
     message(FATAL_ERROR "HDF5 dependency can be enabled only from system")
   endif()
   if ( TARGET HDF5::HDF5 )
     feelpp_updateImportDependencyForUse( HDF5  "HDF5::HDF5" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+  elseif ( TARGET hdf5-static ) # fix emscripten install, to investigate
+    feelpp_updateImportDependencyForUse( HDF5  "hdf5-static" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+  else()
+    message(FATAL_ERROR "HDF5 target not exists")
   endif()
   printDependencySectionEnd( "HDF5" )
 endmacro(importDependency_HDF5)
-
-
