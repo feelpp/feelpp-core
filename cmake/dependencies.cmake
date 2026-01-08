@@ -26,7 +26,7 @@ setupCmakeOptionDependencies(
 )
 setupCmakeOptionDependencies(
   USE_SYSTEM
-  REQUIRED LIBZIP BOOST HDF5
+  REQUIRED ZLIB LIBZIP BOOST HDF5
   OPTIONAL MPI
 )
 
@@ -35,6 +35,7 @@ importDependencies(
   PREFIX ${FEELPP_CORE_CMAKE_PREFIX}
   TARGET_DEPENDENCIES ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies
   TARGET_DEFINITIONS ${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions
+  REQUIRED ZLIB
   OPTIONAL MPI
 )
 

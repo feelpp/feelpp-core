@@ -481,14 +481,36 @@ macro(importDependency_ASSIMP _useSystem _target_dependencies _target_definition
   if ( ${_useSystem} )
     find_package(assimp REQUIRED)
   else()
-    message(FATAL_ERROR "Assimp dependency can be enabled only from system")
+    FetchContent_Declare( assimp GIT_REPOSITORY https://github.com/assimp/assimp.git GIT_TAG v6.0.2)
+    set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
+    set(ASSIMP_DOUBLE_PRECISION ON)
+    FetchContent_MakeAvailable(assimp)
   endif()
   if ( TARGET assimp::assimp )
     feelpp_updateImportDependencyForUse( ASSIMP  "assimp::assimp" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+  else()
+    message(FATAL_ERROR "Assimp target not found")
   endif()
   printDependencySectionEnd( "ASSIMP" )
 endmacro(importDependency_ASSIMP)
 
+#--------------------------------------
+# zlib
+#--------------------------------------
+macro(importDependency_ZLIB _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+  printDependencySectionBegin( "ZLIB" )
+  if ( ${_useSystem} )
+    find_package(ZLIB REQUIRED)
+  else()
+    message(FATAL_ERROR "ZLIB dependency can be enabled only from system")
+  endif()
+  if ( TARGET ZLIB::ZLIB )
+    feelpp_updateImportDependencyForUse( ZLIB  "ZLIB::ZLIB" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+  else()
+    message(FATAL_ERROR "ZLIB target not exists")
+  endif()
+  printDependencySectionEnd( "ZLIB" )
+endmacro(importDependency_ZLIB)
 
 #--------------------------------------
 # MPI
