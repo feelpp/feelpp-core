@@ -4,7 +4,7 @@
 #include <feel/feelcore/tabulateinformations.hpp>
 #include <feel/feelcore/utilities.hpp>
 
-namespace Feel
+namespace Feel::Core
 {
 
 TabulateInformationProperties::TabulateInformationProperties( std::uint16_t vl )
@@ -12,7 +12,7 @@ TabulateInformationProperties::TabulateInformationProperties( std::uint16_t vl )
     M_verboseLevel( vl )
 {}
 
-typename TabulateInformations::self_ptrtype TabulateInformations::New( Feel::Table const& table, TabulateInformationProperties const& tip )
+typename TabulateInformations::self_ptrtype TabulateInformations::New( Feel::Core::Table const& table, TabulateInformationProperties const& tip )
 {
     return std::make_shared<TabulateInformationsTable>( table, tip.verboseLevel() );
 }
@@ -52,7 +52,7 @@ std::vector<Printer::OutputText>
 TabulateInformationsSections::exportAscii() const
 {
     std::uint16_t maxVerboseLevel = 1;
-    Feel::Table t;
+    Feel::Core::Table t;
     t.format().setShowAllBorders( false ).setHasRowSeparator( false ).setAllPadding( 0 );
     for ( auto const& [name,st] : M_subTab )
     {
@@ -63,7 +63,7 @@ TabulateInformationsSections::exportAscii() const
         if ( otCurrent.empty() )
             continue;
 
-        Feel::Table t2;
+        Feel::Core::Table t2;
          if ( !name.empty() )
              t2.add_row( {name} );
          else
@@ -133,7 +133,7 @@ tabulate::Table tabulateArrayOfPrimitive( nl::json const& jsonInfo )
 }
 #endif
 
-void addKeyToValues( Feel::Table &table, nl::json const& jsonInfo, TabulateInformationProperties const& tabInfoProp, std::vector<std::string> const& keys )
+void addKeyToValues( Feel::Core::Table &table, nl::json const& jsonInfo, TabulateInformationProperties const& tabInfoProp, std::vector<std::string> const& keys )
 {
     for ( std::string const& key : keys )
     {
@@ -163,7 +163,7 @@ void addKeyToValues( Feel::Table &table, nl::json const& jsonInfo, TabulateInfor
     }
 }
 
-void addAllKeyToValues( Feel::Table &table, nl::json const& jsonInfo, TabulateInformationProperties const& tabInfoProp )
+void addAllKeyToValues( Feel::Core::Table &table, nl::json const& jsonInfo, TabulateInformationProperties const& tabInfoProp )
 {
     std::vector<std::string> keys;
     for ( auto const& el : jsonInfo.items() )
@@ -171,9 +171,9 @@ void addAllKeyToValues( Feel::Table &table, nl::json const& jsonInfo, TabulateIn
     addKeyToValues(table,jsonInfo,tabInfoProp,keys );
 }
 
-Feel::Table createTableFromArray( nl::json const& jsonInfo, bool applyDefaultFormat )
+Feel::Core::Table createTableFromArray( nl::json const& jsonInfo, bool applyDefaultFormat )
 {
-    Feel::Table tabInfo;
+    Feel::Core::Table tabInfo;
     if ( !jsonInfo.is_array() )
         return tabInfo;
 
@@ -198,7 +198,7 @@ tabulateInformationsFunctionSpace( nl::json const& jsonInfo, TabulateInformation
 {
     auto tabInfo = TabulateInformationsSections::New( tabInfoProp );
 
-    Feel::Table tabInfoOthers;
+    Feel::Core::Table tabInfoOthers;
     TabulateInformationTools::FromJSON::addAllKeyToValues( tabInfoOthers, jsonInfo, tabInfoProp );
     tabInfoOthers.format()
         .setShowAllBorders( false )
@@ -206,7 +206,7 @@ tabulateInformationsFunctionSpace( nl::json const& jsonInfo, TabulateInformation
         .setHasRowSeparator( false );
     tabInfo->add( "", TabulateInformations::New( tabInfoOthers,tabInfoProp ) );
 
-    Feel::Table tabInfoBasisEntries;
+    Feel::Core::Table tabInfoBasisEntries;
     TabulateInformationTools::FromJSON::addAllKeyToValues( tabInfoBasisEntries, jsonInfo.at("basis"), tabInfoProp );
     tabInfoBasisEntries.format()
         .setShowAllBorders( false )
@@ -216,7 +216,7 @@ tabulateInformationsFunctionSpace( nl::json const& jsonInfo, TabulateInformation
 
     auto tabInfoDofTable = TabulateInformationsSections::New( tabInfoProp );
     auto const& jsonInfoDofTable = jsonInfo.at("doftable");
-    Feel::Table tabInfoDofTableEntries;
+    Feel::Core::Table tabInfoDofTableEntries;
     TabulateInformationTools::FromJSON::addAllKeyToValues( tabInfoDofTableEntries, jsonInfoDofTable, tabInfoProp );
     tabInfoDofTableEntries.format()
         .setShowAllBorders( false )
@@ -225,7 +225,7 @@ tabulateInformationsFunctionSpace( nl::json const& jsonInfo, TabulateInformation
     tabInfoDofTable->add( "", TabulateInformations::New( tabInfoDofTableEntries,tabInfoProp ) );
     if ( jsonInfoDofTable.contains( "nLocalDofWithoutGhost" ) )
     {
-        Feel::Table tabInfoDofTableEntriesDatByPartition;
+        Feel::Core::Table tabInfoDofTableEntriesDatByPartition;
         tabInfoDofTableEntriesDatByPartition.format().setFirstRowIsHeader( true );
         tabInfoDofTableEntriesDatByPartition.add_row({"partition id","nLocalDofWithGhost","nLocalDofWithoutGhost","nLocalGhost"});
         auto jarray_nLocalDofWithGhost = jsonInfoDofTable.at("nLocalDofWithGhost").items();
@@ -245,7 +245,7 @@ tabulateInformationsFunctionSpace( nl::json const& jsonInfo, TabulateInformation
 tabulate_informations_ptr_t
 tabulateInformationsSymbolsExpr( nl::json const& jsonInfo, TabulateInformationProperties const& tabInfoProp, bool addNameExpr )
 {
-    Feel::Table tabInfo;
+    Feel::Core::Table tabInfo;
     if ( !jsonInfo.is_array() )
         return TabulateInformations::New( tabInfo, tabInfoProp );
 
@@ -269,7 +269,7 @@ tabulateInformationsSymbolsExpr( nl::json const& jsonInfo, TabulateInformationPr
         if ( jse.contains( "components" ) )
         {
             auto const& jcomps = jse.at( "components" );
-            Feel::Table tabInfoComp;
+            Feel::Core::Table tabInfoComp;
             tabInfoComp.add_row({"Symbol","Indices"});
             tabInfoComp.format().setFirstRowIsHeader( true );
             for ( auto const& el2 : jcomps.items() )

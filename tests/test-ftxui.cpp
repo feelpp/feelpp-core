@@ -53,7 +53,7 @@ TEST_CASE( "Test Gauge", "[FTXUI]" )
 
 int main( int argc, char* argv[])
 {
-    auto env = Feel/*::Core*/::createEnvironment( argc, argv );
+    auto env = Feel::Core::createEnvironment( argc, argv );
     return Catch::Session().run( argc, argv );
 }
 

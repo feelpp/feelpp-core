@@ -16,7 +16,7 @@
 #include <feel/feelcore/typetraits.hpp>
 #include <feel/feelcore/assert.hpp>
 
-namespace Feel
+namespace Feel::Core
 {
 
 namespace Font
@@ -76,7 +76,7 @@ struct Format;
 class Table
 {
 public :
-    using variant_value_type = std::variant<std::string,int,std::size_t,double,Feel::Table,Printer::OutputText,std::vector<Printer::OutputText>>;
+    using variant_value_type = std::variant<std::string,int,std::size_t,double,Feel::Core::Table,Printer::OutputText,std::vector<Printer::OutputText>>;
 
     enum class MemoryLayout { RowMajor=0, ColMajor };
 

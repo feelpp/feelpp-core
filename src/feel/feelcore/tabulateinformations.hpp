@@ -7,7 +7,7 @@
 #include <feel/feelcore/feelcore.hpp>
 #include <feel/feelcore/table.hpp>
 
-namespace Feel
+namespace Feel::Core
 {
 
 class TabulateInformationProperties
@@ -92,7 +92,7 @@ public :
     ExporterAsciiDoc exporterAsciiDoc( int startLevelSection = 0 ) const { return ExporterAsciiDoc( this->shared_from_this_tabulate_informations(), startLevelSection ); }
 
     //! create an new tabulate informations from a table
-    static self_ptrtype New( Feel::Table const& table, TabulateInformationProperties const& tip = TabulateInformationProperties{} );
+    static self_ptrtype New( Feel::Core::Table const& table, TabulateInformationProperties const& tip = TabulateInformationProperties{} );
 
     friend std::ostream& operator<<( std::ostream& o, TabulateInformations const& ti );
     friend std::ostream& operator<<( std::ostream& o, ExporterAsciiDoc const& ea );
@@ -119,7 +119,7 @@ class TabulateInformationsTable : public TabulateInformations,
                                   public std::enable_shared_from_this<TabulateInformationsTable>
 {
 public :
-    explicit TabulateInformationsTable( Feel::Table const& table, std::uint16_t vl = 1 ) : TabulateInformations( vl ), M_table( table ) {}
+    explicit TabulateInformationsTable( Feel::Core::Table const& table, std::uint16_t vl = 1 ) : TabulateInformations( vl ), M_table( table ) {}
     TabulateInformationsTable( TabulateInformationsTable const& ) = default;
     TabulateInformationsTable( TabulateInformationsTable && ) = default;
 
@@ -128,7 +128,7 @@ private:
     std::vector<Printer::OutputText> exportAscii() const override;
     void exportAsciiDoc( std::ostream &o, int levelSection ) const override;
 private:
-    Feel::Table M_table;
+    Feel::Core::Table M_table;
 };
 
 /**
@@ -180,19 +180,19 @@ namespace FromJSON
 {
 
 void
-addKeyToValues( Feel::Table &table, nl::json const& jsonInfo, TabulateInformationProperties const& tabInfoProp, std::vector<std::string> const& keys );
+addKeyToValues( Feel::Core::Table &table, nl::json const& jsonInfo, TabulateInformationProperties const& tabInfoProp, std::vector<std::string> const& keys );
 
 inline
 void
-addKeyToValues( Feel::Table &table, nl::json const& jsonInfo, TabulateInformationProperties const& tabInfoProp, std::initializer_list<std::string> const& keys )
+addKeyToValues( Feel::Core::Table &table, nl::json const& jsonInfo, TabulateInformationProperties const& tabInfoProp, std::initializer_list<std::string> const& keys )
 {
     addKeyToValues( table, jsonInfo, tabInfoProp, std::vector<std::string>(keys) );
 }
 
 void
-addAllKeyToValues( Feel::Table &table, nl::json const& jsonInfo, TabulateInformationProperties const& tabInfoProp );
+addAllKeyToValues( Feel::Core::Table &table, nl::json const& jsonInfo, TabulateInformationProperties const& tabInfoProp );
 
-Feel::Table createTableFromArray( nl::json const& jsonInfo, bool applyDefaultFormat = false );
+Feel::Core::Table createTableFromArray( nl::json const& jsonInfo, bool applyDefaultFormat = false );
 
 tabulate_informations_ptr_t
 tabulateInformationsFunctionSpace( nl::json const& jsonInfo, TabulateInformationProperties const& tabInfoProp );

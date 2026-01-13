@@ -10,7 +10,7 @@
 
 #include <cassert>
 
-namespace Feel
+namespace Feel::Core
 {
 namespace detail
 {

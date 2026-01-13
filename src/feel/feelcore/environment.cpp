@@ -6,7 +6,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
-namespace Feel
+namespace Feel::Core
 {
 
 Environment::Environment( int argc, char* argv[], po::options_description const& optionsDescription )

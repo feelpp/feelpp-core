@@ -56,7 +56,7 @@ template < typename T > struct centre
 
 
 
-namespace Feel
+namespace Feel::Core
 {
 
 namespace Printer
@@ -478,9 +478,9 @@ std::vector<Printer::OutputText>
 Cell::toOutputText( Format const& format, bool enableWidthMax ) const
 {
     std::ostringstream ostr;
-    if ( std::holds_alternative<Feel::Table>( this->M_value ) )
+    if ( std::holds_alternative<Feel::Core::Table>( this->M_value ) )
     {
-        auto const& c = std::get<Feel::Table>( this->M_value );
+        auto const& c = std::get<Feel::Core::Table>( this->M_value );
         return c.toOutputText( TableImpl::Format( c.format().newFromParent( format ) ) );
     }
     else if ( std::holds_alternative<Printer::OutputText>( this->M_value ) )
@@ -562,10 +562,10 @@ void updateOutputStreamOfCellUsingAsciiDoc( std::ostream &o, Cell const& c, Cell
         break;
     }
 
-    if ( c.template is_a<Feel::Table>() && nestedTableLevel == 0 )
+    if ( c.template is_a<Feel::Core::Table>() && nestedTableLevel == 0 )
     {
         o << "a" << tableSeparator;
-        c.template value<Feel::Table>().exportAsciiDocImpl( o, "!", nestedTableLevel+1 );
+        c.template value<Feel::Core::Table>().exportAsciiDocImpl( o, "!", nestedTableLevel+1 );
     }
     else
     {

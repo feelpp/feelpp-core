@@ -6,7 +6,7 @@
 #include <tuple>
 #include <feel/feelcore/typetraits.hpp>
 
-namespace Feel
+namespace Feel::Core
 {
 
 // defined invalid value with respect to an arbitray signed integer type

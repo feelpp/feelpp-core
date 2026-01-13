@@ -6,7 +6,7 @@
 #include <feel/feelcore/assert.hpp>
 #include <feel/feelcore/namedarguments.hpp>
 
-namespace Feel
+namespace Feel::Core
 {
 
 class FEELPP_CORE_EXPORT EnvironmentPlugin

@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace Feel
+namespace Feel::Core
 {
 
 template <class T>

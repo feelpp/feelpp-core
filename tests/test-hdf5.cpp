@@ -82,6 +82,6 @@ TEST_CASE( "Test HDF5", "[HDF5]" )
 
 int main( int argc, char* argv[])
 {
-    auto env = Feel/*::Core*/::createEnvironment( argc, argv );
+    auto env = Feel::Core::createEnvironment( argc, argv );
     return Catch::Session().run( argc, argv );
 }

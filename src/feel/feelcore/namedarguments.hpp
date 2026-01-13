@@ -4,7 +4,7 @@
 
 #include <napp/na.hpp>
 
-namespace Feel
+namespace Feel::Core
 {
 
 namespace na
