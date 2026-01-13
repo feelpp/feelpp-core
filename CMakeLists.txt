@@ -57,7 +57,7 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TEST_SUITE "Enable test suite" ${PROJECT_IS_TOP_LEVEL})
+option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TESTS "Enable test suite" ${PROJECT_IS_TOP_LEVEL})
 
 # Set a path to the data directory
 set( ${FEELPP_CORE_CMAKE_PREFIX}_DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data )
@@ -93,6 +93,14 @@ endif()
 
 add_subdirectory( src )
 #add_subdirectory( docs )
+
+# if ( ${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_APPLICATIONS )
+#   add_subdirectory( applications )
+# endif()
+if ( ${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TESTS )
+  add_subdirectory( tests )
+endif()
+
 
 
 # prepare package dependencies

@@ -10,7 +10,7 @@
 
 #include <cassert>
 
-namespace Feel
+namespace Feel::Core
 {
 namespace detail
 {
@@ -19,6 +19,6 @@ void assertImpl( Ts && ... ts ) { assert( std::forward_as_tuple( std::forward<Ts
 }
 }
 
-#define ASSERT(...) Feel::detail::assertImpl( __VA_ARGS__ );
+#define ASSERT(...) Feel::Core::detail::assertImpl( __VA_ARGS__ );
 
 #endif

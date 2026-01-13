@@ -2,62 +2,16 @@
 
 #pragma once
 
-#include <cmath>
-#include <memory>
-#include <filesystem>
-#include <boost/program_options.hpp>
-#include <fmt/core.h>
-#include <fmt/format.h>
-#include <spdlog/spdlog.h>
-#include <nlohmann/json.hpp>
-
+#include <feel/feelcore/feelcore.hpp>
 #include <feel/feelcore/assert.hpp>
 #include <feel/feelcore/namedarguments.hpp>
 
-#if defined _WIN32 || defined __CYGWIN__
-#ifdef __GNUC__
-#define FEELPP_DECL_EXPORT __attribute__ ((dllexport))
-#else
-#define FEELPP_DECL_EXPORT __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
-#endif
-#ifdef __GNUC__
-#define FEELPP_DECL_IMPORT __attribute__ ((dllimport))
-#else
-#define FEELPP_DECL_IMPORT __declspec(dllimport) // Note: actually gcc seems to also supports this syntax.
-#endif
-#define FEELPP_DECL_HIDDEN
-#else
-#if __GNUC__ >= 4 || defined(__clang__)
-#define FEELPP_DECL_EXPORT     __attribute__((visibility("default")))
-#define FEELPP_DECL_IMPORT     __attribute__((visibility("default")))
-#define FEELPP_DECL_HIDDEN     __attribute__((visibility("hidden")))
-#else
-#define FEELPP_DECL_EXPORT
-#define FEELPP_DECL_IMPORT
-#define FEELPP_DECL_HIDDEN
-#endif
-#endif
-
-#if defined(FEELPP_CORE_LIB_LIBRARY_EXPORTING)
-#define FEELPP_CORE_EXPORT FEELPP_DECL_EXPORT
-#else
-#define FEELPP_CORE_EXPORT FEELPP_DECL_IMPORT
-#endif
-
-
-namespace Feel
+namespace Feel::Core
 {
-
-namespace fs = std::filesystem;
-namespace po = boost::program_options;
-namespace log = spdlog;
-namespace nl = nlohmann;
-//using json = nl::json;
-
 
 class FEELPP_CORE_EXPORT EnvironmentPlugin
 {
-  public:
+public:
   EnvironmentPlugin( std::string const& name, fs::path const& dataDir ) : M_name( name), M_dataDir( dataDir ) {}
   EnvironmentPlugin( EnvironmentPlugin const& ) = default;
   EnvironmentPlugin( EnvironmentPlugin && ) = default;
@@ -72,9 +26,9 @@ class FEELPP_CORE_EXPORT EnvironmentPlugin
 //! class build as singleton that represent environment
 class FEELPP_CORE_EXPORT Environment
 {
-    //! support singleton with only private constuctor.
-    Environment( int argc, char* argv[], po::options_description const& optionsDescription = {} );
-  public :
+  //! support singleton with only private constuctor.
+  Environment( int argc, char* argv[], po::options_description const& optionsDescription = {} );
+public :
   //! singletons should not be cloneable.
   Environment(Environment &other) = delete;
   //! singletons should not be assignable.
@@ -93,7 +47,7 @@ class FEELPP_CORE_EXPORT Environment
   template <typename T>
   void appendPlugin( T && plugin ) { M_plugins.emplace( plugin.name(), std::forward<T>( plugin ) ); }
 
-  private:
+private:
   //! return singleton instance
   static Environment* instance();
   static Environment* createInstance( int argc, char* argv[], po::options_description const& optionsDescription = {} );
