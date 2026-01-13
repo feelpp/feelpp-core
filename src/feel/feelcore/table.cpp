@@ -518,7 +518,7 @@ Cell::toOutputText( Format const& format, bool enableWidthMax ) const
                                         ostr << val;
                    }, this->M_value );
 
-    int witdhMax = enableWidthMax? format.widthMax() : -1;
+    int widthMax = enableWidthMax? format.widthMax() : -1;
 #if 1
     std::istringstream istr(ostr.str());
     std::string to;
@@ -527,7 +527,7 @@ Cell::toOutputText( Format const& format, bool enableWidthMax ) const
 
     while ( std::getline(istr,to,'\n') )
     {
-        if ( witdhMax < 0 ) // not enable
+        if ( widthMax < 0 ) // not enable
             outputStringByLines.push_back( Printer::OutputText( to ) );
         else
         {
@@ -535,7 +535,7 @@ Cell::toOutputText( Format const& format, bool enableWidthMax ) const
             size_t pos = 0;
             while ( pos < currentWidth )
             {
-                int widthUsed = std::min( currentWidth-pos, (size_t)witdhMax);
+                int widthUsed = std::min( currentWidth-pos, (size_t)widthMax);
                 outputStringByLines.push_back( Printer::OutputText( to.substr( pos,widthUsed ) ) );
                 pos += widthUsed;
             }
