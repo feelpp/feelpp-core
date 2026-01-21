@@ -79,6 +79,41 @@ OutputText::applyMaxWidth( int maxWidth )
     }
     M_data.resize( k+1 );
 }
+
+std::ostream&
+operator<<(std::ostream& o, Printer::OutputText const& cb )
+{
+    //namespace tc = termcolor;
+    for ( auto const& d : cb.data() )
+    {
+        std::string const& txt = d.first;
+
+        Font::Color color = std::get<0>(d.second);
+        bool hasColor = color != Font::Color::none;
+        if ( hasColor )
+        {
+            switch ( color )
+            {
+            case Font::Color::grey: o << termcolor::grey; break;
+            case Font::Color::red: o << termcolor::red; break;
+            case Font::Color::green: o << termcolor::green; break;
+            case Font::Color::yellow: o << termcolor::yellow; break;
+            case Font::Color::blue: o << termcolor::blue; break;
+            case Font::Color::magenta: o << termcolor::magenta; break;
+            case Font::Color::cyan: o << termcolor::cyan; break;
+            case Font::Color::white: o << termcolor::white; break;
+            default:
+                break;
+            }
+        }
+        o << txt;
+
+        if ( hasColor )
+            o << termcolor::reset;
+    }
+    return o;
+}
+
 }
 
 #if 0
@@ -325,41 +360,6 @@ Table::exportCSV( std::ostream &o ) const
     }
 }
 
-
-std::ostream&
-operator<<(std::ostream& o, Printer::OutputText const& cb )
-{
-    //namespace tc = termcolor;
-    for ( auto const& d : cb.data() )
-    {
-        std::string const& txt = d.first;
-
-        Font::Color color = std::get<0>(d.second);
-        bool hasColor = color != Font::Color::none;
-        if ( hasColor )
-        {
-            switch ( color )
-            {
-            case Font::Color::grey: o << termcolor::grey; break;
-            case Font::Color::red: o << termcolor::red; break;
-            case Font::Color::green: o << termcolor::green; break;
-            case Font::Color::yellow: o << termcolor::yellow; break;
-            case Font::Color::blue: o << termcolor::blue; break;
-            case Font::Color::magenta: o << termcolor::magenta; break;
-            case Font::Color::cyan: o << termcolor::cyan; break;
-            case Font::Color::white: o << termcolor::white; break;
-            default:
-                break;
-            }
-        }
-        o << txt;
-
-        if ( hasColor )
-            o << termcolor::reset;
-    }
-    return o;
-}
-
 std::ostream&
 operator<<(std::ostream& o, Table const& c )
 {
@@ -515,7 +515,7 @@ Cell::toOutputText( Format const& format, bool enableWidthMax ) const
         std::visit([&ostr](auto && val)
                    {
                        if constexpr ( !is_std_vector_v<std::decay_t<decltype(val)>> )
-                                        ostr << val;
+                           ostr << std::forward<decltype(val)>(val);
                    }, this->M_value );
 
     int widthMax = enableWidthMax? format.widthMax() : -1;

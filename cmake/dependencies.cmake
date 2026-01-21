@@ -9,6 +9,7 @@ target_link_libraries(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_dependencies INT
 if (WIN32)
   # TODO: check if really good way??
   target_compile_definitions(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions INTERFACE _USE_MATH_DEFINES )
+  target_compile_definitions(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions INTERFACE NOMINMAX )
 endif()
 
 

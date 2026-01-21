@@ -49,7 +49,7 @@ public :
                 M_data.push_back( d );
         }
     void push_front( std::string const& s ) { M_data.insert( M_data.begin(), std::make_pair( s, std::make_tuple( Font::Color::none ) ) ); }
-    size_t size() const { return std::accumulate( M_data.begin(), M_data.end(), 0, []( size_t res, auto const& e ) { return res + e.first.size(); } ); }
+    std::size_t size() const { return std::accumulate( M_data.begin(), M_data.end(), static_cast<std::size_t>(0), []( std::size_t res, auto const& e ) { return res + e.first.size(); } ); }
 
     std::vector<std::pair<std::string,std::tuple<Font::Color>> > const& data() const { return M_data; }
     std::vector<std::pair<std::string,std::tuple<Font::Color>> > & data() { return M_data; }
@@ -63,6 +63,8 @@ public :
 private:
     std::vector<std::pair<std::string,std::tuple<Font::Color>> > M_data;
 };
+std::ostream&
+operator<<(std::ostream& o, Printer::OutputText const& cb );
 
 }
 
@@ -185,9 +187,6 @@ private :
     std::vector<TableImpl::Cell> M_cells;
     std::shared_ptr/*unique_ptr*/<TableImpl::Format> M_format;
 };
-
-std::ostream&
-operator<<(std::ostream& o, Printer::OutputText const& cb );
 
 std::ostream&
 operator<<(std::ostream& o, Table const& cb );
