@@ -66,7 +66,6 @@ Environment::options() const
         ( "config-files", po::value<std::vector<std::string> >()->multitoken(), "specify a list of .cfg file" )
         ;
     return desc;
-
 }
 
 fs::path Environment::dataDir( std::string const& key ) const
@@ -74,7 +73,7 @@ fs::path Environment::dataDir( std::string const& key ) const
     if ( key.empty() )
         return fs::path( BOOST_PP_STRINGIZE(FEELPP_CORE_DATA_DIR) );
     else
-        return M_plugins.at( key ).dataDir();
+        return M_plugins.at( key )->dataDir();
 }
 
 std::string
@@ -83,13 +82,21 @@ Environment::expand( std::string const& expr ) const
     std::string res = expr;
     std::vector<std::pair<std::string,std::string> > keyToValue = { std::make_pair( "${datadir}", this->dataDir().string() ) };
     for ( auto const& [key,plugin] : M_plugins )
-        keyToValue.push_back( std::make_pair( fmt::format( "${{{}.datadir}}", key ), plugin.dataDir().string() ) );
+        keyToValue.push_back( std::make_pair( fmt::format( "${{{}.datadir}}", key ), plugin->dataDir().string() ) );
 
     for ( auto const& [key,val] : keyToValue )
         boost::ireplace_all( res, key, val );
     return res;
 }
 
+EnvironmentPlugin*
+Environment::plugin( std::string const& name ) const
+{
+    auto it = M_plugins.find( name );
+    if ( it != M_plugins.end() )
+        return it->second.get();
+    return nullptr;
+}
 
 std::unique_ptr<Environment> Environment::S_instance = nullptr;
 
