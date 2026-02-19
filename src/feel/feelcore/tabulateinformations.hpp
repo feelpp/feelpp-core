@@ -10,7 +10,7 @@
 namespace Feel::Core
 {
 
-class TabulateInformationProperties
+class FEELPP_CORE_EXPORT TabulateInformationProperties
 {
 public:
     TabulateInformationProperties( std::uint16_t vl = 1 );
@@ -35,12 +35,12 @@ private:
 /**
  * @brief base class that describe informations by tabulate/section design
  */
-class TabulateInformations
+class FEELPP_CORE_EXPORT TabulateInformations
 {
 public :
     using self_ptrtype = std::shared_ptr<TabulateInformations>;
 
-    struct ExporterAscii
+    struct FEELPP_CORE_EXPORT ExporterAscii
     {
         ExporterAscii( std::vector<Printer::OutputText> && ot, int maxWidth = -1 ) : M_outputText( std::move( ot ) )
             {
@@ -50,14 +50,14 @@ public :
             }
         ExporterAscii( ExporterAscii const& ) = default;
         ExporterAscii( ExporterAscii && ) = default;
-        friend std::ostream& operator<<( std::ostream& o, ExporterAscii const& ea );
+        FEELPP_CORE_EXPORT friend std::ostream& operator<<( std::ostream& o, ExporterAscii const& ea );
 
         std::vector<Printer::OutputText> const& outputText() const { return M_outputText; }
     private :
         std::vector<Printer::OutputText> M_outputText;
     };
 
-     struct ExporterAsciiDoc
+     struct FEELPP_CORE_EXPORT ExporterAsciiDoc
      {
          ExporterAsciiDoc( std::shared_ptr<const TabulateInformations> ti, int startLevelSection )
              :
@@ -66,7 +66,7 @@ public :
              {}
          ExporterAsciiDoc( ExporterAsciiDoc const& ) = default;
          ExporterAsciiDoc( ExporterAsciiDoc && ) = default;
-         friend std::ostream& operator<<( std::ostream& o, ExporterAsciiDoc const& ea );
+         FEELPP_CORE_EXPORT friend std::ostream& operator<<( std::ostream& o, ExporterAsciiDoc const& ea );
      private :
          self_ptrtype M_tabulateInformations;
          int M_startLevelSection;
@@ -94,8 +94,8 @@ public :
     //! create an new tabulate informations from a table
     static self_ptrtype New( Feel::Core::Table const& table, TabulateInformationProperties const& tip = TabulateInformationProperties{} );
 
-    friend std::ostream& operator<<( std::ostream& o, TabulateInformations const& ti );
-    friend std::ostream& operator<<( std::ostream& o, ExporterAsciiDoc const& ea );
+    FEELPP_CORE_EXPORT friend std::ostream& operator<<( std::ostream& o, TabulateInformations const& ti );
+    FEELPP_CORE_EXPORT friend std::ostream& operator<<( std::ostream& o, ExporterAsciiDoc const& ea );
 protected :
     virtual std::shared_ptr<const TabulateInformations> shared_from_this_tabulate_informations() const = 0;
     virtual std::vector<Printer::OutputText> exportAscii() const = 0;
@@ -104,9 +104,9 @@ protected :
 };
 
 //! ostream operator
-std::ostream& operator<<( std::ostream& o, TabulateInformations const& ti );
-std::ostream& operator<<( std::ostream& o, TabulateInformations::ExporterAscii const& ti );
-std::ostream& operator<<( std::ostream& o, TabulateInformations::ExporterAsciiDoc const& ti );
+FEELPP_CORE_EXPORT std::ostream& operator<<( std::ostream& o, TabulateInformations const& ti );
+FEELPP_CORE_EXPORT std::ostream& operator<<( std::ostream& o, TabulateInformations::ExporterAscii const& ti );
+FEELPP_CORE_EXPORT std::ostream& operator<<( std::ostream& o, TabulateInformations::ExporterAsciiDoc const& ti );
 
 //! types
 using tabulate_informations_t = TabulateInformations;
@@ -115,8 +115,8 @@ using tabulate_informations_ptr_t = typename TabulateInformations::self_ptrtype;
 /**
  * @brief describe informations in table
  */
-class TabulateInformationsTable : public TabulateInformations,
-                                  public std::enable_shared_from_this<TabulateInformationsTable>
+class FEELPP_CORE_EXPORT TabulateInformationsTable : public TabulateInformations,
+                                                     public std::enable_shared_from_this<TabulateInformationsTable>
 {
 public :
     explicit TabulateInformationsTable( Feel::Core::Table const& table, std::uint16_t vl = 1 ) : TabulateInformations( vl ), M_table( table ) {}
@@ -134,8 +134,8 @@ private:
 /**
  * @brief describe informations by section
  */
-class TabulateInformationsSections : public TabulateInformations,
-                                     public std::enable_shared_from_this<TabulateInformationsSections>
+class FEELPP_CORE_EXPORT TabulateInformationsSections : public TabulateInformations,
+                                                        public std::enable_shared_from_this<TabulateInformationsSections>
 {
 public:
     TabulateInformationsSections( std::uint16_t vl = 1 ) : TabulateInformations( vl ) {}

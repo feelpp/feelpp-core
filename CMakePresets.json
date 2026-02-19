@@ -43,6 +43,30 @@
             }
         },
         {
+            "name": "windows-msvc",
+            "displayName": "Windows MSVC Config",
+            "description": "Build using Windows MSVC",
+            "binaryDir": "${sourceDir}/build/windows-mvsc",
+            "generator": "Visual Studio 17 2022",
+            "architecture": {
+                "value": "x64",
+                "strategy": "set"
+            },
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/windows-mvsc/install/",
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_CXX_COMPILER": "cl",
+                "CPACK_PACKAGE_DIRECTORY": "C:/ktirio-geom_assets",
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "x64-windows",
+                "FEELPP_USE_SYSTEM_CPR": true
+            },
+            "environment": {
+                "VCPKG_ROOT": "C:/vcpkg"
+            }
+        },
+        {
             "name": "wasm-base-linux",
             "generator": "Ninja",
             "toolchainFile": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
@@ -105,6 +129,12 @@
             ]
         },
         {
+            "name": "windows-msvc",
+            "configurePreset": "windows-msvc",
+            "configuration":"Release",
+            "jobs": 4
+        },
+        {
             "name": "wasm32-linux",
             "configurePreset": "wasm32-linux",
             "jobs": 10
@@ -126,6 +156,12 @@
                 "noTestsAction": "ignore",
                 "stopOnFailure": true
             }
+        },
+        {
+            "name": "windows-msvc",
+            "inherits":"default",
+            "configurePreset": "windows-msvc",
+            "configuration":"Release"
         }
     ],
     "vendor": {

@@ -12,7 +12,7 @@
 #include <numeric>
 
 #include <fmt/format.h>
-// #include <feel/feelcore/feel.hpp>
+#include <feel/feelcore/feelcore.hpp>
 #include <feel/feelcore/typetraits.hpp>
 #include <feel/feelcore/assert.hpp>
 
@@ -75,7 +75,7 @@ class Cell;
 struct Format;
 }
 
-class Table
+class FEELPP_CORE_EXPORT Table
 {
 public :
     using variant_value_type = std::variant<std::string,int,std::size_t,double,Feel::Core::Table,Printer::OutputText,std::vector<Printer::OutputText>>;
