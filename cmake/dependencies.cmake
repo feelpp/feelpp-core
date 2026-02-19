@@ -11,6 +11,10 @@ if (WIN32)
   target_compile_definitions(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions INTERFACE _USE_MATH_DEFINES )
   target_compile_definitions(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions INTERFACE NOMINMAX )
 endif()
+if(MSVC)
+  # Force MSVC to use the real value for __cplusplus
+  target_compile_options(${FEELPP_CORE_LIBRARY_PREFIX}_third_party_definitions INTERFACE /Zc:__cplusplus )
+endif()
 
 
 # disable dependencies with EMSCRIPTEN
