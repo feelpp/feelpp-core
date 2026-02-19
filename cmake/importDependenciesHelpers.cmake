@@ -169,6 +169,7 @@ macro(importDependency_FMT _useSystem _target_dependencies _target_definitions _
     find_package(fmt REQUIRED)
   else()
     FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git GIT_TAG 12.1.0 GIT_SHALLOW ON )
+    set( FMT_INSTALL ON )
     FetchContent_MakeAvailable(fmt)
   endif()
   if ( TARGET fmt::fmt )
