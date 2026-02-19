@@ -54,7 +54,7 @@ else()
   option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 endif()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TESTS "Enable test suite" ${PROJECT_IS_TOP_LEVEL})
