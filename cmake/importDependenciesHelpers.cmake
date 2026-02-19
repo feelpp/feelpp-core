@@ -168,7 +168,7 @@ macro(importDependency_FMT _useSystem _target_dependencies _target_definitions _
   if ( ${_useSystem} )
     find_package(fmt REQUIRED)
   else()
-    FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git GIT_TAG 10.2.1 GIT_SHALLOW ON )
+    FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git GIT_TAG 12.1.0 GIT_SHALLOW ON )
     FetchContent_MakeAvailable(fmt)
   endif()
   if ( TARGET fmt::fmt )
@@ -281,7 +281,7 @@ macro(importDependency_SPDLOG _useSystem _target_dependencies _target_definition
     find_package(spdlog REQUIRED)
   else()
     FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
-      GIT_TAG v1.14.1 GIT_SHALLOW ON )
+      GIT_TAG v1.17.0 GIT_SHALLOW ON )
     set( SPDLOG_INSTALL ON)
     if ( FEELPP_HAS_FMT )
       set(SPDLOG_FMT_EXTERNAL ON)
