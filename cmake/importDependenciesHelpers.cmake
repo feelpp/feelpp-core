@@ -372,8 +372,9 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
     # workaround with CGAL cmake : feelpp has EIGEN3 but not cmake var EIGEN3_FOUND
     if (FEELPP_HAS_EIGEN3 AND NOT EIGEN3_FOUND )
       set( EIGEN3_FOUND 1)
+      set( Eigen3_VERSION 3.3.8)
     endif()
-    #include(CGAL_Eigen3_support)
+    include(CGAL_Eigen3_support)
     if ( EMSCRIPTEN )
       target_compile_definitions( CGAL INTERFACE CGAL_ALWAYS_ROUND_TO_NEAREST)
     endif()
