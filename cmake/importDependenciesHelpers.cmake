@@ -373,7 +373,7 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
     if (FEELPP_HAS_EIGEN3 AND NOT EIGEN3_FOUND )
       set( EIGEN3_FOUND 1)
     endif()
-    include(CGAL_Eigen3_support)
+    #include(CGAL_Eigen3_support)
     if ( EMSCRIPTEN )
       target_compile_definitions( CGAL INTERFACE CGAL_ALWAYS_ROUND_TO_NEAREST)
     endif()
