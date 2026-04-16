@@ -328,7 +328,7 @@ macro(importDependency_EIGEN3 _useSystem _target_dependencies _target_definition
   else()
     FetchContent_Declare( eigen3 GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
       #GIT_TAG 3.4.0
-      GIT_TAG 02bcf9b5918d46016bc88e5e9abebb6caa5a80b7
+      GIT_TAG 5.0.1 #1dd76c8d07637cc878632ea76a129c6ac53d07034f4d
       #GIT_SHALLOW ON
     )
     set(EIGEN_BUILD_CMAKE_PACKAGE ON)
