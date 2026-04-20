@@ -73,7 +73,7 @@ jobs:
           GITHUB_OAUTH: ${{ secrets.CR_PAT_WORKFLOW }}
 
       - name: Download Wheels
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: artifacts-wheel
           path: dist/
@@ -182,7 +182,7 @@ jobs:
           lfs: true
           submodules: 'recursive'
       - name: Download
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           # Artifact name
           name: feelpp-core-artifacts
@@ -242,19 +242,19 @@ jobs:
           lfs: true
           submodules: 'recursive'
       - name: Download Deb Packages
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           # Artifact name
           name: feelpp-core-artifacts
           path: artifacts/
       - name: Download Wheel Packages
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           # Artifact name
           name: wheel-artifacts
           path: dist/
       - name: Download Datasets
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           # Artifact name
           name: datasets
