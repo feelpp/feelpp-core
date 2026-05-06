@@ -375,7 +375,7 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
       set( EIGEN3_FOUND 1)
     endif()
     if (FEELPP_EIGEN3_VERSION AND NOT Eigen3_VERSION)
-      set( Eigen3_VERSION FEELPP_EIGEN3_VERSION)
+      set( Eigen3_VERSION ${FEELPP_EIGEN3_VERSION} )
     endif()
     include(CGAL_Eigen3_support)
     if ( EMSCRIPTEN )
