@@ -5,6 +5,7 @@
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 
+#include <feel/feelcore/feelcore.hpp>
 
 namespace Feel::Core::ftxui
 {
@@ -28,5 +29,20 @@ Component SpinBox( int & value, std::string const& title = "" );
 
 //! Button that executes a background task. Displays success/error messages returned by the task and shows loading animation  
 Component WorkerButton( ScreenInteractive & screen, std::function<std::string()> task, std::string const& label = "" );
+
+//! Text input component with autocompletion integrated (using tabs)
+Component FileInput( StringRef content, StringRef placeholder, InputOption options );
+
+class IFileLoaderHandler
+{
+public:
+    virtual ~IFileLoaderHandler() = default;
+    virtual std::string load( fs::path const& fp ) = 0;
+    virtual std::string unload() = 0;
+};
+
+//! Container containing a file input with load + unload buttons and feedback
+Component FileLoader( ScreenInteractive & screen, StringRef content, IFileLoaderHandler & loadHandler,
+                      StringRef placeholder = "", InputOption inputOptions = {} );
 
 } //namespace Feel::Core::ftxui

@@ -4,6 +4,7 @@
 
 #include <feel/feelcore/tui/components.hpp>
 
+#include <feel/feelcore/tui/fileinput.hpp>
 #include <feel/feelcore/tui/taskmanager.hpp>
 
 
@@ -98,5 +99,99 @@ WorkerButton( ScreenInteractive & screen, std::function<std::string()> task, std
     } );
 
 }
+
+
+Component
+FileInput( StringRef content, StringRef placeholder, InputOption options )
+{
+    return Make<FileInputComponent>(content, placeholder, options);
+}
+
+
+
+Component FileLoader( ScreenInteractive & screen, StringRef content, IFileLoaderHandler & loadHandler,
+                      StringRef placeholder, InputOption inputOptions )
+{
+
+
+    auto onLoadTask = std::make_shared<AsyncUiTask>(
+        [content, &loadHandler] -> std::string
+        {
+            auto contentPath = fs::path( *content );
+            if ( !fs::exists(contentPath) )  //Todo add custom check, eg if empty, or if file, or if dir
+                throw std::runtime_error("Could not load."); 
+            return loadHandler.load(contentPath);
+        },
+        screen
+    );
+
+    auto onUnloadTask = std::make_shared<AsyncUiTask>( [&loadHandler]{ return loadHandler.unload();} , screen );
+
+    inputOptions.on_enter = [onLoadTask, onUnloadTask]{
+        onUnloadTask->reset();
+        onLoadTask->start(); 
+    };
+
+    Component fileInput = FileInput( content, placeholder, inputOptions );
+
+
+    Component loadButton = Button("Load", [onLoadTask, onUnloadTask]{
+        onUnloadTask->reset();
+        onLoadTask->start();
+    });
+    Component unloadButton = Button("Unload", [onLoadTask, onUnloadTask]{
+        onLoadTask->reset();
+        onUnloadTask->start();
+    });
+
+    Component fileLoaderContainer = Container::Horizontal({ fileInput, loadButton, unloadButton });
+
+    return Renderer(fileLoaderContainer, [=] {
+        auto & loadTaskState = onLoadTask->getState();
+        auto & unloadTaskState = onUnloadTask->getState();
+
+        auto getStatusText = [&loadTaskState,&unloadTaskState] -> Element
+        {
+            if ( loadTaskState.status == TaskStatus::SUCCESS )
+                return text(loadTaskState.result) | color(Color::Green);
+            if ( unloadTaskState.status == TaskStatus::SUCCESS )
+                return text(unloadTaskState.result) | color(Color::Green);
+
+            if ( loadTaskState.status == TaskStatus::ERROR )
+                return text(loadTaskState.result) | color(Color::Red);
+            if ( unloadTaskState.status == TaskStatus::ERROR )
+                return text(unloadTaskState.result) | color(Color::Red);
+
+            if ( loadTaskState.status == TaskStatus::WORKING )
+                return hbox({ text("Loading "), spinner(8,loadTaskState.loadingFrameCount) }) | color(Color::Yellow);
+            if ( unloadTaskState.status == TaskStatus::WORKING )
+                return hbox({ text("Unloading "), spinner(8,unloadTaskState.loadingFrameCount) }) | color(Color::Yellow);
+
+            return text("");
+        };
+
+        return vbox({
+            window(text(" File Loader ") | bold | center, 
+                vbox({
+                    hbox({
+                        text(" Path: ") | vcenter, 
+                        fileInput->Render() | xflex,
+                        text("   "),
+                        loadButton->Render(),
+                        text(" "),
+                        unloadButton->Render()
+                    }),
+                    separator(),
+                    getStatusText() | center | yflex_shrink
+                })
+            ),
+            filler()
+        });
+    });
+}
+
+
+
+
 
 } //namespace Feel::Core::ftxui
