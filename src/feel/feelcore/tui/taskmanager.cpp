@@ -66,4 +66,30 @@ AsyncUiTask::reset()
     M_state.loadingFrameCount = 0;
 }
 
+
+::ftxui::Element
+AsyncUiTask::getStateUiElement()
+{
+    using namespace ::ftxui;
+    switch ( M_state.status )
+    {
+        case TaskStatus::SUCCESS:
+            return text( M_state.result ) | color( Color::Green );
+
+        case TaskStatus::ERROR:
+            return text( M_state.result ) | color( Color::Red );
+
+        case TaskStatus::WORKING:
+            return hbox( {
+                text( "Loading " ), 
+                spinner( 8, M_state.loadingFrameCount ) }
+            ) | color( Color::Yellow );
+
+        default:
+            return text( "" );
+    }
+}
+
+
+
 } // namespace Feel::Core::ftxui

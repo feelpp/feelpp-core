@@ -3,6 +3,7 @@
 #pragma once
 
 #include <ftxui/component/component.hpp>
+#include <ftxui/component/screen_interactive.hpp>
 
 
 namespace Feel::Core::ftxui
@@ -16,11 +17,16 @@ Component MultiOptionSelector( std::vector<std::pair<std::string,bool*>> const& 
 //! Styled and labeled window with vertical radio buttons
 Component RadioSelector( std::vector<std::string> const* entries, int * selected, std::string const& label = "" );
 
+//! Styled and labeled slider that displays the current value 
 template <typename T>
 Component ReadoutSlider( Ref<T> value, T min = 0., T max = 1., T step = 0.1,
                          std::string const& title = "", int displayPrecision = 1 );
 
+//! Styled and labeled spinbox to decrease or increment an int
 Component SpinBox( int & value, std::string const& title = "" );
 
+
+//! Button that executes a background task. Displays success/error messages returned by the task and shows loading animation  
+Component WorkerButton( ScreenInteractive & screen, std::function<std::string()> task, std::string const& label = "" );
 
 } //namespace Feel::Core::ftxui

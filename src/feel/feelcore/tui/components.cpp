@@ -4,6 +4,8 @@
 
 #include <feel/feelcore/tui/components.hpp>
 
+#include <feel/feelcore/tui/taskmanager.hpp>
+
 
 namespace Feel::Core::ftxui
 {
@@ -77,6 +79,24 @@ SpinBox( int & value, std::string const& title )
             } ) | center,
         } );
     } );
+}
+
+
+Component
+WorkerButton( ScreenInteractive & screen, std::function<std::string()> task, std::string const& label )
+{
+    auto asyncTask = std::make_shared<AsyncUiTask>( [task]{ return task(); }, screen );
+
+    Component createMeshBtn = Button( label, [asyncTask]{ asyncTask->start(); } );
+    Component buttonContainer = Container::Vertical( { createMeshBtn } );
+
+    return Renderer( buttonContainer, [createMeshBtn, asyncTask] {
+        return vbox( {
+            createMeshBtn->Render(),
+            asyncTask->getStateUiElement()
+        } );
+    } );
+
 }
 
 } //namespace Feel::Core::ftxui

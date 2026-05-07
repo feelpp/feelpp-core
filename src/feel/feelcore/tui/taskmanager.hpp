@@ -7,6 +7,7 @@
 #include <string>
 #include <functional>
 
+#include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 
 
@@ -48,6 +49,9 @@ public:
 
     //! Retrieves the current task state.
     AsyncUiTaskState const& getState() const { return M_state; }
+
+    //! Returns a colored UI Element displaying the current task state
+    ::ftxui::Element getStateUiElement();
 
 private:
     //! Executes a task and posts the result to the UI
