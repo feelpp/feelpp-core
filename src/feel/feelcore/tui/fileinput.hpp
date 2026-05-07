@@ -7,6 +7,9 @@
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/component_options.hpp>
 
+#include <feel/feelcore/feelcore.hpp>
+
+
 namespace Feel::Core::ftxui
 {
 using namespace ::ftxui;
