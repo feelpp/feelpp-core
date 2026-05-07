@@ -1,3 +1,4 @@
 set(FEELPP_CORE_LIB_SRCS_TUI
   ${CMAKE_CURRENT_SOURCE_DIR}/taskmanager.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/components.cpp
   PARENT_SCOPE )
