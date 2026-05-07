@@ -29,18 +29,18 @@ FileInputComponent::longestCommonPrefix( std::vector<std::string> const& strings
 std::string
 FileInputComponent::expandTilde( std::string const& pathStr )
 {
-    if (pathStr.empty()) return ".";
-    if (pathStr[0] == '~')
+    if ( pathStr.empty() ) return ".";
+    if ( pathStr[0] == '~' )
     {
-        const char* home = std::getenv("HOME");
+        const char* home = std::getenv( "HOME" );
 
-        if (!home) // Fallback for Windows
+        if ( !home ) // Fallback for Windows
             home = std::getenv("USERPROFILE"); 
 
-        if (home)
+        if ( home )
         {
             std::string expanded = home;
-            if (pathStr.length() > 1 && (pathStr[1] == '/' || pathStr[1] == '\\'))
+            if ( pathStr.length() > 1 && ( pathStr[1] == '/' || pathStr[1] == '\\' ) )
                 expanded += pathStr.substr(1);
 
             return expanded;
@@ -156,11 +156,11 @@ FileInputComponent::cycleMatches( Event event )
     std::string match = M_autocompleteState.matches[M_autocompleteState.cycle_index];
     std::string newPath = M_autocompleteState.parent_str + match;
 
-    std::string searchPathStr = expandTilde(M_autocompleteState.parent_str);
-    fs::path searchDir(searchPathStr);
+    std::string searchPathStr = expandTilde( M_autocompleteState.parent_str );
+    fs::path searchDir( searchPathStr );
     fs::path fullP = searchDir / match;
     std::error_code ec;
-    if (fs::is_directory(fullP, ec))
+    if ( fs::is_directory( fullP, ec ) )
         newPath += "/";
 
     *M_content = newPath;
@@ -169,8 +169,8 @@ FileInputComponent::cycleMatches( Event event )
     M_input->OnEvent(Event::End);
 
     if ( event == Event::Tab )
-        M_autocompleteState.cycle_index = (M_autocompleteState.cycle_index + 1) % M_autocompleteState.matches.size();
-    else if (event == Event::TabReverse)
+        M_autocompleteState.cycle_index = ( M_autocompleteState.cycle_index + 1 ) % M_autocompleteState.matches.size();
+    else if ( event == Event::TabReverse )
     {
         if ( M_autocompleteState.cycle_index == 0 )
             M_autocompleteState.cycle_index =  M_autocompleteState.matches.size() - 1;

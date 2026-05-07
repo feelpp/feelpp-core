@@ -112,22 +112,18 @@ FileInput( StringRef content, StringRef placeholder, InputOption options )
 Component FileLoader( ScreenInteractive & screen, StringRef content, IFileLoaderHandler & loadHandler,
                       StringRef placeholder, InputOption inputOptions )
 {
-
-
-    auto onLoadTask = std::make_shared<AsyncUiTask>(
-        [content, &loadHandler] -> std::string
-        {
+    auto onLoadTask = std::make_shared<AsyncUiTask>( [content, &loadHandler] -> std::string {
             auto contentPath = fs::path( *content );
-            if ( !fs::exists(contentPath) )  //Todo add custom check, eg if empty, or if file, or if dir
-                throw std::runtime_error("Could not load."); 
-            return loadHandler.load(contentPath);
+            if ( !fs::exists( contentPath ) )  //Todo add custom check, eg if empty, or if file, or if dir
+                throw std::runtime_error( "Could not load." ); 
+            return loadHandler.load( contentPath );
         },
         screen
     );
 
-    auto onUnloadTask = std::make_shared<AsyncUiTask>( [&loadHandler]{ return loadHandler.unload();} , screen );
+    auto onUnloadTask = std::make_shared<AsyncUiTask>( [&loadHandler]{ return loadHandler.unload(); } , screen );
 
-    inputOptions.on_enter = [onLoadTask, onUnloadTask]{
+    inputOptions.on_enter = [onLoadTask, onUnloadTask] {
         onUnloadTask->reset();
         onLoadTask->start(); 
     };
@@ -135,16 +131,16 @@ Component FileLoader( ScreenInteractive & screen, StringRef content, IFileLoader
     Component fileInput = FileInput( content, placeholder, inputOptions );
 
 
-    Component loadButton = Button("Load", [onLoadTask, onUnloadTask]{
+    Component loadButton = Button("Load", [onLoadTask, onUnloadTask] {
         onUnloadTask->reset();
         onLoadTask->start();
     });
-    Component unloadButton = Button("Unload", [onLoadTask, onUnloadTask]{
+    Component unloadButton = Button("Unload", [onLoadTask, onUnloadTask] {
         onLoadTask->reset();
         onUnloadTask->start();
     });
 
-    Component fileLoaderContainer = Container::Horizontal({ fileInput, loadButton, unloadButton });
+    Component fileLoaderContainer = Container::Horizontal( { fileInput, loadButton, unloadButton } );
 
     return Renderer(fileLoaderContainer, [=] {
         auto & loadTaskState = onLoadTask->getState();
@@ -153,41 +149,41 @@ Component FileLoader( ScreenInteractive & screen, StringRef content, IFileLoader
         auto getStatusText = [&loadTaskState,&unloadTaskState] -> Element
         {
             if ( loadTaskState.status == TaskStatus::SUCCESS )
-                return text(loadTaskState.result) | color(Color::Green);
+                return text( loadTaskState.result ) | color( Color::Green );
             if ( unloadTaskState.status == TaskStatus::SUCCESS )
-                return text(unloadTaskState.result) | color(Color::Green);
+                return text( unloadTaskState.result ) | color( Color::Green );
 
             if ( loadTaskState.status == TaskStatus::ERROR )
-                return text(loadTaskState.result) | color(Color::Red);
+                return text( loadTaskState.result ) | color( Color::Red );
             if ( unloadTaskState.status == TaskStatus::ERROR )
-                return text(unloadTaskState.result) | color(Color::Red);
+                return text( unloadTaskState.result ) | color( Color::Red );
 
             if ( loadTaskState.status == TaskStatus::WORKING )
-                return hbox({ text("Loading "), spinner(8,loadTaskState.loadingFrameCount) }) | color(Color::Yellow);
+                return hbox( { text( "Loading " ), spinner( 8, loadTaskState.loadingFrameCount ) } ) | color( Color::Yellow );
             if ( unloadTaskState.status == TaskStatus::WORKING )
-                return hbox({ text("Unloading "), spinner(8,unloadTaskState.loadingFrameCount) }) | color(Color::Yellow);
+                return hbox( { text( "Unloading " ), spinner( 8, unloadTaskState.loadingFrameCount ) } ) | color( Color::Yellow );
 
-            return text("");
+            return text( "" );
         };
 
-        return vbox({
-            window(text(" File Loader ") | bold | center, 
-                vbox({
-                    hbox({
-                        text(" Path: ") | vcenter, 
+        return vbox( {
+            window( text( " File Loader " ) | bold | center, 
+                vbox( {
+                    hbox( {
+                        text( " Path: " ) | vcenter, 
                         fileInput->Render() | xflex,
-                        text("   "),
+                        text( "   " ),
                         loadButton->Render(),
-                        text(" "),
+                        text( " " ),
                         unloadButton->Render()
-                    }),
+                    } ),
                     separator(),
                     getStatusText() | center | yflex_shrink
-                })
+                } )
             ),
             filler()
-        });
-    });
+        } );
+    } );
 }
 
 

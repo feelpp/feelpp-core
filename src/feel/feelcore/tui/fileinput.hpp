@@ -23,6 +23,8 @@ struct AutocompleteState
     bool cycling = false;
 };
 
+
+//! Component that handles text input to select files and autocompletes/cycles through options
 class FileInputComponent
     : public ComponentBase
 {
@@ -34,16 +36,27 @@ public:
         this->Add( M_input );
     };
 
+    //! Is triggered on any input event such as typing
     bool OnEvent( Event event ) override;
 
-
 private:
+
+    //! Stops cycling, completes the event and executes the on_enter option input options 
     bool onReturn();
+
+    //! Handles file and directory name autocompletion from disk
     bool handleAutocomplete( Event event );
+
+    //! Selects the closest match to a given string inside a directory and replaces the component content
     void findMatches( std::string const& currentInput, Event event );
+
+    //! Selects the next match inside a directory and replaces the component content
     void cycleMatches( Event event );
 
+    //! filters the longest common prefix in a given vector of strings
     std::string longestCommonPrefix( std::vector<std::string> const& strings );
+
+    //! Expands the tile character (~) to the home directory
     std::string expandTilde( std::string const& pathStr );
 
 
