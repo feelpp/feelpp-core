@@ -4,8 +4,10 @@
 
 #include <atomic>
 #include <chrono>
+#include <string>
+#include <functional>
 
-#include "ftxui/component/screen_interactive.hpp"
+#include <ftxui/component/screen_interactive.hpp>
 
 
 
@@ -19,23 +21,23 @@ enum class TaskStatus { IDLE, WORKING, SUCCESS, ERROR };
 struct AsyncUiTaskState
 {
     std::string result;
-    std::atomic<TaskStatus> status {TaskStatus::IDLE};
-    std::atomic<std::size_t> loadingFrameCount = {0};
+    std::atomic<TaskStatus> status = { TaskStatus::IDLE };
+    std::atomic<std::size_t> loadingFrameCount = { 0 };
 };
 
 //! Manages a background task while keeping an FTXUI screen responsive 
 //! Updates the screen each tick (allows load animations)
 class AsyncUiTask
 {
-public: 
+public:
 
     //! task: Background task to execute, should return either a success message if OK and can raise an exception on error
     //! screen: An FTXUI screen to post UI refresh events to
     //! tickDuration: The interval between forced UI redraws while the task is running
     AsyncUiTask( std::function<std::string()> task,
-                 ::ftxui::ScreenInteractive & screen, 
-                 std::chrono::milliseconds tickDuration = std::chrono::milliseconds(200) )
-        : M_task(std::move(task)), M_screen(screen), M_tickDuration(tickDuration)
+                 ::ftxui::ScreenInteractive & screen,
+                 std::chrono::milliseconds tickDuration = std::chrono::milliseconds( 200 ) )
+        : M_task( std::move( task ) ), M_screen( screen ), M_tickDuration( tickDuration )
     {}
 
     //! Spawns a worker and tick threads.
@@ -45,7 +47,7 @@ public:
     void reset();
 
     //! Retrieves the current task state.
-    AsyncUiTaskState const& getState() const { return M_state; };
+    AsyncUiTaskState const& getState() const { return M_state; }
 
 private:
     //! Executes a task and posts the result to the UI
