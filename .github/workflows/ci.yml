@@ -43,7 +43,7 @@ jobs:
       - name: Build wheel
         run: |
           source .venv/bin/activate
-          pipx run build
+          uv build
           uv pip install dist/*.whl
 
       - name: Upload Artifact
