@@ -353,6 +353,7 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
   else()
     FetchContent_Declare( cgal GIT_REPOSITORY https://github.com/CGAL/cgal.git
       GIT_TAG v6.1.1 # v6.0.1 #  v5.6
+      PATCH_COMMAND git apply "${FEELPP_CORE_CMAKE_DIR}/cgal.patch" UPDATE_DISCONNECTED 1
       #GIT_TAG 5ffa817b6211a4bcec05faf85726bc4845682d50
       GIT_SHALLOW ON
     )
