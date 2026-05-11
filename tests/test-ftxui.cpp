@@ -16,6 +16,7 @@
 
 
 #include <feel/feelcore/environment.hpp>
+#include <stdexcept>
 
 TEST_CASE( "Test Screen Basic", "[FTXUI]" )
 {
@@ -148,8 +149,55 @@ TEST_CASE( "Test FileInput", "[FEELCORE-TUI]" )
 }
 
 //================= Interactive ===================
-TEST_CASE( "Test TaskManager", "[FEELCORE-TUI]" )
+TEST_CASE( "Test TaskManager Success", "[FEELCORE-TUI]" )
 {
+    using namespace Feel::Core::ftxui;
+    using namespace std::chrono_literals;
+
+    auto screen = ScreenInteractive::TerminalOutput();
+
+    AsyncUiTask task( [] { 
+        return "Success!"; 
+    }, screen );
+
+    screen.Loop( Renderer([&screen, &task] {
+        if ( task.getState().status == TaskStatus::IDLE )
+            task.start();
+
+        if ( task.getState().status != TaskStatus::WORKING )
+            screen.Post( screen.ExitLoopClosure() );
+        return text( "Testing async UI task ..." );
+    } ) );
+
+
+    REQUIRE( task.getState().status == TaskStatus::SUCCESS );
+    REQUIRE( task.getState().result == "Success!" );
+}
+
+
+TEST_CASE( "Test TaskManager Failure", "[FEELCORE-TUI]" )
+{
+    using namespace Feel::Core::ftxui;
+    using namespace std::chrono_literals;
+
+    auto screen = ScreenInteractive::TerminalOutput();
+
+    AsyncUiTask task( [] -> std::string {
+        throw std::runtime_error( "Failure" );
+    }, screen );
+
+    screen.Loop( Renderer([&screen, &task] {
+        if ( task.getState().status == TaskStatus::IDLE )
+            task.start();
+
+        if ( task.getState().status != TaskStatus::WORKING )
+            screen.Post( screen.ExitLoopClosure() );
+        return text( "Testing async UI task ..." );
+    } ) );
+
+
+    REQUIRE( task.getState().status == TaskStatus::ERROR );
+    REQUIRE( task.getState().result == "Error: Failure" );
 
 }
 
