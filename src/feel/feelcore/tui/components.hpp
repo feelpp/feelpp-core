@@ -31,7 +31,7 @@ Component SpinBox( int & value, std::string const& title = "" );
 Component WorkerButton( ScreenInteractive & screen, std::function<std::string()> task, std::string const& label = "" );
 
 //! Text input component with autocompletion integrated (using tabs)
-Component FileInput( StringRef content, StringRef placeholder, InputOption options );
+Component FileInput( StringRef content, StringRef placeholder, InputOption options = {} );
 
 class IFileLoaderHandler
 {

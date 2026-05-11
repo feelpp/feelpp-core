@@ -66,6 +66,7 @@ template Component ReadoutSlider<int>( Ref<int>, int, int, int, const std::strin
 Component
 SpinBox( int & value, std::string const& title )
 {
+    //TODO: Make this template to accept float
     Component inputMinus = Button( "-", [&value]{ value--; }, ButtonOption::Ascii() );
     Component inputPlus = Button( "+", [&value]{ value++; }, ButtonOption::Ascii() );
     Component stepperContainer = Container::Horizontal( { inputMinus, inputPlus } );
