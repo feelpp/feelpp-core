@@ -1,5 +1,6 @@
 //!
 
+#include <ftxui/component/component.hpp>
 #include <iostream>
 
 #include <catch2/catch_session.hpp>
@@ -9,6 +10,10 @@
 
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
+
+#include <feel/feelcore/tui/taskmanager.hpp>
+#include <feel/feelcore/tui/components.hpp>
+
 
 #include <feel/feelcore/environment.hpp>
 
@@ -48,6 +53,113 @@ TEST_CASE( "Test Gauge", "[FTXUI]" )
         std::this_thread::sleep_for(0.01s);
     }
     std::cout << std::endl;
+}
+
+
+
+
+
+TEST_CASE( "Test MultiOptionSelector", "[FEELCORE-TUI]" )
+{
+    using namespace Feel::Core::ftxui;
+
+    bool option1 = true;
+    bool option2 = false;
+    bool option3 = true;
+    std::vector<std::pair<std::string, bool*>> options = {
+        { "option1", &option1 }, { "option2", &option2 }, { "option3", &option3 }
+    };
+
+    Component multiOptionSelector = MultiOptionSelector( options, "MultiOption Selector" );
+
+    auto document = multiOptionSelector->Render();
+
+    auto screen = Screen::Create( Dimension::Full(), Dimension::Fit( document ) );
+    Render( screen, document );
+    screen.Print();
+}
+
+
+TEST_CASE( "Test RadioSelector", "[FEELCORE-TUI]" )
+{
+    using namespace Feel::Core::ftxui;
+
+    int selected = 0;
+    std::vector<std::string> options = { "option1", "option2", "option3" };
+
+    Component radioSelector = RadioSelector( &options, &selected, "Radio Selector" );
+
+    auto document = radioSelector->Render();
+
+    auto screen = Screen::Create( Dimension::Full(), Dimension::Fit( document ) );
+    Render( screen, document );
+    screen.Print();
+}
+
+
+TEST_CASE( "Test ReadoutSlider", "[FEELCORE-TUI]" )
+{
+    using namespace Feel::Core::ftxui;
+
+    int intValue = 50;
+    Component intSlider = ReadoutSlider<int>( &intValue, 0, 100, 1, "Int Readout Slider", 0 ); 
+
+    float doubleValue = 0.5;
+    Component doubleSlider = ReadoutSlider<float>( &doubleValue, 0, 1, 0.1, "Double Readout Slider", 2 ); 
+
+    auto document = hbox( {
+        intSlider->Render() | flex_grow,
+        doubleSlider->Render() | flex_grow
+    } ) | flex;
+
+    auto screen = Screen::Create( Dimension::Full(), Dimension::Fit( document ) );
+    Render( screen, document );
+    screen.Print();
+}
+
+
+TEST_CASE( "Test SpinBox", "[FEELCORE-TUI]" )
+{
+    using namespace Feel::Core::ftxui;
+
+    int value = 0;
+    Component spinBox = SpinBox( value, "SpinBox " ); 
+
+    auto document = spinBox->Render();
+    auto screen = Screen::Create( Dimension::Full(), Dimension::Fit( document ) );
+    Render( screen, document );
+    screen.Print();
+}
+
+
+TEST_CASE( "Test FileInput", "[FEELCORE-TUI]" )
+{
+    using namespace Feel::Core::ftxui;
+
+    std::string filepath;
+    Component fileInput = FileInput( filepath, " Enter your filepath..." ); 
+
+    auto document = fileInput->Render();
+    auto screen = Screen::Create( Dimension::Full(), Dimension::Fit( document ) );
+    Render( screen, document );
+    screen.Print();
+
+
+}
+
+//================= Interactive ===================
+TEST_CASE( "Test TaskManager", "[FEELCORE-TUI]" )
+{
+
+}
+
+TEST_CASE( "Test WorkerButton", "[FEELCORE-TUI]" )
+{
+}
+
+
+TEST_CASE( "Test FileLoader", "[FEELCORE-TUI]" )
+{
 }
 
 
