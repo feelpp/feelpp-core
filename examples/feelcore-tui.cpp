@@ -58,7 +58,7 @@ int main( int argc, char** argv )
 
     //============= FILE INPUT ==============//
     std::string filepath;
-    Component fileInput = FileInput( filepath, " Enter your filepath..." ); 
+    Component fileInput = FileInput( &filepath, " Enter your filepath..." ); 
     //=======================================//
 
 
