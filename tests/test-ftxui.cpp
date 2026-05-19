@@ -1,5 +1,7 @@
 //!
 
+#include <fstream>
+
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 
@@ -10,6 +12,7 @@
 
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
+#include <ftxui/component/loop.hpp>
 
 #include <feel/feelcore/tui/taskmanager.hpp>
 #include <feel/feelcore/tui/components.hpp>
@@ -250,60 +253,139 @@ TEST_CASE( "Test TaskManager Failure", "[FEELCORE-TUI]" )
 
 TEST_CASE( "Test WorkerButton", "[FEELCORE-TUI]" )
 {
-#if 0
     using namespace Feel::Core::ftxui;
     using namespace std::chrono_literals;
 
-
     auto screen = ScreenInteractive::FitComponent();
-    auto successTask = [] -> std::string
+
+    std::atomic<bool> taskFinished;
+    auto successTask = [&taskFinished] -> std::string
     { 
-        std::this_thread::sleep_for( 1s );
+        std::this_thread::sleep_for( 50ms );
+        taskFinished = true;
         return "Success!"; 
     };
    
     std::string btnTitle = "Click";
     Component successButton = WorkerButton( screen, successTask, btnTitle );
 
-    std::string initialState;
-    std::string loadingState;
-    std::string successState;
+    auto renderer = Renderer( successButton, [&successButton]{ return successButton->Render(); } );
 
-    std::thread testSequence([&] {
-        std::this_thread::sleep_for( 100ms );
+    ::ftxui::Loop loop( &screen, renderer );
 
-        screen.Post( [&] {
-            initialState = screen.ToString();
-            screen.PostEvent( Event::Return );
-        });
 
-        std::this_thread::sleep_for( 200ms );
-        screen.Post( [&] { loadingState = screen.ToString(); });
+    auto renderVirtualScreen = [&successButton] -> std::string
+    {
+        auto screen = Screen::Create( Dimension::Full()  );
+        Render( screen, successButton->Render() );
+        return screen.ToString();
+    };
+    auto waitForText = [&]( std::string const& text, int timeout_ms = 1000) -> bool
+    {
+        int elapsed = 0;
+        while ( elapsed < timeout_ms )
+        {
+            loop.RunOnce();
+            if ( renderVirtualScreen().contains( text ) )
+                return true;
+            std::this_thread::sleep_for( 10ms );
+            elapsed += 10;
+        }
+        return false;
+    };
 
-        std::this_thread::sleep_for( 1200ms );
-        screen.Post( [&] {
-            successState = screen.ToString();
-            screen.ExitLoopClosure()();
-        });
-    });
+    REQUIRE(  renderVirtualScreen().contains( btnTitle ) );
+    successButton->OnEvent( Event::Return );
+    loop.RunOnce();
+    REQUIRE( renderVirtualScreen().contains( "Loading" ) );
+    REQUIRE( waitForText( "Success!"  ) );
 
-    screen.Loop( Renderer(successButton, [&successButton]{ return successButton->Render(); } ) );
-
-    if (testSequence.joinable())
-        testSequence.join();
- 
-    REQUIRE( initialState.contains(btnTitle) );
-    REQUIRE( loadingState.contains("Loading") );
-    REQUIRE( successState.contains("Success!") );
-
-    std::this_thread::sleep_for( 1200ms );
-
-#endif
 }
 
 
 TEST_CASE( "Test FileLoader", "[FEELCORE-TUI]" )
 {
+    using namespace Feel::Core::ftxui;
+    using namespace std::chrono_literals;
+
+    Feel::fs::path successPath = "test_success_file.txt";
+    Feel::fs::path missingPath = "test_missing_file.txt";
+
+    struct ScopedFileCleanup {
+        Feel::fs::path p1, p2;
+
+        ~ScopedFileCleanup() {
+            Feel::fs::remove(p1);
+            Feel::fs::remove(p2);
+        }
+    } cleanup{ successPath, missingPath }; 
+    std::ofstream(successPath) << "dummy data";
+    Feel::fs::remove(missingPath);
+
+    auto screen = ScreenInteractive::FitComponent();
+
+    class DummyLoader : public IFileLoaderHandler
+    {
+    public:
+        std::string load( Feel::fs::path const& fp ) override {
+            std::this_thread::sleep_for( 50ms );
+            return "Loaded";
+        }
+        std::string unload() override {
+            std::this_thread::sleep_for( 50ms );
+            return "Unloaded";
+        }
+    };
+
+    DummyLoader dummyLoader;
+    std::string fileLoaderFilename;
+    std::string placeholder = "Enter the filepath...";
+
+    Component fileLoader = FileLoader( screen, &fileLoaderFilename, dummyLoader, placeholder);
+    auto renderer = Renderer( fileLoader, [fileLoader]{ return fileLoader->Render(); } );
+    ::ftxui::Loop loop( &screen, renderer );
+
+    auto renderVirtualScreen = [&fileLoader] -> std::string
+    {
+        auto fixedScreen = Screen::Create( Dimension::Full() );
+        Render( fixedScreen, fileLoader->Render() );
+        return fixedScreen.ToString();
+    };
+
+    auto waitForText = [&]( std::string const& text, int timeout_ms = 1000) -> bool
+    {
+        int elapsed = 0;
+        while ( elapsed < timeout_ms )
+        {
+            loop.RunOnce();
+            if ( renderVirtualScreen().contains( text ) )
+                return true;
+            std::this_thread::sleep_for( 10ms );
+            elapsed += 10;
+        }
+        return false;
+    };
+
+    REQUIRE( renderVirtualScreen().contains( placeholder ) );
+    REQUIRE( renderVirtualScreen().contains( "Load" ) );
+    REQUIRE( renderVirtualScreen().contains( "Unload" ) );
+
+    //Check load invalid file
+    fileLoaderFilename = missingPath.string(); 
+    fileLoader->OnEvent( Event::Return ); // Press Enter on the input
+    REQUIRE( waitForText( "Could not load." ) );
+
+    //Check load
+    // fileLoaderFilename = successPath.string();
+    // fileLoader->OnEvent( Event::Return ); 
+    // REQUIRE( waitForText( "Loaded"  ) );
+
+    //Check unload
+    // fileLoaderFilename = "";
+    // fileLoader->OnEvent( Event::ArrowRight ); // Move to Load
+    // fileLoader->OnEvent( Event::ArrowRight ); // Move to Unload
+    // fileLoader->OnEvent( Event::Return ); // Press Unload
+    // REQUIRE( waitForText( "Unloaded" ) );
 }
 
 
