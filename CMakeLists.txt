@@ -58,6 +58,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TESTS "Enable test suite" ${PROJECT_IS_TOP_LEVEL})
+option(${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_EXAMPLES "Enable application examples" ${PROJECT_IS_TOP_LEVEL})
 
 # Set a path to the data directory
 set( ${FEELPP_CORE_CMAKE_PREFIX}_DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data )
@@ -101,6 +102,9 @@ if ( ${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_TESTS )
   add_subdirectory( tests )
 endif()
 
+if ( ${FEELPP_CORE_CMAKE_PREFIX}_ENABLE_EXAMPLES ) 
+    add_subdirectory( examples ) 
+endif()
 
 
 # prepare package dependencies

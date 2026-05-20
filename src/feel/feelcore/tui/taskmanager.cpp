@@ -1,0 +1,105 @@
+//!
+
+
+#include <fmt/format.h>
+
+#include <feel/feelcore/tui/taskmanager.hpp>
+
+
+
+namespace Feel::Core::ftxui
+{
+
+
+AsyncUiTask::~AsyncUiTask()
+{
+    if ( M_workerThread.joinable() ) M_workerThread.join();
+    if ( M_tickThread.joinable() ) M_tickThread.join();
+}
+
+void
+AsyncUiTask::executeTask()
+{
+    std::string internalResult;
+    TaskStatus internalStatus = TaskStatus::WORKING; 
+    M_state.status = internalStatus;
+
+    try
+    {
+        internalResult = M_task();
+        internalStatus = TaskStatus::SUCCESS;
+    }
+    catch ( std::exception const& e )
+    {
+        internalResult = fmt::format( "Error: {}", e.what() );
+        internalStatus = TaskStatus::ERROR; 
+    }
+
+    M_screen.Post( [this, internalResult, internalStatus]()
+    {
+        M_state.status = internalStatus;
+        M_state.result = internalResult;
+    });
+    M_screen.PostEvent( ::ftxui::Event::Custom );
+}
+
+void
+AsyncUiTask::pumpTicks()
+{
+    while ( M_state.status == TaskStatus::WORKING )
+    {
+        std::this_thread::sleep_for( M_tickDuration );
+        ++M_state.loadingFrameCount;
+        M_screen.PostEvent( ::ftxui::Event::Custom );
+    }
+}
+
+void
+AsyncUiTask::start()
+{
+    // prevents double trigger
+    if ( M_state.status == TaskStatus::WORKING ) return;
+
+    //Ensures previous threads are joined before starting new.
+    if ( M_workerThread.joinable() ) M_workerThread.join();
+    if ( M_tickThread.joinable() ) M_tickThread.join();
+
+    M_workerThread = std::thread( [this](){ this->executeTask(); });
+    M_tickThread = std::thread( [this](){ this->pumpTicks(); });
+}
+
+void
+AsyncUiTask::reset()
+{
+    M_state.status = TaskStatus::IDLE;
+    M_state.result = "";
+    M_state.loadingFrameCount = 0;
+}
+
+
+::ftxui::Element
+AsyncUiTask::getStateUiElement()
+{
+    using namespace ::ftxui;
+    switch ( M_state.status )
+    {
+        case TaskStatus::SUCCESS:
+            return text( M_state.result ) | color( Color::Green );
+
+        case TaskStatus::ERROR:
+            return text( M_state.result ) | color( Color::Red );
+
+        case TaskStatus::WORKING:
+            return hbox( {
+                text( "Loading " ), 
+                spinner( 8, M_state.loadingFrameCount ) }
+            ) | color( Color::Yellow );
+
+        default:
+            return text( "" );
+    }
+}
+
+
+
+} // namespace Feel::Core::ftxui
