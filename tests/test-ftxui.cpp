@@ -1,6 +1,9 @@
 //!
 
 #include <fstream>
+#include <stdexcept>
+#include <string>
+#include <thread>
 
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
@@ -19,8 +22,6 @@
 
 
 #include <feel/feelcore/environment.hpp>
-#include <stdexcept>
-#include <thread>
 
 
 
@@ -251,6 +252,37 @@ TEST_CASE( "Test TaskManager Failure", "[FEELCORE-TUI]" )
 
 }
 
+
+std::string
+renderInteractiveComponent( ::ftxui::Component & component )
+{
+    using namespace Feel::Core::ftxui;
+    auto screen = Screen::Create( Dimension::Full()  );
+    Render( screen, component->Render() );
+    return screen.ToString();
+}
+
+
+//! Runs a screen loop until given text is found for an interactive component. Returns true if found.
+bool
+waitForText( ::ftxui::Loop & loop, ::ftxui::Component & component, std::string const& text, int timeoutMs = 1000 )
+{
+    using namespace std::chrono_literals;
+
+    int elapsed = 0;
+    while ( elapsed < timeoutMs )
+    {
+        loop.RunOnce();
+        if ( renderInteractiveComponent( component ).contains( text ) )
+            return true;
+        std::this_thread::sleep_for( 10ms );
+        elapsed += 10;
+    }
+    return false;
+}
+
+
+
 TEST_CASE( "Test WorkerButton", "[FEELCORE-TUI]" )
 {
     using namespace Feel::Core::ftxui;
@@ -265,7 +297,7 @@ TEST_CASE( "Test WorkerButton", "[FEELCORE-TUI]" )
         taskFinished = true;
         return "Success!"; 
     };
-   
+
     std::string btnTitle = "Click";
     Component successButton = WorkerButton( screen, successTask, btnTitle );
 
@@ -273,32 +305,11 @@ TEST_CASE( "Test WorkerButton", "[FEELCORE-TUI]" )
 
     ::ftxui::Loop loop( &screen, renderer );
 
-
-    auto renderVirtualScreen = [&successButton] -> std::string
-    {
-        auto screen = Screen::Create( Dimension::Full()  );
-        Render( screen, successButton->Render() );
-        return screen.ToString();
-    };
-    auto waitForText = [&]( std::string const& text, int timeout_ms = 1000) -> bool
-    {
-        int elapsed = 0;
-        while ( elapsed < timeout_ms )
-        {
-            loop.RunOnce();
-            if ( renderVirtualScreen().contains( text ) )
-                return true;
-            std::this_thread::sleep_for( 10ms );
-            elapsed += 10;
-        }
-        return false;
-    };
-
-    REQUIRE(  renderVirtualScreen().contains( btnTitle ) );
+    REQUIRE(  renderInteractiveComponent( successButton ).contains( btnTitle ) );
     successButton->OnEvent( Event::Return );
     loop.RunOnce();
-    REQUIRE( renderVirtualScreen().contains( "Loading" ) );
-    REQUIRE( waitForText( "Success!"  ) );
+    REQUIRE( renderInteractiveComponent( successButton ).contains( "Loading" ) );
+    REQUIRE( waitForText( loop, successButton, "Success!"  ) );
 
 }
 
@@ -345,47 +356,26 @@ TEST_CASE( "Test FileLoader", "[FEELCORE-TUI]" )
     auto renderer = Renderer( fileLoader, [fileLoader]{ return fileLoader->Render(); } );
     ::ftxui::Loop loop( &screen, renderer );
 
-    auto renderVirtualScreen = [&fileLoader] -> std::string
-    {
-        auto fixedScreen = Screen::Create( Dimension::Full() );
-        Render( fixedScreen, fileLoader->Render() );
-        return fixedScreen.ToString();
-    };
-
-    auto waitForText = [&]( std::string const& text, int timeout_ms = 1000) -> bool
-    {
-        int elapsed = 0;
-        while ( elapsed < timeout_ms )
-        {
-            loop.RunOnce();
-            if ( renderVirtualScreen().contains( text ) )
-                return true;
-            std::this_thread::sleep_for( 10ms );
-            elapsed += 10;
-        }
-        return false;
-    };
-
-    REQUIRE( renderVirtualScreen().contains( placeholder ) );
-    REQUIRE( renderVirtualScreen().contains( "Load" ) );
-    REQUIRE( renderVirtualScreen().contains( "Unload" ) );
+    REQUIRE( renderInteractiveComponent( fileLoader ).contains( placeholder ) );
+    REQUIRE( renderInteractiveComponent( fileLoader ).contains( "Load" ) );
+    REQUIRE( renderInteractiveComponent( fileLoader ).contains( "Unload" ) );
 
     //Check load invalid file
     fileLoaderFilename = missingPath.string(); 
     fileLoader->OnEvent( Event::Return ); // Press Enter on the input
-    REQUIRE( waitForText( "Could not load." ) );
+    REQUIRE( waitForText( loop, fileLoader, "Could not load." ) );
 
     //Check load
-    // fileLoaderFilename = successPath.string();
-    // fileLoader->OnEvent( Event::Return ); 
-    // REQUIRE( waitForText( "Loaded"  ) );
+    fileLoaderFilename = successPath.string();
+    fileLoader->OnEvent( Event::Return ); 
+    REQUIRE( waitForText( loop, fileLoader, "Loaded"  ) );
 
     //Check unload
-    // fileLoaderFilename = "";
-    // fileLoader->OnEvent( Event::ArrowRight ); // Move to Load
-    // fileLoader->OnEvent( Event::ArrowRight ); // Move to Unload
-    // fileLoader->OnEvent( Event::Return ); // Press Unload
-    // REQUIRE( waitForText( "Unloaded" ) );
+    fileLoaderFilename = "";
+    fileLoader->OnEvent( Event::ArrowRight ); // Move to Load
+    fileLoader->OnEvent( Event::ArrowRight ); // Move to Unload
+    fileLoader->OnEvent( Event::Return ); // Press Unload
+    REQUIRE( waitForText( loop, fileLoader, "Unloaded" ) );
 }
 
 
