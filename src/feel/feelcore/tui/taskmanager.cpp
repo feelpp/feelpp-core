@@ -11,6 +11,12 @@ namespace Feel::Core::ftxui
 {
 
 
+AsyncUiTask::~AsyncUiTask()
+{
+    if ( M_workerThread.joinable() ) M_workerThread.join();
+    if ( M_tickThread.joinable() ) M_tickThread.join();
+}
+
 void
 AsyncUiTask::executeTask()
 {
@@ -54,8 +60,12 @@ AsyncUiTask::start()
     // prevents double trigger
     if ( M_state.status == TaskStatus::WORKING ) return;
 
-    std::thread( [this](){ this->executeTask(); }).detach();
-    std::thread( [this](){ this->pumpTicks(); }).detach();
+    //Ensures previous threads are joined before starting new.
+    if ( M_workerThread.joinable() ) M_workerThread.join();
+    if ( M_tickThread.joinable() ) M_tickThread.join();
+
+    M_workerThread = std::thread( [this](){ this->executeTask(); });
+    M_tickThread = std::thread( [this](){ this->pumpTicks(); });
 }
 
 void

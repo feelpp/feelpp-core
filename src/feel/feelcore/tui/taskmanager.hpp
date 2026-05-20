@@ -41,6 +41,9 @@ public:
         : M_task( std::move( task ) ), M_screen( screen ), M_tickDuration( tickDuration )
     {}
 
+    //! Gracefully cleanup worker and tick threads
+    ~AsyncUiTask();
+
     //! Spawns a worker and tick threads.
     void start();
 
@@ -65,6 +68,9 @@ private:
     ::ftxui::ScreenInteractive & M_screen;
     AsyncUiTaskState M_state;
     std::chrono::milliseconds M_tickDuration;
+
+    std::thread M_workerThread;
+    std::thread M_tickThread;
 };
 
 
