@@ -40,6 +40,19 @@ Environment::Environment( int argc, char* argv[], po::options_description const&
         po::store( parse_config_file( ifs, fullOptionsDescription, true ), M_vm );
     }
     po::notify( M_vm );
+
+    if ( M_vm.count("concurrency.max-threads") )
+    {
+        int maxThreads = M_vm["concurrency.max-threads"].as<int>();
+#ifdef FEELPP_HAS_TBB
+        std::cout << "TBB FOUND!!!!!!!" << std::endl;
+        if ( maxThreads > 0 )
+            M_tbbControl = std::make_unique<tbb::global_control>( tbb::global_control::max_allowed_parallelism, maxThreads );
+#else
+#endif
+
+    }
+
 }
 
 Environment*
@@ -64,6 +77,7 @@ Environment::options() const
         ( "help", "produce help message" )
         ( "verbose,v", po::value<int>()->implicit_value(1), "enable verbosity (optionally specify level)" )
         ( "config-files", po::value<std::vector<std::string> >()->multitoken(), "specify a list of .cfg file" )
+        ( "concurrency.max-threads", po::value<int>()->default_value(-1), "Maximum number of threads. (-1 for automatic) " )
         ;
     return desc;
 }

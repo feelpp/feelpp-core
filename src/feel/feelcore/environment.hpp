@@ -2,6 +2,10 @@
 
 #pragma once
 
+#ifdef FEELPP_HAS_TBB
+#include <tbb/global_control.h>
+#endif
+
 #include <feel/feelcore/feelcore.hpp>
 #include <feel/feelcore/assert.hpp>
 #include <feel/feelcore/namedarguments.hpp>
@@ -72,6 +76,10 @@ private:
     static std::unique_ptr<Environment> S_instance;
     po::variables_map M_vm;
     std::map<std::string,std::unique_ptr<EnvironmentPlugin>> M_plugins;
+
+#ifdef FEELPP_HAS_TBB
+    std::unique_ptr<tbb::global_control> M_tbbControl;
+#endif
 };
 
 
