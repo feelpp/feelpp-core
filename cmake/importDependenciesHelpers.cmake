@@ -379,10 +379,21 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
       set( Eigen3_VERSION ${FEELPP_EIGEN3_VERSION} )
     endif()
     include(CGAL_Eigen3_support)
+
+    set(CGAL_TARGET_LIST "CGAL::CGAL;CGAL::CGAL_Core;CGAL::Eigen3_support")
+
+    find_package(TBB QUIET)
+    if (TBB_FOUND)
+        message(STATUS "CGAL: System TBB found" )
+        include(CGAL_TBB_support)
+        string(APPEND CGAL_TARGET_LIST ";CGAL::TBB_support")
+    endif()
+
     if ( EMSCRIPTEN )
       target_compile_definitions( CGAL INTERFACE CGAL_ALWAYS_ROUND_TO_NEAREST)
     endif()
-   feelpp_updateImportDependencyForUse( CGAL "CGAL::CGAL;CGAL::CGAL_Core;CGAL::Eigen3_support" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+
+    feelpp_updateImportDependencyForUse( CGAL "${CGAL_TARGET_LIST}" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
   else()
     message( WARNING "ThirdParty CGAL not found")
   endif()
