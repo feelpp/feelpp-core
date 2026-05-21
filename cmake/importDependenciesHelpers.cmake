@@ -383,6 +383,9 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
     set(CGAL_TARGET_LIST "CGAL::CGAL;CGAL::CGAL_Core;CGAL::Eigen3_support")
 
     if ( FEELPP_HAS_TBB )
+        if ( NOT TARGET TBB::tbb )
+            find_package(TBB QUIET)
+        endif()
         include(CGAL_TBB_support)
         string(APPEND CGAL_TARGET_LIST ";CGAL::TBB_support")
     endif()
