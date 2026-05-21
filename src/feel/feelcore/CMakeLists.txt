@@ -3,4 +3,5 @@ set(FEELPP_CORE_LIB_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/environment.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/table.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/tabulateinformations.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/threadpool.cpp
   PARENT_SCOPE )

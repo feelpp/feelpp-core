@@ -379,10 +379,22 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
       set( Eigen3_VERSION ${FEELPP_EIGEN3_VERSION} )
     endif()
     include(CGAL_Eigen3_support)
+
+    set(CGAL_TARGET_LIST "CGAL::CGAL;CGAL::CGAL_Core;CGAL::Eigen3_support")
+
+    if ( FEELPP_HAS_TBB )
+        if ( NOT TARGET TBB::tbb )
+            find_package(TBB QUIET)
+        endif()
+        include(CGAL_TBB_support)
+        string(APPEND CGAL_TARGET_LIST ";CGAL::TBB_support")
+    endif()
+
     if ( EMSCRIPTEN )
       target_compile_definitions( CGAL INTERFACE CGAL_ALWAYS_ROUND_TO_NEAREST)
     endif()
-   feelpp_updateImportDependencyForUse( CGAL "CGAL::CGAL;CGAL::CGAL_Core;CGAL::Eigen3_support" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+
+    feelpp_updateImportDependencyForUse( CGAL "${CGAL_TARGET_LIST}" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
   else()
     message( WARNING "ThirdParty CGAL not found")
   endif()
@@ -438,6 +450,27 @@ macro(importDependency_PNG _useSystem _target_dependencies _target_definitions _
   endif()
   printDependencySectionEnd("PNG")
 endmacro(importDependency_PNG)
+
+#--------------------------------------
+# TBB
+#--------------------------------------
+macro(importDependency_TBB _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+  printDependencySectionBegin("TBB")
+  if ( ${_useSystem} )
+      find_package(TBB QUIET)
+  else()
+    message(FATAL_ERROR "TBB dependency can be enabled only from system")
+  endif()
+  if ( TARGET TBB::tbb  )
+    message(STATUS "TBB found")
+    feelpp_updateImportDependencyForUse( TBB TBB::tbb ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+  else()
+    message(STATUS "TBB not found -> disabling TBB support")
+    set(FEELPP_ENABLE_TBB OFF CACHE BOOL "" FORCE)
+  endif()
+  printDependencySectionEnd("TBB")
+endmacro(importDependency_TBB)
+
 
 #--------------------------------------
 # Catch2
