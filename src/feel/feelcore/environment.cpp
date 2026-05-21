@@ -45,7 +45,6 @@ Environment::Environment( int argc, char* argv[], po::options_description const&
     {
         int maxThreads = M_vm["concurrency.max-threads"].as<int>();
 #ifdef FEELPP_HAS_TBB
-        std::cout << "TBB FOUND!!!!!!!" << std::endl;
         if ( maxThreads > 0 )
             M_tbbControl = std::make_unique<tbb::global_control>( tbb::global_control::max_allowed_parallelism, maxThreads );
 #else
