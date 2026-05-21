@@ -3,6 +3,7 @@
 #pragma once
 
 #include <condition_variable>
+#include <type_traits>
 #include <vector>
 #include <queue>
 #include <thread>
@@ -25,15 +26,16 @@ public:
     ThreadPool & operator=( ThreadPool && ) = delete; 
 
     template<typename F, typename... Args>
-    std::future<F( Args... )> enqueue( F && f, Args &&... args )
+    auto enqueue( F && f, Args &&... args ) -> std::future<std::invoke_result_t<F, Args...>>
     {
+        using ReturnType = std::invoke_result_t<F, Args...>;
         auto func = std::bind( std::forward<F>(f), std::forward<Args>(args)... );
-        auto encapsulatedPtr = std::make_shared<std::packaged_task<F(Args...)>>( func );
+        auto encapsulatedPtr = std::make_shared<std::packaged_task<ReturnType()>>( func );
 
-        std::future<F( Args... )> futureObj = encapsulatedPtr->get_future();
+        std::future<ReturnType> futureObj = encapsulatedPtr->get_future();
         {
             std::unique_lock<std::mutex> lock( M_mutex );
-            M_tasks.emplace( [encapsulatedPtr] { *(encapsulatedPtr)(); } );
+            M_tasks.emplace( [encapsulatedPtr]() { (*encapsulatedPtr)(); } );
         }
         M_condition.notify_one();
         return futureObj;
