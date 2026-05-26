@@ -27,7 +27,7 @@
 
 TEST_CASE( "Test MultiOptionSelector", "[FEELCORE-TUI]" )
 {
-    using namespace Feel::Core::ftxui;
+    using namespace Feel::Core::tui;
 
     bool option1 = true;
     bool option2 = false;
@@ -37,11 +37,11 @@ TEST_CASE( "Test MultiOptionSelector", "[FEELCORE-TUI]" )
     };
 
     std::string title = "MultiOption Selector";
-    Component multiOptionSelector = MultiOptionSelector( options, title );
+    ftxui::Component multiOptionSelector = MultiOptionSelector( options, title );
 
     auto document = multiOptionSelector->Render();
 
-    auto screen = Screen::Create( Dimension::Full(), Dimension::Fit( document ) );
+    auto screen = ftxui::Screen::Create( ftxui::Dimension::Full(), ftxui::Dimension::Fit( document ) );
     Render( screen, document );
 
     std::string screenContent = screen.ToString();
@@ -52,7 +52,7 @@ TEST_CASE( "Test MultiOptionSelector", "[FEELCORE-TUI]" )
 
 
     //Cursor should already be in option one
-    bool evtHandled = multiOptionSelector->OnEvent( Event::Return );
+    bool evtHandled = multiOptionSelector->OnEvent( ftxui::Event::Return );
     REQUIRE( evtHandled );
     REQUIRE( option1 == false );
     REQUIRE( option2 == false ); //unchanged
@@ -60,8 +60,8 @@ TEST_CASE( "Test MultiOptionSelector", "[FEELCORE-TUI]" )
 
 
     //Trigger second option
-    multiOptionSelector->OnEvent( Event::ArrowDown );
-    multiOptionSelector->OnEvent( Event::Return );
+    multiOptionSelector->OnEvent( ftxui::Event::ArrowDown );
+    multiOptionSelector->OnEvent( ftxui::Event::Return );
     REQUIRE( option1 == false );
     REQUIRE( option2 == true );
     REQUIRE( option3 == true ); //unchanged
@@ -71,17 +71,17 @@ TEST_CASE( "Test MultiOptionSelector", "[FEELCORE-TUI]" )
 
 TEST_CASE( "Test RadioSelector", "[FEELCORE-TUI]" )
 {
-    using namespace Feel::Core::ftxui;
+    using namespace Feel::Core::tui;
 
     int selected = 0;
     std::vector<std::string> options = { "option1", "option2", "option3" };
 
     std::string title = "Radio Selector";
-    Component radioSelector = RadioSelector( &options, &selected, title );
+    ftxui::Component radioSelector = RadioSelector( &options, &selected, title );
 
     auto document = radioSelector->Render();
 
-    auto screen = Screen::Create( Dimension::Full(), Dimension::Fit( document ) );
+    auto screen = ftxui::Screen::Create( ftxui::Dimension::Full(), ftxui::Dimension::Fit( document ) );
     Render( screen, document );
 
     std::string screenContent = screen.ToString();
@@ -91,37 +91,37 @@ TEST_CASE( "Test RadioSelector", "[FEELCORE-TUI]" )
         REQUIRE( screenContent.contains( label ) );
 
 
-    bool evtHandled = radioSelector->OnEvent( Event::Return );
+    bool evtHandled = radioSelector->OnEvent( ftxui::Event::Return );
     REQUIRE( evtHandled );
     REQUIRE( selected == 0 );
 
 
     //Trigger last option (down two times)
-    radioSelector->OnEvent( Event::ArrowDown );
-    radioSelector->OnEvent( Event::ArrowDown );
-    radioSelector->OnEvent( Event::Return );
+    radioSelector->OnEvent( ftxui::Event::ArrowDown );
+    radioSelector->OnEvent( ftxui::Event::ArrowDown );
+    radioSelector->OnEvent( ftxui::Event::Return );
     REQUIRE( selected == 2 );
 }
 
 
 TEST_CASE( "Test ReadoutSlider", "[FEELCORE-TUI]" )
 {
-    using namespace Feel::Core::ftxui;
+    using namespace Feel::Core::tui;
 
     int intValue = 50;
     std::string intTitle = "Int Readout Slider";
-    Component intSlider = ReadoutSlider<int>( &intValue, 0, 100, 1, intTitle, 0 ); 
+    ftxui::Component intSlider = ReadoutSlider<int>( &intValue, 0, 100, 1, intTitle, 0 ); 
 
     float doubleValue = 0.5;
     std::string doubleTitle = "Double Readout Slider";
-    Component doubleSlider = ReadoutSlider<float>( &doubleValue, 0, 1, 0.1, doubleTitle, 2 ); 
+    ftxui::Component doubleSlider = ReadoutSlider<float>( &doubleValue, 0, 1, 0.1, doubleTitle, 2 ); 
 
-    auto document = hbox( {
-        intSlider->Render() | flex_grow,
-        doubleSlider->Render() | flex_grow
-    } ) | flex;
+    auto document = ftxui::hbox( {
+        intSlider->Render(),
+        doubleSlider->Render()
+    } );
 
-    auto screen = Screen::Create( Dimension::Full(), Dimension::Fit( document ) );
+    auto screen = ftxui::Screen::Create( ftxui::Dimension::Full(), ftxui::Dimension::Fit( document ) );
     Render( screen, document );
 
     std::string screenContent = screen.ToString();
@@ -133,28 +133,28 @@ TEST_CASE( "Test ReadoutSlider", "[FEELCORE-TUI]" )
     REQUIRE( screenContent.contains( "50" ) );
     REQUIRE( screenContent.contains( "0.50" ) ); //Because display precision of 2
 
-    bool evtHandled = intSlider->OnEvent( Event::ArrowRight );
+    bool evtHandled = intSlider->OnEvent( ftxui::Event::ArrowRight );
     REQUIRE( evtHandled );
     REQUIRE( intValue == 50 + 1 );
-    intSlider->OnEvent( Event::ArrowLeft );
+    intSlider->OnEvent( ftxui::Event::ArrowLeft );
     REQUIRE( intValue == 50 );
 
-    doubleSlider->OnEvent( Event::ArrowRight );
+    doubleSlider->OnEvent( ftxui::Event::ArrowRight );
     REQUIRE( doubleValue == Catch::Approx( 0.5 + 0.1) );
-    doubleSlider->OnEvent( Event::ArrowLeft );
+    doubleSlider->OnEvent( ftxui::Event::ArrowLeft );
     REQUIRE( doubleValue == Catch::Approx( 0.5 ) );
 }
 
 
 TEST_CASE( "Test SpinBox", "[FEELCORE-TUI]" )
 {
-    using namespace Feel::Core::ftxui;
+    using namespace Feel::Core::tui;
 
     int value = 1;
-    Component spinBox = SpinBox( value, "SpinBox " ); 
+    ftxui::Component spinBox = SpinBox( value, "SpinBox " ); 
 
     auto document = spinBox->Render();
-    auto screen = Screen::Create( Dimension::Full(), Dimension::Fit( document ) );
+    auto screen = ftxui::Screen::Create( ftxui::Dimension::Full(), ftxui::Dimension::Fit( document ) );
     Render( screen, document );
 
     auto screenContent = screen.ToString();
@@ -163,41 +163,41 @@ TEST_CASE( "Test SpinBox", "[FEELCORE-TUI]" )
     REQUIRE( screenContent.contains("-") );
 
 
-    bool evtHandled = spinBox->OnEvent( Event::Return ); //cursor already on -, press it
+    bool evtHandled = spinBox->OnEvent( ftxui::Event::Return ); //cursor already on -, press it
     REQUIRE( evtHandled );
     REQUIRE( value == 0 );
-    spinBox->OnEvent( Event::ArrowRight ); //Position on the + elt
-    spinBox->OnEvent( Event::Return ); //Press on the + button
-    spinBox->OnEvent( Event::Return ); //Press on the + button
+    spinBox->OnEvent( ftxui::Event::ArrowRight ); //Position on the + elt
+    spinBox->OnEvent( ftxui::Event::Return ); //Press on the + button
+    spinBox->OnEvent( ftxui::Event::Return ); //Press on the + button
     REQUIRE( value == 2 );
 }
 
 
 TEST_CASE( "Test FileInput", "[FEELCORE-TUI]" )
 {
-    using namespace Feel::Core::ftxui;
+    using namespace Feel::Core::tui;
 
     std::string filepath;
     std::string placeholder = " Enter your filepath...";
-    Component fileInput = FileInput( &filepath, placeholder ); 
+    ftxui::Component fileInput = FileInput( &filepath, placeholder ); 
 
     auto document = fileInput->Render();
-    auto screen = Screen::Create( Dimension::Full(), Dimension::Fit( document ) );
+    auto screen = ftxui::Screen::Create( ftxui::Dimension::Full(), ftxui::Dimension::Fit( document ) );
     Render( screen, document );
 
     std::string screenContent = screen.ToString();
 
     REQUIRE( screenContent.contains( placeholder ) );
 
-    bool evtHandled = fileInput->OnEvent( Event::Character("./") );
+    bool evtHandled = fileInput->OnEvent( ftxui::Event::Character("./") );
     REQUIRE( evtHandled );
 
     //Check cycling
-    fileInput->OnEvent( Event::Tab );
+    fileInput->OnEvent( ftxui::Event::Tab );
     REQUIRE( filepath != "./" ); 
     REQUIRE( Feel::fs::exists( filepath ) );
     std::string oldPath = filepath;
-    fileInput->OnEvent( Event::Tab );
+    fileInput->OnEvent( ftxui::Event::Tab );
     REQUIRE(oldPath != filepath );
     REQUIRE( Feel::fs::exists( filepath ) );
 
@@ -206,20 +206,20 @@ TEST_CASE( "Test FileInput", "[FEELCORE-TUI]" )
 //================= Interactive ===================
 TEST_CASE( "Test TaskManager Success", "[FEELCORE-TUI]" )
 {
-    using namespace Feel::Core::ftxui;
+    using namespace Feel::Core::tui;
 
-    auto screen = ScreenInteractive::TerminalOutput();
+    auto screen = ftxui::ScreenInteractive::TerminalOutput();
 
     AsyncUiTask task( [] { 
         return "Success!"; 
     }, screen );
 
-    screen.Loop( Renderer([&screen, &task] {
+    screen.Loop( ftxui::Renderer([&screen, &task] {
         if ( task.getState().status == TaskStatus::IDLE )
             task.start();
         else if ( task.getState().status != TaskStatus::WORKING )
             screen.Post( screen.ExitLoopClosure() );
-        return text( "Testing async UI task ..." );
+        return ftxui::text( "Testing async UI task ..." );
     } ) );
 
 
@@ -230,20 +230,20 @@ TEST_CASE( "Test TaskManager Success", "[FEELCORE-TUI]" )
 
 TEST_CASE( "Test TaskManager Failure", "[FEELCORE-TUI]" )
 {
-    using namespace Feel::Core::ftxui;
+    using namespace Feel::Core::tui;
 
-    auto screen = ScreenInteractive::TerminalOutput();
+    auto screen = ftxui::ScreenInteractive::TerminalOutput();
 
     AsyncUiTask task( [] -> std::string {
         throw std::runtime_error( "Failure" );
     }, screen );
 
-    screen.Loop( Renderer([&screen, &task] {
+    screen.Loop( ftxui::Renderer([&screen, &task] {
         if ( task.getState().status == TaskStatus::IDLE )
             task.start();
         else if ( task.getState().status != TaskStatus::WORKING )
             screen.Post( screen.ExitLoopClosure() );
-        return text( "Testing async UI task ..." );
+        return ftxui::text( "Testing async UI task ..." );
     } ) );
 
 
@@ -256,8 +256,8 @@ TEST_CASE( "Test TaskManager Failure", "[FEELCORE-TUI]" )
 std::string
 renderInteractiveComponent( ::ftxui::Component & component )
 {
-    using namespace Feel::Core::ftxui;
-    auto screen = Screen::Create( Dimension::Full()  );
+    using namespace Feel::Core::tui;
+    auto screen = ftxui::Screen::Create( ftxui::Dimension::Full()  );
     Render( screen, component->Render() );
     return screen.ToString();
 }
@@ -285,10 +285,10 @@ waitForText( ::ftxui::Loop & loop, ::ftxui::Component & component, std::string c
 
 TEST_CASE( "Test WorkerButton", "[FEELCORE-TUI]" )
 {
-    using namespace Feel::Core::ftxui;
+    using namespace Feel::Core::tui;
     using namespace std::chrono_literals;
 
-    auto screen = ScreenInteractive::FitComponent();
+    auto screen = ftxui::ScreenInteractive::FitComponent();
 
     std::atomic<bool> taskFinished;
     auto successTask = [&taskFinished] -> std::string
@@ -299,14 +299,14 @@ TEST_CASE( "Test WorkerButton", "[FEELCORE-TUI]" )
     };
 
     std::string btnTitle = "Click";
-    Component successButton = WorkerButton( screen, successTask, btnTitle );
+    ftxui::Component successButton = WorkerButton( screen, successTask, btnTitle );
 
     auto renderer = Renderer( successButton, [&successButton]{ return successButton->Render(); } );
 
     ::ftxui::Loop loop( &screen, renderer );
 
     REQUIRE(  renderInteractiveComponent( successButton ).contains( btnTitle ) );
-    successButton->OnEvent( Event::Return );
+    successButton->OnEvent( ftxui::Event::Return );
     loop.RunOnce();
     REQUIRE( renderInteractiveComponent( successButton ).contains( "Loading" ) );
     REQUIRE( waitForText( loop, successButton, "Success!"  ) );
@@ -316,7 +316,7 @@ TEST_CASE( "Test WorkerButton", "[FEELCORE-TUI]" )
 
 TEST_CASE( "Test FileLoader", "[FEELCORE-TUI]" )
 {
-    using namespace Feel::Core::ftxui;
+    using namespace Feel::Core::tui;
     using namespace std::chrono_literals;
 
     Feel::fs::path successPath = "test_success_file.txt";
@@ -333,7 +333,7 @@ TEST_CASE( "Test FileLoader", "[FEELCORE-TUI]" )
     std::ofstream(successPath) << "dummy data";
     Feel::fs::remove(missingPath);
 
-    auto screen = ScreenInteractive::FitComponent();
+    auto screen = ftxui::ScreenInteractive::FitComponent();
 
     class DummyLoader : public IFileLoaderHandler
     {
@@ -352,7 +352,7 @@ TEST_CASE( "Test FileLoader", "[FEELCORE-TUI]" )
     std::string fileLoaderFilename;
     std::string placeholder = "Enter the filepath...";
 
-    Component fileLoader = FileLoader( screen, &fileLoaderFilename, dummyLoader, placeholder);
+    ftxui::Component fileLoader = FileLoader( screen, &fileLoaderFilename, dummyLoader, placeholder);
     auto renderer = Renderer( fileLoader, [fileLoader]{ return fileLoader->Render(); } );
     ::ftxui::Loop loop( &screen, renderer );
 
@@ -362,19 +362,19 @@ TEST_CASE( "Test FileLoader", "[FEELCORE-TUI]" )
 
     //Check load invalid file
     fileLoaderFilename = missingPath.string(); 
-    fileLoader->OnEvent( Event::Return ); // Press Enter on the input
+    fileLoader->OnEvent( ftxui::Event::Return ); // Press Enter on the input
     REQUIRE( waitForText( loop, fileLoader, "Could not load." ) );
 
     //Check load
     fileLoaderFilename = successPath.string();
-    fileLoader->OnEvent( Event::Return ); 
+    fileLoader->OnEvent( ftxui::Event::Return ); 
     REQUIRE( waitForText( loop, fileLoader, "Loaded"  ) );
 
     //Check unload
     fileLoaderFilename = "";
-    fileLoader->OnEvent( Event::ArrowRight ); // Move to Load
-    fileLoader->OnEvent( Event::ArrowRight ); // Move to Unload
-    fileLoader->OnEvent( Event::Return ); // Press Unload
+    fileLoader->OnEvent( ftxui::Event::ArrowRight ); // Move to Load
+    fileLoader->OnEvent( ftxui::Event::ArrowRight ); // Move to Unload
+    fileLoader->OnEvent( ftxui::Event::Return ); // Press Unload
     REQUIRE( waitForText( loop, fileLoader, "Unloaded" ) );
 }
 

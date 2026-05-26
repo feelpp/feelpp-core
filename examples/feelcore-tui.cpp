@@ -15,8 +15,9 @@
 
 int main( int argc, char** argv )
 {
-    using namespace Feel::Core::ftxui;
+    using namespace Feel::Core::tui;
     using namespace std::chrono_literals;
+    using namespace ftxui;
 
     auto screen = ScreenInteractive::TerminalOutput();
 
