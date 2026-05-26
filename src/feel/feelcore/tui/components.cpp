@@ -8,9 +8,10 @@
 #include <feel/feelcore/tui/taskmanager.hpp>
 
 
-namespace Feel::Core::ftxui
+namespace Feel::Core::tui
 {
 
+using namespace ::ftxui;
 
 Component
 MultiOptionSelector( std::vector<std::pair<std::string,bool*>> const& options, std::string const& label )

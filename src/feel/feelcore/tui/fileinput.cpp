@@ -4,9 +4,10 @@
 
 #include <feel/feelcore/tui/fileinput.hpp>
 
-namespace Feel::Core::ftxui
+namespace Feel::Core::tui
 {
 
+using namespace ::ftxui;
 
 std::string
 FileInputComponent::longestCommonPrefix( std::vector<std::string> const& strings )

@@ -7,7 +7,7 @@
 
 
 
-namespace Feel::Core::ftxui
+namespace Feel::Core::tui
 {
 
 

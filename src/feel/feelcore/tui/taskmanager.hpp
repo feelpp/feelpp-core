@@ -12,7 +12,7 @@
 
 
 
-namespace Feel::Core::ftxui
+namespace Feel::Core::tui
 {
 
 //! Current execution lifecycle of the async task.
