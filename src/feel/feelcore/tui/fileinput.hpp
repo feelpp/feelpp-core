@@ -25,10 +25,10 @@ struct AutocompleteState
 
 //! Component that handles text input to select files and autocompletes/cycles through options
 class FileInputComponent
-    : public ::ftxui::ComponentBase
+    : public ftxui::ComponentBase
 {
 public:
-    FileInputComponent( ::ftxui::StringRef content, ::ftxui::StringRef placeholder = {}, ::ftxui::InputOption options = {} )
+    FileInputComponent( ftxui::StringRef content, ftxui::StringRef placeholder = {}, ftxui::InputOption options = {} )
         : M_content( content ), M_options( options )
     {
         M_input = Input( content, placeholder, options );
@@ -36,7 +36,7 @@ public:
     };
 
     //! Is triggered on any input event such as typing
-    bool OnEvent( ::ftxui::Event event ) override;
+    bool OnEvent( ftxui::Event event ) override;
 
 private:
 
@@ -44,13 +44,13 @@ private:
     bool onReturn();
 
     //! Handles file and directory name autocompletion from disk
-    bool handleAutocomplete( ::ftxui::Event event );
+    bool handleAutocomplete( ftxui::Event event );
 
     //! Selects the closest match to a given string inside a directory and replaces the component content
-    void findMatches( std::string const& currentInput, ::ftxui::Event event );
+    void findMatches( std::string const& currentInput, ftxui::Event event );
 
     //! Selects the next match inside a directory and replaces the component content
-    void cycleMatches( ::ftxui::Event event );
+    void cycleMatches( ftxui::Event event );
 
     //! filters the longest common prefix in a given vector of strings
     std::string longestCommonPrefix( std::vector<std::string> const& strings );
@@ -60,12 +60,12 @@ private:
 
 
 private:
-    ::ftxui::StringRef M_content;
-    ::ftxui::InputOption M_options;
-    ::ftxui::Component M_input;
+    ftxui::StringRef M_content;
+    ftxui::InputOption M_options;
+    ftxui::Component M_input;
 
     AutocompleteState M_autocompleteState; 
 
 };
 
-} //namespace Feel::Core::ftxui
+} //namespace Feel::Core::tui

@@ -36,7 +36,7 @@ public:
     //! screen: An FTXUI screen to post UI refresh events to
     //! tickDuration: The interval between forced UI redraws while the task is running
     AsyncUiTask( std::function<std::string()> task,
-                 ::ftxui::ScreenInteractive & screen,
+                 ftxui::ScreenInteractive & screen,
                  std::chrono::milliseconds tickDuration = std::chrono::milliseconds( 200 ) )
         : M_task( std::move( task ) ), M_screen( screen ), M_tickDuration( tickDuration )
     {}
@@ -54,7 +54,7 @@ public:
     AsyncUiTaskState const& getState() const { return M_state; }
 
     //! Returns a colored UI Element displaying the current task state
-    ::ftxui::Element getStateUiElement();
+    ftxui::Element getStateUiElement();
 
 private:
     //! Executes a task and posts the result to the UI
@@ -65,7 +65,7 @@ private:
 
 private:
     std::function<std::string()> M_task;
-    ::ftxui::ScreenInteractive & M_screen;
+    ftxui::ScreenInteractive & M_screen;
     AsyncUiTaskState M_state;
     std::chrono::milliseconds M_tickDuration;
 
