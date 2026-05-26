@@ -4,12 +4,13 @@ name: CI
 on:
   push:
     branches:
-      - '**'  # Push events on all branches
-    paths-ignore:
-      - '.github/workflows/init.yml'
-    tags:
-      # Push events to matching v*, i.e. v1.0, v20.15.10 including semver
-      - 'v*'
+      - master
+  pull_request:
+    branches:
+      - '*'
+  #    types: [opened, reopened]
+  release:
+    types: [published]
 
 jobs:
 
@@ -43,11 +44,11 @@ jobs:
       - name: Build wheel
         run: |
           source .venv/bin/activate
-          pipx run build
+          uv build
           uv pip install dist/*.whl
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           # Artifact name
           name: artifacts-wheel
@@ -137,7 +138,7 @@ jobs:
           cmake --build --preset x86_64-linux -t package
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           # Artifact name
           name: feelpp-core-artifacts
@@ -145,7 +146,7 @@ jobs:
           path: build/x86_64-linux/assets/feelpp-core-*
 
       - name: Upload Fin Datasets
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: datasets
           path: build/default/datasets/
