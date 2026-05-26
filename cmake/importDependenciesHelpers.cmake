@@ -328,9 +328,10 @@ macro(importDependency_EIGEN3 _useSystem _target_dependencies _target_definition
   else()
     FetchContent_Declare( eigen3 GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
       #GIT_TAG 3.4.0
-      GIT_TAG 02bcf9b5918d46016bc88e5e9abebb6caa5a80b7
+      GIT_TAG 5.0.1 #1dd76c8d07637cc878632ea76a129c6ac53d07034f4d
       #GIT_SHALLOW ON
     )
+    set(FEELPP_EIGEN3_VERSION "5.0.1" PARENT_SCOPE)
     set(EIGEN_BUILD_CMAKE_PACKAGE ON)
     set(EIGEN_BUILD_PKGCONFIG ON)
     FetchContent_MakeAvailable(eigen3)
@@ -351,7 +352,8 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
     find_package(CGAL REQUIRED COMPONENTS Core)
   else()
     FetchContent_Declare( cgal GIT_REPOSITORY https://github.com/CGAL/cgal.git
-      GIT_TAG v6.1 # v6.0.1 #  v5.6
+      GIT_TAG v6.1.1 # v6.0.1 #  v5.6
+      PATCH_COMMAND git apply "${FEELPP_CORE_CMAKE_DIR}/cgal.patch" UPDATE_DISCONNECTED 1
       #GIT_TAG 5ffa817b6211a4bcec05faf85726bc4845682d50
       GIT_SHALLOW ON
     )
@@ -372,6 +374,9 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
     # workaround with CGAL cmake : feelpp has EIGEN3 but not cmake var EIGEN3_FOUND
     if (FEELPP_HAS_EIGEN3 AND NOT EIGEN3_FOUND )
       set( EIGEN3_FOUND 1)
+    endif()
+    if (FEELPP_EIGEN3_VERSION AND NOT Eigen3_VERSION)
+      set( Eigen3_VERSION ${FEELPP_EIGEN3_VERSION} )
     endif()
     include(CGAL_Eigen3_support)
     if ( EMSCRIPTEN )
