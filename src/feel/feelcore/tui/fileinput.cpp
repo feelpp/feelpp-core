@@ -7,8 +7,6 @@
 namespace Feel::Core::tui
 {
 
-using namespace ::ftxui;
-
 std::string
 FileInputComponent::longestCommonPrefix( std::vector<std::string> const& strings )
 {
@@ -63,7 +61,7 @@ FileInputComponent::onReturn()
 
 
 bool
-FileInputComponent::handleAutocomplete( Event event )
+FileInputComponent::handleAutocomplete( ftxui::Event event )
 {
     std::string currentInput = *M_content;
 
@@ -79,7 +77,7 @@ FileInputComponent::handleAutocomplete( Event event )
 
 
 void
-FileInputComponent::findMatches( std::string const& currentInput, Event event )
+FileInputComponent::findMatches( std::string const& currentInput, ftxui::Event event )
 {
     M_autocompleteState.cycling = false;
 
@@ -132,7 +130,7 @@ FileInputComponent::findMatches( std::string const& currentInput, Event event )
         *M_content = newPath;
         M_autocompleteState.last_input = newPath;
 
-        M_input->OnEvent( Event::End );
+        M_input->OnEvent( ftxui::Event::End );
         return;
     }
     else
@@ -141,7 +139,7 @@ FileInputComponent::findMatches( std::string const& currentInput, Event event )
         M_autocompleteState.matches = matches;
         M_autocompleteState.parent_str = parentStr;
 
-        if ( event == Event::TabReverse )
+        if ( event == ftxui::Event::TabReverse )
             M_autocompleteState.cycle_index = matches.size() - 1;
         else
             M_autocompleteState.cycle_index = 0;
@@ -152,7 +150,7 @@ FileInputComponent::findMatches( std::string const& currentInput, Event event )
 
 
 void
-FileInputComponent::cycleMatches( Event event )
+FileInputComponent::cycleMatches( ftxui::Event event )
 {
     std::string match = M_autocompleteState.matches[M_autocompleteState.cycle_index];
     std::string newPath = M_autocompleteState.parent_str + match;
@@ -167,11 +165,11 @@ FileInputComponent::cycleMatches( Event event )
     *M_content = newPath;
     M_autocompleteState.last_input = newPath;
 
-    M_input->OnEvent(Event::End);
+    M_input->OnEvent( ftxui::Event::End );
 
-    if ( event == Event::Tab )
+    if ( event == ftxui::Event::Tab )
         M_autocompleteState.cycle_index = ( M_autocompleteState.cycle_index + 1 ) % M_autocompleteState.matches.size();
-    else if ( event == Event::TabReverse )
+    else if ( event == ftxui::Event::TabReverse )
     {
         if ( M_autocompleteState.cycle_index == 0 )
             M_autocompleteState.cycle_index =  M_autocompleteState.matches.size() - 1;
@@ -182,15 +180,15 @@ FileInputComponent::cycleMatches( Event event )
 
 
 bool
-FileInputComponent::OnEvent( Event event )
+FileInputComponent::OnEvent( ftxui::Event event )
 {
-    if ( event.is_mouse() || event == Event::Custom )
+    if ( event.is_mouse() || event == ftxui::Event::Custom )
         return ComponentBase::OnEvent( event );
 
-    if ( event == Event::Return )
+    if ( event == ftxui::Event::Return )
         return onReturn();
 
-    if ( event != Event::Tab && event != Event::TabReverse)
+    if ( event != ftxui::Event::Tab && event != ftxui::Event::TabReverse)
     {
         M_autocompleteState.cycling = false;
         return M_input->OnEvent( event );

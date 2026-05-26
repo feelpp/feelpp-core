@@ -11,90 +11,89 @@
 namespace Feel::Core::tui
 {
 
-using namespace ::ftxui;
 
-Component
+ftxui::Component
 MultiOptionSelector( std::vector<std::pair<std::string,bool*>> const& options, std::string const& label )
 {
-    Component checkboxes = Container::Vertical( {} );
+    ftxui::Component checkboxes = ftxui::Container::Vertical( {} );
     for ( auto const& opt : options )
-        checkboxes->Add( Checkbox( opt.first, opt.second ) );
+        checkboxes->Add( ftxui::Checkbox( opt.first, opt.second ) );
 
-    return Renderer( checkboxes, [label,checkboxes] {
-        return window(
-            text( fmt::format( " {} ", label ) ) | bold | center, 
-            vbox( { checkboxes->Render() } )
+    return ftxui::Renderer( checkboxes, [label,checkboxes] {
+        return ftxui::window(
+            ftxui::text( fmt::format( " {} ", label ) ) | ftxui::bold | ftxui::center, 
+            ftxui::vbox( { checkboxes->Render() } )
         );
     } );
 }
 
-Component
+ftxui::Component
 RadioSelector( std::vector<std::string> const* entries, int * selected, std::string const& label )
 {
-    Component radiobox = Radiobox( entries, selected );
+    ftxui::Component radiobox = ftxui::Radiobox( entries, selected );
 
-    return Renderer( radiobox, [label, radiobox] {
-        return window(
-            text( fmt::format( " {} ", label ) ) | bold | center,
-            vbox( { radiobox->Render() })
+    return ftxui::Renderer( radiobox, [label, radiobox] {
+        return ftxui::window(
+            ftxui::text( fmt::format( " {} ", label ) ) | ftxui::bold | ftxui::center,
+            ftxui::vbox( { radiobox->Render() })
         );
     } );
 }
 
 
 template <typename T>
-Component
-ReadoutSlider( Ref<T> value, T min, T max, T step, std::string const& title, int displayPrecision )
+ftxui::Component
+ReadoutSlider( ftxui::Ref<T> value, T min, T max, T step, std::string const& title, int displayPrecision )
 {
-    Component slider = Slider( "", value, min, max, step );
+    ftxui::Component slider = Slider( "", value, min, max, step );
 
-    return Renderer( slider, [slider, value, title, displayPrecision] {
-        return vbox( {
-            text( title ) | dim,
-            hbox( {
-                slider->Render() | flex,
-                text( fmt::format("{:>3.{}f}", static_cast<float>( *value ), displayPrecision ) ) | size( WIDTH, EQUAL, 6 ) 
+    return ftxui::Renderer( slider, [slider, value, title, displayPrecision] {
+        return ftxui::vbox( {
+            ftxui::text( title ) | ftxui::dim,
+            ftxui::hbox( {
+                slider->Render() | ftxui::flex,
+                ftxui::text( fmt::format("{:>3.{}f}", static_cast<float>( *value ), displayPrecision ) ) | size( ftxui::WIDTH, ftxui::EQUAL, 6 ) 
             } ),
-            separatorEmpty()
+            ftxui::separatorEmpty()
         } );
     } );
 }
-template Component ReadoutSlider<float>( Ref<float>, float, float, float, const std::string&, int );
-template Component ReadoutSlider<int>( Ref<int>, int, int, int, const std::string&, int );
+template ftxui::Component ReadoutSlider<float>( ftxui::Ref<float>, float, float, float, const std::string&, int );
+template ftxui::Component ReadoutSlider<int>( ftxui::Ref<int>, int, int, int, const std::string&, int );
 
 
 
-Component
+ftxui::Component
 SpinBox( int & value, std::string const& title )
 {
     //TODO: Make this template to accept float
-    Component inputMinus = Button( "-", [&value]{ value--; }, ButtonOption::Ascii() );
-    Component inputPlus = Button( "+", [&value]{ value++; }, ButtonOption::Ascii() );
-    Component stepperContainer = Container::Horizontal( { inputMinus, inputPlus } );
+    ftxui::Component inputMinus = Button( "-", [&value]{ value--; }, ftxui::ButtonOption::Ascii() );
+    ftxui::Component inputPlus = Button( "+", [&value]{ value++; }, ftxui::ButtonOption::Ascii() );
+    ftxui::Component stepperContainer = ftxui::Container::Horizontal( { inputMinus, inputPlus } );
 
-    return Renderer( stepperContainer, [&value, inputMinus, inputPlus, title] {
-        return hbox( {
-            text( title ),
-            hbox( {
+    return ftxui::Renderer( stepperContainer, [&value, inputMinus, inputPlus, title] {
+        return ftxui::hbox( {
+            ftxui::text( title ),
+            ftxui::hbox( {
                 inputMinus->Render(),
-                text( std::to_string( value ) ) | center,
+                ftxui::text( std::to_string( value ) ) | ftxui::center,
                 inputPlus->Render(),
-            } ) | center,
+            } ) | ftxui::center,
         } );
     } );
 }
 
 
-Component
-WorkerButton( ScreenInteractive & screen, std::function<std::string()> task, std::string const& label )
+ftxui::Component
+WorkerButton( ftxui::ScreenInteractive & screen, std::function<std::string()> task, std::string const& label )
 {
     auto asyncTask = std::make_shared<AsyncUiTask>( [task]{ return task(); }, screen );
 
-    Component createMeshBtn = Button( label, [asyncTask]{ asyncTask->start(); } );
-    Component buttonContainer = Container::Vertical( { createMeshBtn } );
+    ftxui::Component createMeshBtn = ftxui::Button( label, [asyncTask]{ asyncTask->start(); } );
+    ftxui::Component buttonContainer = ftxui::Container::Vertical( { createMeshBtn } );
 
-    return Renderer( buttonContainer, [createMeshBtn, asyncTask] {
-        return vbox( {
+    return ftxui::Renderer( buttonContainer, [createMeshBtn, asyncTask] {
+        return ftxui::vbox( {
             createMeshBtn->Render(),
             asyncTask->getStateUiElement()
         } );
@@ -103,16 +102,16 @@ WorkerButton( ScreenInteractive & screen, std::function<std::string()> task, std
 }
 
 
-Component
-FileInput( StringRef content, StringRef placeholder, InputOption options )
+ftxui::Component
+FileInput( ftxui::StringRef content, ftxui::StringRef placeholder, ftxui::InputOption options )
 {
     return Make<FileInputComponent>(content, placeholder, options);
 }
 
 
 
-Component FileLoader( ScreenInteractive & screen, StringRef content, IFileLoaderHandler & loadHandler,
-                      StringRef placeholder, InputOption inputOptions )
+ftxui::Component FileLoader( ftxui::ScreenInteractive & screen, ftxui::StringRef content, IFileLoaderHandler & loadHandler,
+                      ftxui::StringRef placeholder, ftxui::InputOption inputOptions )
 {
     auto onLoadTask = std::make_shared<AsyncUiTask>( [content, &loadHandler] -> std::string {
             auto contentPath = fs::path( *content );
@@ -130,60 +129,60 @@ Component FileLoader( ScreenInteractive & screen, StringRef content, IFileLoader
         onLoadTask->start(); 
     };
 
-    Component fileInput = FileInput( content, placeholder, inputOptions );
+    ftxui::Component fileInput = FileInput( content, placeholder, inputOptions );
 
 
-    Component loadButton = Button("Load", [onLoadTask, onUnloadTask] {
+    ftxui::Component loadButton = ftxui::Button("Load", [onLoadTask, onUnloadTask] {
         onUnloadTask->reset();
         onLoadTask->start();
     });
-    Component unloadButton = Button("Unload", [onLoadTask, onUnloadTask] {
+    ftxui::Component unloadButton = ftxui::Button("Unload", [onLoadTask, onUnloadTask] {
         onLoadTask->reset();
         onUnloadTask->start();
     });
 
-    Component fileLoaderContainer = Container::Horizontal( { fileInput, loadButton, unloadButton } );
+    ftxui::Component fileLoaderContainer = ftxui::Container::Horizontal( { fileInput, loadButton, unloadButton } );
 
     return Renderer(fileLoaderContainer, [=] {
         auto & loadTaskState = onLoadTask->getState();
         auto & unloadTaskState = onUnloadTask->getState();
 
-        auto getStatusText = [&loadTaskState,&unloadTaskState] -> Element
+        auto getStatusText = [&loadTaskState,&unloadTaskState] -> ftxui::Element
         {
             if ( loadTaskState.status == TaskStatus::SUCCESS )
-                return text( loadTaskState.result ) | color( Color::Green );
+                return ftxui::text( loadTaskState.result ) | color( ftxui::Color::Green );
             if ( unloadTaskState.status == TaskStatus::SUCCESS )
-                return text( unloadTaskState.result ) | color( Color::Green );
+                return ftxui::text( unloadTaskState.result ) | color( ftxui::Color::Green );
 
             if ( loadTaskState.status == TaskStatus::ERROR )
-                return text( loadTaskState.result ) | color( Color::Red );
+                return ftxui::text( loadTaskState.result ) | color( ftxui::Color::Red );
             if ( unloadTaskState.status == TaskStatus::ERROR )
-                return text( unloadTaskState.result ) | color( Color::Red );
+                return ftxui::text( unloadTaskState.result ) | color( ftxui::Color::Red );
 
             if ( loadTaskState.status == TaskStatus::WORKING )
-                return hbox( { text( "Loading " ), spinner( 8, loadTaskState.loadingFrameCount ) } ) | color( Color::Yellow );
+                return ftxui::hbox( { ftxui::text( "Loading " ), ftxui::spinner( 8, loadTaskState.loadingFrameCount ) } ) | ftxui::color( ftxui::Color::Yellow );
             if ( unloadTaskState.status == TaskStatus::WORKING )
-                return hbox( { text( "Unloading " ), spinner( 8, unloadTaskState.loadingFrameCount ) } ) | color( Color::Yellow );
+                return ftxui::hbox( { ftxui::text( "Unloading " ), ftxui::spinner( 8, unloadTaskState.loadingFrameCount ) } ) | ftxui::color( ftxui::Color::Yellow );
 
-            return text( "" );
+            return ftxui::text( "" );
         };
 
-        return vbox( {
-            window( text( " File Loader " ) | bold | center, 
-                vbox( {
-                    hbox( {
-                        text( " Path: " ) | vcenter, 
-                        fileInput->Render() | xflex,
-                        text( "   " ),
+        return ftxui::vbox( {
+            window( ftxui::text( " File Loader " ) | ftxui::bold | ftxui::center, 
+                ftxui::vbox( {
+                    ftxui::hbox( {
+                        ftxui::text( " Path: " ) | ftxui::vcenter, 
+                        fileInput->Render() | ftxui::xflex,
+                        ftxui::text( "   " ),
                         loadButton->Render(),
-                        text( " " ),
+                        ftxui::text( " " ),
                         unloadButton->Render()
                     } ),
-                    separator(),
-                    getStatusText() | center | yflex_shrink
+                    ftxui::separator(),
+                    getStatusText() | ftxui::center | ftxui::yflex_shrink
                 } )
             ),
-            filler()
+            ftxui::filler()
         } );
     } );
 }
