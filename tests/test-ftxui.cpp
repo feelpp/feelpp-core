@@ -254,7 +254,7 @@ TEST_CASE( "Test TaskManager Failure", "[FEELCORE-TUI]" )
 
 
 std::string
-renderInteractiveComponent( ::ftxui::Component & component )
+renderInteractiveComponent( ftxui::Component & component )
 {
     using namespace Feel::Core::tui;
     auto screen = ftxui::Screen::Create( ftxui::Dimension::Full()  );
@@ -265,7 +265,7 @@ renderInteractiveComponent( ::ftxui::Component & component )
 
 //! Runs a screen loop until given text is found for an interactive component. Returns true if found.
 bool
-waitForText( ::ftxui::Loop & loop, ::ftxui::Component & component, std::string const& text, int timeoutMs = 1000 )
+waitForText( ftxui::Loop & loop, ftxui::Component & component, std::string const& text, int timeoutMs = 1000 )
 {
     using namespace std::chrono_literals;
 
@@ -303,7 +303,7 @@ TEST_CASE( "Test WorkerButton", "[FEELCORE-TUI]" )
 
     auto renderer = Renderer( successButton, [&successButton]{ return successButton->Render(); } );
 
-    ::ftxui::Loop loop( &screen, renderer );
+    ftxui::Loop loop( &screen, renderer );
 
     REQUIRE(  renderInteractiveComponent( successButton ).contains( btnTitle ) );
     successButton->OnEvent( ftxui::Event::Return );
@@ -354,7 +354,7 @@ TEST_CASE( "Test FileLoader", "[FEELCORE-TUI]" )
 
     ftxui::Component fileLoader = FileLoader( screen, &fileLoaderFilename, dummyLoader, placeholder);
     auto renderer = Renderer( fileLoader, [fileLoader]{ return fileLoader->Render(); } );
-    ::ftxui::Loop loop( &screen, renderer );
+    ftxui::Loop loop( &screen, renderer );
 
     REQUIRE( renderInteractiveComponent( fileLoader ).contains( placeholder ) );
     REQUIRE( renderInteractiveComponent( fileLoader ).contains( "Load" ) );

@@ -192,4 +192,4 @@ Component FileLoader( ScreenInteractive & screen, StringRef content, IFileLoader
 
 
 
-} //namespace Feel::Core::ftxui
+} //namespace Feel::Core::tui

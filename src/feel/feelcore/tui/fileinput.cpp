@@ -200,4 +200,4 @@ FileInputComponent::OnEvent( Event event )
 }
 
 
-} //namespace Feel::Core::ftxui
+} //namespace Feel::Core::tui

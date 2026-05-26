@@ -43,4 +43,4 @@ public:
 ftxui::Component FileLoader( ftxui::ScreenInteractive & screen, ftxui::StringRef content, IFileLoaderHandler & loadHandler,
                       ftxui::StringRef placeholder = "", ftxui::InputOption inputOptions = {} );
 
-} //namespace Feel::Core::ftxui
+} //namespace Feel::Core::tui

@@ -40,7 +40,7 @@ AsyncUiTask::executeTask()
         M_state.status = internalStatus;
         M_state.result = internalResult;
     });
-    M_screen.PostEvent( ::ftxui::Event::Custom );
+    M_screen.PostEvent( ftxui::Event::Custom );
 }
 
 void
@@ -50,7 +50,7 @@ AsyncUiTask::pumpTicks()
     {
         std::this_thread::sleep_for( M_tickDuration );
         ++M_state.loadingFrameCount;
-        M_screen.PostEvent( ::ftxui::Event::Custom );
+        M_screen.PostEvent( ftxui::Event::Custom );
     }
 }
 
@@ -77,10 +77,10 @@ AsyncUiTask::reset()
 }
 
 
-::ftxui::Element
+ftxui::Element
 AsyncUiTask::getStateUiElement()
 {
-    using namespace ::ftxui;
+    using namespace ftxui;
     switch ( M_state.status )
     {
         case TaskStatus::SUCCESS:
@@ -102,4 +102,4 @@ AsyncUiTask::getStateUiElement()
 
 
 
-} // namespace Feel::Core::ftxui
+} // namespace Feel::Core::tui
