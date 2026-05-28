@@ -2,9 +2,14 @@
 
 #pragma once
 
+#ifdef FEELPP_HAS_TBB
+#include <tbb/global_control.h>
+#endif
+
 #include <feel/feelcore/feelcore.hpp>
 #include <feel/feelcore/assert.hpp>
 #include <feel/feelcore/namedarguments.hpp>
+#include "feel/feelcore/threadpool.hpp"
 
 namespace Feel::Core
 {
@@ -61,6 +66,15 @@ public :
     template <typename T>
     void appendPlugin( T && plugin ) { M_plugins.emplace( plugin->name(), std::forward<T>( plugin ) ); }
 
+    //! Returns the number of maximum concurrent threads
+    int maxConcurrentThreads() const noexcept { return M_maxConcurrentThreads; }
+
+    //! Sets the maximum number of threads. if maxThreads if negative or 0, the hardware limit will be used.
+    void setMaxConcurrentThreads( int maxThreads );
+
+    //! Returns a pointer to the ThreadPool
+    ThreadPool * threadPool() const { return M_threadPool.get(); } 
+
 private:
     //! return singleton instance
     static Environment* instance();
@@ -72,6 +86,14 @@ private:
     static std::unique_ptr<Environment> S_instance;
     po::variables_map M_vm;
     std::map<std::string,std::unique_ptr<EnvironmentPlugin>> M_plugins;
+
+    //-------Threading---------
+    int M_maxConcurrentThreads = -1;
+#ifdef FEELPP_HAS_TBB
+    std::unique_ptr<tbb::global_control> M_tbbControl;
+#endif
+    std::unique_ptr<ThreadPool> M_threadPool;
+
 };
 
 

@@ -328,9 +328,10 @@ macro(importDependency_EIGEN3 _useSystem _target_dependencies _target_definition
   else()
     FetchContent_Declare( eigen3 GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
       #GIT_TAG 3.4.0
-      GIT_TAG 02bcf9b5918d46016bc88e5e9abebb6caa5a80b7
+      GIT_TAG 5.0.1 #1dd76c8d07637cc878632ea76a129c6ac53d07034f4d
       #GIT_SHALLOW ON
     )
+    set(FEELPP_EIGEN3_VERSION "5.0.1" PARENT_SCOPE)
     set(EIGEN_BUILD_CMAKE_PACKAGE ON)
     set(EIGEN_BUILD_PKGCONFIG ON)
     FetchContent_MakeAvailable(eigen3)
@@ -351,7 +352,8 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
     find_package(CGAL REQUIRED COMPONENTS Core)
   else()
     FetchContent_Declare( cgal GIT_REPOSITORY https://github.com/CGAL/cgal.git
-      GIT_TAG v6.1 # v6.0.1 #  v5.6
+      GIT_TAG v6.1.1 # v6.0.1 #  v5.6
+      PATCH_COMMAND git apply "${FEELPP_CORE_CMAKE_DIR}/cgal.patch" UPDATE_DISCONNECTED 1
       #GIT_TAG 5ffa817b6211a4bcec05faf85726bc4845682d50
       GIT_SHALLOW ON
     )
@@ -373,11 +375,26 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
     if (FEELPP_HAS_EIGEN3 AND NOT EIGEN3_FOUND )
       set( EIGEN3_FOUND 1)
     endif()
+    if (FEELPP_EIGEN3_VERSION AND NOT Eigen3_VERSION)
+      set( Eigen3_VERSION ${FEELPP_EIGEN3_VERSION} )
+    endif()
     include(CGAL_Eigen3_support)
+
+    set(CGAL_TARGET_LIST "CGAL::CGAL;CGAL::CGAL_Core;CGAL::Eigen3_support")
+
+    if ( FEELPP_HAS_TBB )
+        if ( NOT TARGET TBB::tbb )
+            find_package(TBB QUIET)
+        endif()
+        include(CGAL_TBB_support)
+        string(APPEND CGAL_TARGET_LIST ";CGAL::TBB_support")
+    endif()
+
     if ( EMSCRIPTEN )
       target_compile_definitions( CGAL INTERFACE CGAL_ALWAYS_ROUND_TO_NEAREST)
     endif()
-   feelpp_updateImportDependencyForUse( CGAL "CGAL::CGAL;CGAL::CGAL_Core;CGAL::Eigen3_support" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+
+    feelpp_updateImportDependencyForUse( CGAL "${CGAL_TARGET_LIST}" ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
   else()
     message( WARNING "ThirdParty CGAL not found")
   endif()
@@ -433,6 +450,27 @@ macro(importDependency_PNG _useSystem _target_dependencies _target_definitions _
   endif()
   printDependencySectionEnd("PNG")
 endmacro(importDependency_PNG)
+
+#--------------------------------------
+# TBB
+#--------------------------------------
+macro(importDependency_TBB _useSystem _target_dependencies _target_definitions _cmakeVariablePrefix)
+  printDependencySectionBegin("TBB")
+  if ( ${_useSystem} )
+      find_package(TBB QUIET)
+  else()
+    message(FATAL_ERROR "TBB dependency can be enabled only from system")
+  endif()
+  if ( TARGET TBB::tbb  )
+    message(STATUS "TBB found")
+    feelpp_updateImportDependencyForUse( TBB TBB::tbb ${_useSystem} ${_target_dependencies} ${_target_definitions} ${_cmakeVariablePrefix} )
+  else()
+    message(STATUS "TBB not found -> disabling TBB support")
+    set(FEELPP_ENABLE_TBB OFF CACHE BOOL "" FORCE)
+  endif()
+  printDependencySectionEnd("TBB")
+endmacro(importDependency_TBB)
+
 
 #--------------------------------------
 # Catch2
