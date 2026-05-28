@@ -1,6 +1,10 @@
+add_subdirectory(tui)
+
 set(FEELPP_CORE_LIB_SRCS
   ${FEELPP_CORE_LIB_SRCS}
   ${CMAKE_CURRENT_SOURCE_DIR}/environment.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/table.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/tabulateinformations.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/threadpool.cpp
+  ${FEELPP_CORE_LIB_SRCS_TUI}
   PARENT_SCOPE )
