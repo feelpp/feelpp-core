@@ -1,4 +1,5 @@
 //!
+#include "feel/feelcore/threadpool.hpp"
 #include <feel/feelcore/environment.hpp>
 
 #include <iostream>
@@ -40,6 +41,14 @@ Environment::Environment( int argc, char* argv[], po::options_description const&
         po::store( parse_config_file( ifs, fullOptionsDescription, true ), M_vm );
     }
     po::notify( M_vm );
+
+    if ( M_vm.count("concurrency.max-threads") )
+    {
+        int maxThreads = M_vm["concurrency.max-threads"].as<int>();
+        setMaxConcurrentThreads( maxThreads );
+    }
+    M_threadPool = std::make_unique<ThreadPool>( M_maxConcurrentThreads );
+
 }
 
 Environment*
@@ -64,6 +73,7 @@ Environment::options() const
         ( "help", "produce help message" )
         ( "verbose,v", po::value<int>()->implicit_value(1), "enable verbosity (optionally specify level)" )
         ( "config-files", po::value<std::vector<std::string> >()->multitoken(), "specify a list of .cfg file" )
+        ( "concurrency.max-threads", po::value<int>()->default_value(-1), "Maximum number of threads. (-1 for automatic) " )
         ;
     return desc;
 }
@@ -108,6 +118,34 @@ Environment* createEnvironment( int argc, char* argv[], po::options_description 
 {
     return Environment::createInstance( argc, argv, optionsDescription );
 }
+
+
+void
+Environment::setMaxConcurrentThreads( int maxThreads )
+{
+    if ( maxThreads > 0 )
+        M_maxConcurrentThreads = maxThreads;
+    else
+    {
+        unsigned int hwThreads = std::thread::hardware_concurrency();
+        //If hardware_concurrency fails to be detected, defaults to sequential.
+        M_maxConcurrentThreads = ( hwThreads > 0 ) ? hwThreads : 1;
+    }
+
+#ifdef FEELPP_HAS_TBB
+    if ( maxThreads > 0 )
+        M_tbbControl = std::make_unique<tbb::global_control>( tbb::global_control::max_allowed_parallelism, maxThreads );
+    else
+        M_tbbControl.reset();
+#endif
+
+    if ( M_threadPool )
+        M_threadPool = std::make_unique<ThreadPool>( M_maxConcurrentThreads );
+
+}
+
+
+
 
 }// namespace Feel::Ktirio::Geom
 
