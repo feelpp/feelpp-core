@@ -9,6 +9,7 @@
 
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
+#include <feel/feelcore/feelcore.hpp>
 
 
 
@@ -28,7 +29,7 @@ struct AsyncUiTaskState
 
 //! Manages a background task while keeping an FTXUI screen responsive 
 //! Updates the screen each tick (allows load animations)
-class AsyncUiTask
+class FEELPP_CORE_EXPORT AsyncUiTask
 {
 public:
 

@@ -66,14 +66,14 @@ int main( int argc, char** argv )
 
     //=========== WORKER BUTTONS ===============//
 
-    auto successTask = [] -> std::string
-    { 
+    auto successTask = []() -> std::string
+    {
         std::this_thread::sleep_for( 1s );
-        return "Success!"; 
+        return "Success!";
     };
     Component successButton = WorkerButton( screen, successTask, "Click for success" );
 
-    auto failureTask = [] -> std::string { 
+    auto failureTask = []() -> std::string {
         std::this_thread::sleep_for( 1s );
         throw std::runtime_error( "Failure" );
     };
@@ -92,10 +92,10 @@ int main( int argc, char** argv )
     public:
         std::string load( Feel::fs::path const& fp ) override
         {
-            int nLines = 0; 
+            int nLines = 0;
             std::ifstream f( fp );
             std::string line;
-            while ( std::getline( f, line ) ) 
+            while ( std::getline( f, line ) )
                 ++nLines;
             return fmt::format("Your file contains {} lines;", nLines );
         }
@@ -137,7 +137,7 @@ int main( int argc, char** argv )
 
     Component masterContainer = Container::Horizontal({ tabsMenu, tabsContainer });
 
-    auto layout = Renderer( masterContainer, [&tabsMenu, &tabsContainer] {
+    auto layout = Renderer( masterContainer, [&tabsMenu, &tabsContainer]() {
         return hbox( {
             tabsMenu->Render(), 
             separator(),

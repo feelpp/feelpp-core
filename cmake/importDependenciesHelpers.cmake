@@ -331,7 +331,7 @@ macro(importDependency_EIGEN3 _useSystem _target_dependencies _target_definition
       GIT_TAG 5.0.1 #1dd76c8d07637cc878632ea76a129c6ac53d07034f4d
       #GIT_SHALLOW ON
     )
-    set(FEELPP_EIGEN3_VERSION "5.0.1" PARENT_SCOPE)
+    set(FEELPP_EIGEN3_VERSION "5.0.1")
     set(EIGEN_BUILD_CMAKE_PACKAGE ON)
     set(EIGEN_BUILD_PKGCONFIG ON)
     FetchContent_MakeAvailable(eigen3)
@@ -503,7 +503,9 @@ macro(importDependency_FTXUI _useSystem _target_dependencies _target_definitions
   if ( ${_useSystem} )
     find_package(ftxui REQUIRED)
   else()
-    FetchContent_Declare(ftxui GIT_REPOSITORY https://github.com/ArthurSonzogni/FTXUI GIT_TAG v6.1.9)
+    FetchContent_Declare(ftxui GIT_REPOSITORY https://github.com/ArthurSonzogni/FTXUI
+       GIT_TAG a9ddb312f9b00dd492ba73b5394a72c601ef2c94 #v6.1.9
+    )
     if( WIN32 )
       set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
     endif()
