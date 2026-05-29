@@ -11,19 +11,21 @@
 #include <future>
 #include <functional>
 
+#include <feel/feelcore/feelcore.hpp>
+
 namespace Feel::Core
 {
 
 //Inspired from https://dev.to/ish4n10/making-a-thread-pool-in-c-from-scratch-bnm
-class ThreadPool
+class FEELPP_CORE_EXPORT ThreadPool
 {
 public:
     ThreadPool( std::size_t nWorkers = std::thread::hardware_concurrency() );
     ~ThreadPool();
-    ThreadPool( ThreadPool const& ) = delete; 
-    ThreadPool( ThreadPool && ) = delete; 
-    ThreadPool & operator=( ThreadPool const& ) = delete; 
-    ThreadPool & operator=( ThreadPool && ) = delete; 
+    ThreadPool( ThreadPool const& ) = delete;
+    ThreadPool( ThreadPool && ) = delete;
+    ThreadPool & operator=( ThreadPool const& ) = delete;
+    ThreadPool & operator=( ThreadPool && ) = delete;
 
     template<typename F, typename... Args>
     auto enqueue( F && f, Args &&... args ) -> std::future<std::invoke_result_t<F, Args...>>
