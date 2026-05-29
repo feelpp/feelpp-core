@@ -504,7 +504,7 @@ macro(importDependency_FTXUI _useSystem _target_dependencies _target_definitions
     find_package(ftxui REQUIRED)
   else()
     FetchContent_Declare(ftxui GIT_REPOSITORY https://github.com/ArthurSonzogni/FTXUI
-       GIT_TAG a9ddb312f9b00dd492ba73b5394a72c601ef2c94 #v6.1.9
+       GIT_TAG v6.1.9
     )
     if( WIN32 )
       set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
