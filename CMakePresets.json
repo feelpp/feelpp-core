@@ -60,7 +60,8 @@
                 "CPACK_PACKAGE_DIRECTORY": "C:/ktirio-geom_assets",
                 "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
                 "VCPKG_TARGET_TRIPLET": "x64-windows",
-                "FEELPP_USE_SYSTEM_CPR": true
+                "FEELPP_USE_SYSTEM_CPR": true,
+                "FEELPP_USE_SYSTEM_FTXUI": true
             },
             "environment": {
                 "VCPKG_ROOT": "C:/vcpkg"

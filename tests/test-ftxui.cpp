@@ -210,11 +210,11 @@ TEST_CASE( "Test TaskManager Success", "[FEELCORE-TUI]" )
 
     auto screen = ftxui::ScreenInteractive::TerminalOutput();
 
-    AsyncUiTask task( [] { 
-        return "Success!"; 
+    AsyncUiTask task( [] () {
+        return "Success!";
     }, screen );
 
-    screen.Loop( ftxui::Renderer([&screen, &task] {
+    screen.Loop( ftxui::Renderer([&screen, &task]() {
         if ( task.getState().status == TaskStatus::IDLE )
             task.start();
         else if ( task.getState().status != TaskStatus::WORKING )
@@ -234,11 +234,11 @@ TEST_CASE( "Test TaskManager Failure", "[FEELCORE-TUI]" )
 
     auto screen = ftxui::ScreenInteractive::TerminalOutput();
 
-    AsyncUiTask task( [] -> std::string {
+    AsyncUiTask task( []() -> std::string {
         throw std::runtime_error( "Failure" );
     }, screen );
 
-    screen.Loop( ftxui::Renderer([&screen, &task] {
+    screen.Loop( ftxui::Renderer([&screen, &task]() {
         if ( task.getState().status == TaskStatus::IDLE )
             task.start();
         else if ( task.getState().status != TaskStatus::WORKING )
@@ -291,17 +291,17 @@ TEST_CASE( "Test WorkerButton", "[FEELCORE-TUI]" )
     auto screen = ftxui::ScreenInteractive::FitComponent();
 
     std::atomic<bool> taskFinished;
-    auto successTask = [&taskFinished] -> std::string
-    { 
+    auto successTask = [&taskFinished] () -> std::string
+    {
         std::this_thread::sleep_for( 50ms );
         taskFinished = true;
-        return "Success!"; 
+        return "Success!";
     };
 
     std::string btnTitle = "Click";
     ftxui::Component successButton = WorkerButton( screen, successTask, btnTitle );
 
-    auto renderer = Renderer( successButton, [&successButton]{ return successButton->Render(); } );
+    auto renderer = Renderer( successButton, [&successButton]() { return successButton->Render(); } );
 
     ftxui::Loop loop( &screen, renderer );
 
