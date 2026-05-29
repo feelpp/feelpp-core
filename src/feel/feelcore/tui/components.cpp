@@ -58,8 +58,8 @@ ReadoutSlider( ftxui::Ref<T> value, T min, T max, T step, std::string const& tit
         } );
     } );
 }
-template ftxui::Component ReadoutSlider<float>( ftxui::Ref<float>, float, float, float, const std::string&, int );
-template ftxui::Component ReadoutSlider<int>( ftxui::Ref<int>, int, int, int, const std::string&, int );
+template FEELPP_CORE_EXPORT ftxui::Component ReadoutSlider<float>( ftxui::Ref<float>, float, float, float, const std::string&, int );
+template FEELPP_CORE_EXPORT ftxui::Component ReadoutSlider<int>( ftxui::Ref<int>, int, int, int, const std::string&, int );
 
 
 
@@ -113,10 +113,10 @@ FileInput( ftxui::StringRef content, ftxui::StringRef placeholder, ftxui::InputO
 ftxui::Component FileLoader( ftxui::ScreenInteractive & screen, ftxui::StringRef content, IFileLoaderHandler & loadHandler,
                       ftxui::StringRef placeholder, ftxui::InputOption inputOptions )
 {
-    auto onLoadTask = std::make_shared<AsyncUiTask>( [content, &loadHandler] -> std::string {
+    auto onLoadTask = std::make_shared<AsyncUiTask>( [content, &loadHandler] () -> std::string {
             auto contentPath = fs::path( *content );
             if ( !fs::exists( contentPath ) )  //Todo add custom check, eg if empty, or if file, or if dir
-                throw std::runtime_error( "Could not load." ); 
+                throw std::runtime_error( "Could not load." );
             return loadHandler.load( contentPath );
         },
         screen
@@ -126,7 +126,7 @@ ftxui::Component FileLoader( ftxui::ScreenInteractive & screen, ftxui::StringRef
 
     inputOptions.on_enter = [onLoadTask, onUnloadTask] {
         onUnloadTask->reset();
-        onLoadTask->start(); 
+        onLoadTask->start();
     };
 
     ftxui::Component fileInput = FileInput( content, placeholder, inputOptions );
@@ -147,7 +147,7 @@ ftxui::Component FileLoader( ftxui::ScreenInteractive & screen, ftxui::StringRef
         auto & loadTaskState = onLoadTask->getState();
         auto & unloadTaskState = onUnloadTask->getState();
 
-        auto getStatusText = [&loadTaskState,&unloadTaskState] -> ftxui::Element
+        auto getStatusText = [&loadTaskState,&unloadTaskState] () -> ftxui::Element
         {
             if ( loadTaskState.status == TaskStatus::SUCCESS )
                 return ftxui::text( loadTaskState.result ) | color( ftxui::Color::Green );
