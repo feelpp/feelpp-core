@@ -331,7 +331,6 @@ macro(importDependency_EIGEN3 _useSystem _target_dependencies _target_definition
       GIT_TAG 5.0.1 #1dd76c8d07637cc878632ea76a129c6ac53d07034f4d
       #GIT_SHALLOW ON
     )
-    set(FEELPP_EIGEN3_VERSION "5.0.1")
     set(EIGEN_BUILD_CMAKE_PACKAGE ON)
     set(EIGEN_BUILD_PKGCONFIG ON)
     FetchContent_MakeAvailable(eigen3)
@@ -375,8 +374,9 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
     if (FEELPP_HAS_EIGEN3 AND NOT EIGEN3_FOUND )
       set( EIGEN3_FOUND 1)
     endif()
-    if (FEELPP_EIGEN3_VERSION AND NOT Eigen3_VERSION)
-      set( Eigen3_VERSION ${FEELPP_EIGEN3_VERSION} )
+    # another workaround : dummy version (see https://github.com/CGAL/cgal/blob/main/Installation/cmake/modules/CGAL_Eigen3_support.cmake#L2)
+    if (FEELPP_HAS_EIGEN3 AND NOT Eigen3_VERSION)
+      set( Eigen3_VERSION "5.0.1" )
     endif()
     include(CGAL_Eigen3_support)
 
