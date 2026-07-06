@@ -147,6 +147,21 @@ int main( int argc, char** argv )
 
     //===============================================//
 
+    //================== HEATMAP ==================
+    auto heatmap = Heatmap( 40, 20 );
+    heatmap->setData( []( double x, double y ) -> std::optional<double> {
+        if ( x < -100 || x > 100 || y < -100 || y > 100 )
+            return std::nullopt;
+
+        double value = std::sin( x * 10 ) * std::cos( y * 10 );
+        return value;
+    }, -1.0, 1.0 );
+    Component resetViewportButton = WorkerButton( screen, [heatmap]() -> std::string {
+        heatmap->resetView();
+        return "Viewport reset";
+    }, "Reset Viewport" );
+    Component heatmapContainer = Container::Horizontal( { heatmap, resetViewportButton } );
+
     //================== TABS ==================
     int selectedTab = 0;
     std::vector<std::string> inputTabs = {
@@ -158,7 +173,8 @@ int main( int argc, char** argv )
         "WorkerButton",
         "FileLoader",
         "LogViewer",
-        "TimekeeperViewer"
+        "TimekeeperViewer",
+        "Heatmap"
     };
 
     Component tabsMenu = Menu( &inputTabs, &selectedTab );
@@ -172,7 +188,8 @@ int main( int argc, char** argv )
         workerButtons,
         fileLoader,
         logViewer,
-        timekeeperContainer
+        timekeeperContainer,
+        heatmapContainer
     }, &selectedTab );
 
     //=======================================//

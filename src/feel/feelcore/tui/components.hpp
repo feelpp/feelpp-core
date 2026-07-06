@@ -8,6 +8,7 @@
 #include <feel/feelcore/feelcore.hpp>
 #include <feel/feelcore/tui/logviewer.hpp>
 #include <feel/feelcore/tui/timekeeperviewer.hpp>
+#include <feel/feelcore/tui/heatmap.hpp>
 
 namespace Feel::Core::tui
 {
@@ -54,5 +55,9 @@ std::shared_ptr<TuiLogViewerComponent> TuiLogViewer( std::size_t maxEntries = 10
 //! Component that displays the recorded times from the Timekeeper in a scrollable and collapsible list.
 //! Convenience function to comply to FTXUI pattern.
 std::shared_ptr<TuiTimekeeperViewerComponent> TuiTimekeeperViewer( int maxDepth = 3 );
+
+
+//! Component that displays a heatmap of values in a scrollable and zoomable viewport.
+std::shared_ptr<HeatmapComponent> Heatmap(int width, int height, bool allowZoom = true, bool allowPan = true);
 
 } //namespace Feel::Core::tui
