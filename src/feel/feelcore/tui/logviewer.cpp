@@ -36,7 +36,7 @@ TuiLogViewerComponent::TuiLogViewerComponent( std::size_t maxEntries )
     M_storage = std::make_shared<TuiLogStorage>();
     M_storage->maxEntries = maxEntries;
     auto sink = std::make_shared<TuiLogSink<std::mutex>>( M_storage );
-    log::default_logger()->sinks().push_back( sink );
+    log::set_default_logger( std::make_shared<log::logger>( "TuiLogViewer", sink ) );
 
     ScrollableList::Add(
         ftxui::Container::Horizontal( { M_debugCheckbox, M_infoCheckbox , M_warnCheckbox, M_errorCheckbox } )
