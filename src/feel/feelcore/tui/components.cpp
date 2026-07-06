@@ -188,7 +188,19 @@ ftxui::Component FileLoader( ftxui::ScreenInteractive & screen, ftxui::StringRef
 }
 
 
+std::shared_ptr<TuiLogViewerComponent>
+TuiLogViewer( std::size_t maxEntries )
+{
+    return std::make_shared<TuiLogViewerComponent>( maxEntries );
+}
 
+
+
+std::shared_ptr<TuiTimekeeperViewerComponent>
+TuiTimekeeperViewer( int maxDepth )
+{
+    return std::make_shared<TuiTimekeeperViewerComponent>( maxDepth );
+}
 
 
 } //namespace Feel::Core::tui

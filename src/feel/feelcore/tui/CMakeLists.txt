@@ -3,4 +3,6 @@ set(FEELPP_CORE_LIB_SRCS_TUI
   ${CMAKE_CURRENT_SOURCE_DIR}/components.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/fileinput.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/decorators.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/logviewer.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/timekeeperviewer.cpp
   PARENT_SCOPE )

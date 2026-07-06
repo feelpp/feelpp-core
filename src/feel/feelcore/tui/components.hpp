@@ -6,6 +6,8 @@
 #include <ftxui/component/screen_interactive.hpp>
 
 #include <feel/feelcore/feelcore.hpp>
+#include <feel/feelcore/tui/logviewer.hpp>
+#include <feel/feelcore/tui/timekeeperviewer.hpp>
 
 namespace Feel::Core::tui
 {
@@ -16,7 +18,7 @@ ftxui::Component FEELPP_CORE_EXPORT MultiOptionSelector( std::vector<std::pair<s
 //! Styled and labeled window with vertical radio buttons
 ftxui::Component FEELPP_CORE_EXPORT RadioSelector( std::vector<std::string> const* entries, int * selected, std::string const& label = "" );
 
-//! Styled and labeled slider that displays the current value 
+//! Styled and labeled slider that displays the current value
 template <typename T>
 ftxui::Component ReadoutSlider( ftxui::Ref<T> value, T min = 0., T max = 1., T step = 0.1,
                                 std::string const& title = "", int displayPrecision = 1 );
@@ -42,5 +44,15 @@ public:
 //! Container containing a file input with load + unload buttons and feedback
 ftxui::Component FEELPP_CORE_EXPORT FileLoader( ftxui::ScreenInteractive & screen, ftxui::StringRef content, IFileLoaderHandler & loadHandler,
                                                 ftxui::StringRef placeholder = "", ftxui::InputOption inputOptions = {} );
+
+
+//! Component that displays the log messages in a scrollable list with filters for log levels.
+//! Convenience function to comply to FTXUI pattern.
+std::shared_ptr<TuiLogViewerComponent> TuiLogViewer( std::size_t maxEntries = 100 );
+
+
+//! Component that displays the recorded times from the Timekeeper in a scrollable and collapsible list.
+//! Convenience function to comply to FTXUI pattern.
+std::shared_ptr<TuiTimekeeperViewerComponent> TuiTimekeeperViewer( int maxDepth = 3 );
 
 } //namespace Feel::Core::tui
