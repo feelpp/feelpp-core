@@ -1,13 +1,14 @@
 //!
 
 #include <fstream>
+
 #include <ftxui/component/component.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
 
 #include <feel/feelcore/tui/taskmanager.hpp>
 #include <feel/feelcore/tui/components.hpp>
-
+#include <feel/feelcore/timekeeper.hpp>
 
 #include <feel/feelcore/feelcore.hpp>
 
@@ -43,10 +44,10 @@ int main( int argc, char** argv )
 
     // ========== READOUT SLIDERS ========= //
     int intValue = 50;
-    Component intSlider = ReadoutSlider<int>( &intValue, 0, 100, 1, "Int Readout Slider", 0 ); 
+    Component intSlider = ReadoutSlider<int>( &intValue, 0, 100, 1, "Int Readout Slider", 0 );
 
     float doubleValue = 0.5;
-    Component doubleSlider = ReadoutSlider<float>( &doubleValue, 0, 1, 0.1, "Double Readout Slider", 2 ); 
+    Component doubleSlider = ReadoutSlider<float>( &doubleValue, 0, 1, 0.1, "Double Readout Slider", 2 );
 
     Component readoutSliders = Container::Vertical( { intSlider, doubleSlider } );
     //=======================================//
@@ -54,12 +55,12 @@ int main( int argc, char** argv )
 
     //============= SPINBOX ==============//
     int spinboxValue = 0;
-    Component spinbox = SpinBox( spinboxValue, "SpinBox " ); 
+    Component spinbox = SpinBox( spinboxValue, "SpinBox " );
     //=======================================//
 
     //============= FILE INPUT ==============//
     std::string filepath;
-    Component fileInput = FileInput( &filepath, " Enter your filepath..." ); 
+    Component fileInput = FileInput( &filepath, " Enter your filepath..." );
     //=======================================//
 
 
@@ -109,6 +110,58 @@ int main( int argc, char** argv )
 
     //=======================================//
 
+
+    //================== LOGVIEWER ==================
+    auto logViewer = TuiLogViewer( 100 );
+    spdlog::set_level( spdlog::level::debug );
+    spdlog::info( "This is an info message" );
+    spdlog::warn( "This is a warning message" );
+    spdlog::error( "This is an error message" );
+    spdlog::debug( "This is a debug message" );
+
+    //===============================================//
+
+    //============ TIMEKEEPER VIEWER ==================
+    Feel::Core::Timekeeper::instance()->setEnabled( true );
+    auto timekeeperViewer = TuiTimekeeperViewer( 3 );
+    Component startTimersButton = WorkerButton( screen, []() -> std::string {
+        {
+            Feel::Core::Timer t1( "Task 1" );
+            std::this_thread::sleep_for( 500ms );
+            {
+                Feel::Core::Timer t2( "Task 1.1" );
+                std::this_thread::sleep_for( 200ms );
+            }
+            {
+                Feel::Core::Timer t3( "Task 1.2" );
+                std::this_thread::sleep_for( 300ms );
+            }
+        }
+        {
+            Feel::Core::Timer t4( "Task 2" );
+            std::this_thread::sleep_for( 400ms );
+        }
+        return "Timers completed";
+    }, "Start Timers" );
+    Component timekeeperContainer = Container::Horizontal( { timekeeperViewer, startTimersButton} );
+
+    //===============================================//
+
+    //================== HEATMAP ==================
+    auto heatmap = Heatmap( 40, 20 );
+    heatmap->setData( []( double x, double y ) -> std::optional<double> {
+        if ( x < -100 || x > 100 || y < -100 || y > 100 )
+            return std::nullopt;
+
+        double value = std::sin( x * 10 ) * std::cos( y * 10 );
+        return value;
+    }, -1.0, 1.0 );
+    Component resetViewportButton = WorkerButton( screen, [heatmap]() -> std::string {
+        heatmap->resetView();
+        return "Viewport reset";
+    }, "Reset Viewport" );
+    Component heatmapContainer = Container::Horizontal( { heatmap, resetViewportButton } );
+
     //================== TABS ==================
     int selectedTab = 0;
     std::vector<std::string> inputTabs = {
@@ -118,20 +171,26 @@ int main( int argc, char** argv )
         "SpinBox",
         "FileInput",
         "WorkerButton",
-        "FileLoader"
+        "FileLoader",
+        "LogViewer",
+        "TimekeeperViewer",
+        "Heatmap"
     };
 
     Component tabsMenu = Menu( &inputTabs, &selectedTab );
 
-    Component tabsContainer = Container::Tab( { 
+    Component tabsContainer = Container::Tab( {
         multiOptionSelector,
         radioSelector,
         readoutSliders,
         spinbox,
         fileInput,
         workerButtons,
-        fileLoader
-    }, &selectedTab ); 
+        fileLoader,
+        logViewer,
+        timekeeperContainer,
+        heatmapContainer
+    }, &selectedTab );
 
     //=======================================//
 
@@ -139,7 +198,7 @@ int main( int argc, char** argv )
 
     auto layout = Renderer( masterContainer, [&tabsMenu, &tabsContainer]() {
         return hbox( {
-            tabsMenu->Render(), 
+            tabsMenu->Render(),
             separator(),
             tabsContainer->Render() | flex
         } );

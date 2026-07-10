@@ -188,7 +188,24 @@ ftxui::Component FileLoader( ftxui::ScreenInteractive & screen, ftxui::StringRef
 }
 
 
+std::shared_ptr<TuiLogViewerComponent>
+TuiLogViewer( std::size_t maxEntries )
+{
+    return std::make_shared<TuiLogViewerComponent>( maxEntries );
+}
 
 
+
+std::shared_ptr<TuiTimekeeperViewerComponent>
+TuiTimekeeperViewer( int maxDepth )
+{
+    return std::make_shared<TuiTimekeeperViewerComponent>( maxDepth );
+}
+
+std::shared_ptr<HeatmapComponent>
+Heatmap(int width, int height, bool allowZoom, bool allowPan )
+{
+    return std::make_shared<HeatmapComponent>(width, height, allowZoom, allowPan);
+}
 
 } //namespace Feel::Core::tui
