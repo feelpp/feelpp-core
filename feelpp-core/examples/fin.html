@@ -333,12 +333,13 @@ e = fppc.Environment(['fin'], config=fppc.localRepository("."))</code></pre>
 <div class="content">
 <pre>---------------------------------------------------------------------------
 ModuleNotFoundError                       Traceback (most recent call last)
-File <ipython-input-1-2a1e2629577a>:1
-----> 1 import feelpp.core as fppc
-      2 from feelpp_project import laplacian
+File <ipython-input-1-2a1e2629577a>:2
+      1 import feelpp.core as fppc
+----> 2 from feelpp_project import laplacian
       3 import json
+      4 import os
 
-ModuleNotFoundError: No module named 'feelpp'</pre>
+ModuleNotFoundError: No module named 'feelpp_project'</pre>
 </div>
 </div>
 </div>
@@ -366,7 +367,7 @@ File <ipython-input-1-28bdc28dcd8e>:1
       2 # Reading the JSON file
       3 data = laplacian.loadSpecs(f"{d}/src/cases/laplacian/fin/fin2d.json")
 
-NameError: name 'fppc' is not defined</pre>
+NameError: name 'd' is not defined</pre>
 </div>
 </div>
 </div>
