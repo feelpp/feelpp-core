@@ -43,6 +43,26 @@
             }
         },
         {
+            "name": "macos",
+            "inherits": "default",
+            "displayName": "macos config",
+            "description": "macos config",
+            "generator": "Xcode",
+            "binaryDir": "${sourceDir}/build/macos",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX" : "${sourceDir}/build/macos/install/",
+                "FEELPP_USE_SYSTEM_NLOHMANN_JSON": true,
+                "FEELPP_USE_SYSTEM_EIGEN3": true,
+                "Boost_ROOT":"/opt/local/libexec/boost/1.88/",
+                "FEELPP_ENABLE_TBB": true
+            },
+            "vendor": {
+                "example.com/ExampleIDE/1.0": {
+                    "autoFormat": true
+                }
+            }
+        },
+        {
             "name": "windows-msvc",
             "displayName": "Windows MSVC Config",
             "description": "Build using Windows MSVC",
@@ -130,6 +150,24 @@
             ]
         },
         {
+            "name": "macos-release",
+            "configurePreset": "macos",
+            "configuration":"Release",
+            "jobs": 4,
+            "targets": [
+                "install"
+            ]
+        },
+        {
+            "name": "macos-debug",
+            "configurePreset": "macos",
+            "configuration":"Debug",
+            "jobs": 4,
+            "targets": [
+                "install"
+            ]
+        },
+        {
             "name": "windows-msvc",
             "configurePreset": "windows-msvc",
             "configuration":"Release",
@@ -157,6 +195,12 @@
                 "noTestsAction": "ignore",
                 "stopOnFailure": true
             }
+        },
+        {
+            "name": "macos-release",
+            "inherits":"default",
+            "configurePreset": "macos",
+            "configuration":"Release"
         },
         {
             "name": "windows-msvc",
