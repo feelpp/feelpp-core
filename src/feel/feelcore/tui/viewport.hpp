@@ -14,7 +14,7 @@ namespace Feel::Core::tui
 
 //! A viewport base class that allows zooming and panning of a 2D space.
 //! Designed to serve as a base class for canvas-like components or nodes that require camera-like functionality.
-class Viewport
+class FEELPP_CORE_EXPORT Viewport
     : public ftxui::ComponentBase
 {
 public:
