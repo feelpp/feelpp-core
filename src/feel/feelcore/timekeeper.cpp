@@ -8,9 +8,41 @@
 namespace Feel::Core
 {
 
+class Timekeeper::Impl
+{
+public:
+    static thread_local std::vector<std::string> M_context;
+    //! Get the thread local context
+    std::vector<std::string> const& getContext() const noexcept { return M_context; }
+    //! Get the thread local context
+    void setContext( std::vector<std::string> const& ctx ) { M_context = ctx; }
+    //! Push a new context level
+    void pushContext( std::string const& name ) { M_context.push_back( name ); };
+    //! Pop the last context level
+    void popContext() {
+        if ( M_context.empty() )
+        {
+            log::warn("Timekeeper popContext called without matching pushContext.");
+            return;
+        }
+        M_context.pop_back();
+    }
+};
+
+thread_local std::vector<std::string> Timekeeper::Impl::M_context;
+
+
+
 std::unique_ptr<Timekeeper> Timekeeper::S_instance = nullptr;
-thread_local std::vector<std::string> Timekeeper::M_context;
 std::once_flag Timekeeper::S_onceFlag;
+
+Timekeeper::Timekeeper()
+    :
+    M_pimpl(new Impl())
+{}
+
+Timekeeper::~Timekeeper() { delete M_pimpl; }
+
 
 Timekeeper*
 Timekeeper::instance()
@@ -21,6 +53,31 @@ Timekeeper::instance()
     return S_instance.get();
 }
 
+std::vector<std::string> const&
+Timekeeper::getContext() const noexcept
+{
+    return M_pimpl->getContext();
+}
+
+void
+Timekeeper::setContext( std::vector<std::string> const& ctx )
+{
+    M_pimpl->setContext( ctx );
+}
+
+void
+Timekeeper::pushContext( std::string const& name )
+{
+    M_pimpl->pushContext( name );
+}
+
+void
+Timekeeper::popContext()
+{
+    M_pimpl->popContext();
+}
+
+
 void
 Timekeeper::recordTime( double time )
 {
@@ -28,7 +85,7 @@ Timekeeper::recordTime( double time )
     bool isRoot = true;
     nl::json * current = &M_times;
 
-    for ( std::string const& key : M_context )
+    for ( std::string const& key : this->getContext() )
     {
         if ( key.empty() )
             continue;
@@ -71,18 +128,6 @@ Timekeeper::recordTime( double time )
         times["elapsed"] = time;
 }
 
-
-void
-Timekeeper::popContext( )
-{
-    if ( M_context.empty() )
-    {
-        log::warn("Timekeeper popContext called without matching pushContext.");
-        return;
-    }
-    M_context.pop_back();
-}
-
 void
 Timekeeper::save( fs::path const& filename ) const
 {
@@ -102,7 +147,6 @@ Timekeeper::save( fs::path const& filename ) const
     }
     file << timesSnapshot.dump( 4 );
 }
-
 
 
 void

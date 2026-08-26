@@ -49,15 +49,15 @@ ftxui::Component FEELPP_CORE_EXPORT FileLoader( ftxui::ScreenInteractive & scree
 
 //! Component that displays the log messages in a scrollable list with filters for log levels.
 //! Convenience function to comply to FTXUI pattern.
-std::shared_ptr<TuiLogViewerComponent> TuiLogViewer( std::size_t maxEntries = 100 );
+std::shared_ptr<TuiLogViewerComponent> FEELPP_CORE_EXPORT TuiLogViewer( std::size_t maxEntries = 100 );
 
 
 //! Component that displays the recorded times from the Timekeeper in a scrollable and collapsible list.
 //! Convenience function to comply to FTXUI pattern.
-std::shared_ptr<TuiTimekeeperViewerComponent> TuiTimekeeperViewer( int maxDepth = 3 );
+std::shared_ptr<TuiTimekeeperViewerComponent> FEELPP_CORE_EXPORT TuiTimekeeperViewer( int maxDepth = 3 );
 
 
 //! Component that displays a heatmap of values in a scrollable and zoomable viewport.
-std::shared_ptr<HeatmapComponent> Heatmap(int width, int height, bool allowZoom = true, bool allowPan = true);
+std::shared_ptr<HeatmapComponent> FEELPP_CORE_EXPORT Heatmap(int width, int height, bool allowZoom = true, bool allowPan = true);
 
 } //namespace Feel::Core::tui

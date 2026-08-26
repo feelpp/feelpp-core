@@ -6,6 +6,7 @@
 
 #include <spdlog/sinks/base_sink.h>
 
+#include <feel/feelcore/feelcore.hpp>
 #include <feel/feelcore/tui/decorators.hpp>
 
 namespace Feel::Core::tui
@@ -47,7 +48,7 @@ private:
 
 
 //! A TUI component that displays log entries in a scrollable list, with optional filters for log levels.
-class TuiLogViewerComponent
+class FEELPP_CORE_EXPORT TuiLogViewerComponent
     : public ScrollableList
 {
 public:
