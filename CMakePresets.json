@@ -113,8 +113,8 @@
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/wasm32-linux/install/"
             },
             "environment": {
-                "EMSDK":"/opt/emscripten/3.1.70_wasm32/emsdk/",
-                "_EMSCRIPTEN_ADDITIONAL_PORTS":"/opt/emscripten/3.1.70_wasm32/emscripten-additional-ports/install/"
+                "EMSDK":"/opt/emscripten/5.0.5_wasm32/emsdk/",
+                "_EMSCRIPTEN_ADDITIONAL_PORTS":"/opt/emscripten/5.0.5_wasm32/emscripten-additional-ports/install/"
             }
         },
         {
@@ -130,8 +130,8 @@
                 "CMAKE_EXE_LINKER_FLAGS": "-sMEMORY64=1 -mwasm64"
             },
             "environment": {
-                "EMSDK":"/opt/emscripten/4.0.7_wasm64/emsdk/",
-                "_EMSCRIPTEN_ADDITIONAL_PORTS":"/opt/emscripten/4.0.7_wasm64/emscripten-additional-ports/install/"
+                "EMSDK":"/opt/emscripten/5.0.5_wasm64/emsdk/",
+                "_EMSCRIPTEN_ADDITIONAL_PORTS":"/opt/emscripten/5.0.5_wasm64/emscripten-additional-ports/install/"
             }
         }
     ],
