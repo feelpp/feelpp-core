@@ -9,6 +9,7 @@
 #else
 
 #include <cassert>
+#include <tuple>
 
 namespace Feel::Core
 {
