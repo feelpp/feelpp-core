@@ -34,7 +34,7 @@
     "@asciidoctor/core": "^2.2.6",
     "asciidoctor": "^4.0.2",
     "asciidoctor-jupyter": "^0.7.0",
-    "asciidoctor-kroki": "^0.18.1",
+    "asciidoctor-kroki": "^1.0.1",
     "handlebars": "^4.7.9",
     "handlebars-utils": "^1.0.6",
     "package": "^1.0.1",
