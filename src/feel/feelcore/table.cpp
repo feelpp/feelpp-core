@@ -69,7 +69,7 @@ OutputText::applyMaxWidth( int maxWidth )
     for ( ;k<M_data.size();++k )
     {
         std::string & curText = std::get<0>( M_data[k] );
-        int curSize = curText.size();
+        std::size_t curSize = curText.size();
         if ( (currentWidth+curSize) >= maxWidth )
         {
             curText.resize( maxWidth - currentWidth );
@@ -195,8 +195,8 @@ Table::toOutputText( TableImpl::Format const& format ) const
         }
     }
 
-    std::vector<size_t> columnsWidth(nCol,0);
-    std::vector<size_t> rowsHeight(nRow,0);
+    std::vector<int> columnsWidth(nCol,0);
+    std::vector<int> rowsHeight(nRow,0);
     for (int j=0;j<nCol;++j)
         for (int i=0;i<nRow;++i)
         {
@@ -208,10 +208,10 @@ Table::toOutputText( TableImpl::Format const& format ) const
             int paddingWidth = theFormat.paddingLeft() + theFormat.paddingRight();
 
             columnsWidth[j] = std::max( columnsWidth[j],
-                                        std::max_element(outputStringByLine.begin(),outputStringByLine.end(),
-                                                         [](auto const& a, auto const& b) { return a.size() < b.size(); } )->size() + paddingWidth );
+                                        static_cast<int>( std::max_element(outputStringByLine.begin(),outputStringByLine.end(),
+                                                                           [](auto const& a, auto const& b) { return a.size() < b.size(); } )->size() ) + paddingWidth );
 
-            rowsHeight[i] = std::max( rowsHeight[i], outputStringByLine.size() );
+            rowsHeight[i] = std::max( rowsHeight[i], static_cast<int>( outputStringByLine.size() ) );
         }
 
     // resize row heigh
@@ -405,7 +405,7 @@ Cell::Format::newFromParent( Format const& parentFormat ) const
 void
 Cell::updateWidthAndHorizontalAlign( Printer::OutputText & ot, size_t width, Format const& format )
 {
-    int widthInput = width - format.paddingLeft() - format.paddingRight();
+    std::size_t widthInput = width - format.paddingLeft() - format.paddingRight();
     if ( widthInput <= 0 )
         return;
 
