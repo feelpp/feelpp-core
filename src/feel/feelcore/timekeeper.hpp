@@ -13,9 +13,11 @@ namespace Feel::Core
 {
 
 //! Singleton class to keep track of elapsed times in different code sections
-class Timekeeper
+class FEELPP_CORE_EXPORT Timekeeper
 {
 public:
+
+    ~Timekeeper();
 
     //! Get the singleton instance
     static Timekeeper* instance();
@@ -46,13 +48,13 @@ public:
     };
 
     //! Get the thread local context
-    std::vector<std::string> const& getContext() const noexcept { return M_context; }
+    std::vector<std::string> const& getContext() const noexcept;
 
     //! Get the thread local context
-    void setContext( std::vector<std::string> const& ctx ) { M_context = ctx; }
+    void setContext( std::vector<std::string> const& ctx );
 
 private:
-    Timekeeper() = default;
+    Timekeeper();
     Timekeeper( Timekeeper const& ) = delete;
     Timekeeper& operator=( Timekeeper const& ) = delete;
 
@@ -60,15 +62,17 @@ private:
     void recordTime( double time );
 
     //! Push a new context level
-    void pushContext( std::string const& name ) { M_context.push_back( name ); };
+    void pushContext( std::string const& name );
 
     //! Pop the last context level
     void popContext();
 
 private:
+    class Impl;
+    Impl* M_pimpl;
+
     static std::unique_ptr<Timekeeper> S_instance;
     nl::json M_times = nl::json::object();
-    static thread_local std::vector<std::string> M_context;
     mutable std::shared_mutex M_mutex;
     static std::once_flag S_onceFlag;
 
@@ -78,7 +82,7 @@ private:
 };
 
 //! Timer utility class to measure elapsed time of code hierarchical sections
-class Timer
+class FEELPP_CORE_EXPORT Timer
 {
     using Clock = std::chrono::high_resolution_clock;
     using TimePoint = std::chrono::time_point<Clock>;

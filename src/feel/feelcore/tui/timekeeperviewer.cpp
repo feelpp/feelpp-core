@@ -18,7 +18,7 @@ TuiTimekeeperViewerComponent::buildElements()
     M_nodeBoxes.clear();
 
     auto now = std::chrono::system_clock::now().time_since_epoch();
-    int ms = std::chrono::duration_cast<std::chrono::milliseconds>(now).count();
+    std::size_t ms = std::chrono::duration_cast<std::chrono::milliseconds>(now).count();
 
     std::function<void( std::string const &, nl::json const&, int, std::string const&)> renderNode;
     renderNode = [&]( std::string const& name, nl::json const& node, int currentDepth, std::string const& currentPath)

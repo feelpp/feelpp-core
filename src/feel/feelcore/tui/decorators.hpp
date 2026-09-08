@@ -27,7 +27,7 @@ namespace detail
 //! Scrollable list base class with optional header and footer.
 //! To be used as a base class and implement the buildElements() method to provide the list elements.
 //! Will automatically handle scrolling and focus management of the list elements.
-class ScrollableList
+class FEELPP_CORE_EXPORT ScrollableList
     : public ftxui::ComponentBase
 {
     using Element = ftxui::Element;

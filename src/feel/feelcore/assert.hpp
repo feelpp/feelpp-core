@@ -9,13 +9,14 @@
 #else
 
 #include <cassert>
+#include <tuple>
 
 namespace Feel::Core
 {
 namespace detail
 {
 template <typename... Ts>
-void assertImpl( Ts && ... ts ) { assert( std::forward_as_tuple( std::forward<Ts>(ts)... ) );  }
+void assertImpl( Ts && ... ts ) { assert( std::get<0>( std::forward_as_tuple( std::forward<Ts>(ts)... ) ) );  }
 }
 }
 
