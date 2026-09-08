@@ -356,7 +356,7 @@ template <bool IsRow, typename T,std::enable_if_t< is_iterable_v<T>, bool> >
 void
 Table::addRowOrColImpl( T && values )
 {
-    size_t containerSize = std::distance( values.begin(), values.end() );
+    int containerSize = static_cast<int>( std::distance( values.begin(), values.end() ) );
 
     if constexpr ( IsRow )
     {
