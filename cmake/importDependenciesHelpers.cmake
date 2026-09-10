@@ -351,7 +351,8 @@ macro(importDependency_CGAL _useSystem _target_dependencies _target_definitions 
     find_package(CGAL REQUIRED COMPONENTS Core)
   else()
     FetchContent_Declare( cgal GIT_REPOSITORY https://github.com/CGAL/cgal.git
-      GIT_TAG v6.2
+      GIT_TAG v6.2.1
+      PATCH_COMMAND git apply "${FEELPP_CORE_CMAKE_DIR}/cgal.patch" UPDATE_DISCONNECTED 1
       GIT_SHALLOW ON
     )
     set( WITH_CGAL_Qt5 OFF )
