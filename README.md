@@ -1,3 +1,10 @@
+<!--
+SPDX-FileCopyrightText: 2025 Université de Strasbourg
+SPDX-FileContributor: Christophe Prud'homme
+SPDX-FileContributor: Vincent Chabannes
+SPDX-License-Identifier: LGPL-3.0-or-later
+-->
+
 # Feelpp Core 
 Christophe Prud’homme &lt;[@prudhomm](https://github.com/prudhomm)>
 
@@ -14,6 +21,13 @@ This repository provides a basic starting point for a Feel++ application includi
 * [x] docker image generation for the project
 
 The documentation for feelpp-core is available at [here](https://feelpp.github.io/feelpp-core) and you can build on it for your project by enabling the [github pages](https://docs.github.com/en/pages) for your repository.
+
+## License
+
+Project-owned code is licensed under `LGPL-3.0-or-later`.
+See [LICENSE](LICENSE), [licensing guidance](LICENSING.md),
+[third-party notices and pending provenance](THIRD_PARTY.md), and
+[contributors](CONTRIBUTORS.md).
 
 ## Renaming the project
 

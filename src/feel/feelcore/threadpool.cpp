@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2026 Université de Strasbourg
+// SPDX-FileContributor: Javier Cladellas
+// SPDX-License-Identifier: LGPL-3.0-or-later AND LicenseRef-Provenance-Pending
+// SPDX-FileComment: LGPL covers project-owned contributions; external provenance remains unresolved. See THIRD_PARTY.md.
+
 //!
 
 #include <feel/feelcore/threadpool.hpp>

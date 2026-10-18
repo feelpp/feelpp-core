@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2013 Ihor Kalnytskyi
+// SPDX-FileContributor: Vincent Chabannes
+// SPDX-License-Identifier: BSD-3-Clause
+// SPDX-FileComment: Git contributors identify the local import, not upstream authorship.
+
 //!
 //! termcolor
 //! ~~~~~~~~~
@@ -6,7 +11,7 @@
 //! to the terminal. Written just for fun with a help of the Force.
 //!
 //! :copyright: (c) 2013 by Ihor Kalnytskyi
-//! :license: BSD, see LICENSE for details
+//! :license: BSD, see LICENSES/BSD-3-Clause.txt for details
 //!
 
 #ifndef TERMCOLOR_HPP_

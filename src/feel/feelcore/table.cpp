@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2026 Université de Strasbourg
+// SPDX-FileContributor: Vincent Chabannes
+// SPDX-License-Identifier: LGPL-3.0-or-later AND LicenseRef-Provenance-Pending
+// SPDX-FileComment: LGPL covers project-owned contributions; external provenance remains unresolved. See THIRD_PARTY.md.
+
 //!
 
 #include <feel/feelcore/table.hpp>

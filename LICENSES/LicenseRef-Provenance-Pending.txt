@@ -1,0 +1,11 @@
+Provenance pending — no third-party permission asserted
+
+This identifier records unresolved reuse terms for externally sourced material
+identified in THIRD_PARTY.md. It is an explicit provenance marker, not a licence
+grant or permission to redistribute that material. The project LGPL grant covers
+only contributions for which the project has licensing authority. No LGPL grant
+is asserted for the unresolved external material by adding this marker.
+
+Files carrying LGPL-3.0-or-later AND LicenseRef-Provenance-Pending require the
+external material's applicable permission to be established, or that material
+to be replaced, before they can be treated as cleared LGPL distributions.
