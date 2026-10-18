@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2025-2026 Université de Strasbourg
+// SPDX-FileContributor: Javier Cladellas
+// SPDX-FileContributor: Vincent Chabannes
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 //!
 #include "feel/feelcore/threadpool.hpp"
 #include <feel/feelcore/environment.hpp>

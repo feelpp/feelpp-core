@@ -3,7 +3,7 @@
   "name": "feelpp-core",
   "description": "The Feelpp Core documentation",
   "version": "3.3.0",
-  "license": "AGPL-3.0",
+  "license": "LGPL-3.0-or-later",
   "author": "The Feelpp Core Team",
   "homepage": "https://github.com/feelpp/feelpp-core#readme",
   "repository": {

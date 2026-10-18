@@ -1,4 +1,9 @@
 #! /bin/sh
+# SPDX-FileCopyrightText: 2025 Université de Strasbourg
+# SPDX-FileContributor: Christophe Prud'homme
+# SPDX-FileContributor: Vincent Chabannes
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 
 dir=${1:-.}
 for i in $(find $dir -name "*.adoc" | grep pages ); do
