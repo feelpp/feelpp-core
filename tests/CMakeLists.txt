@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Université de Strasbourg
+# SPDX-FileContributor: Vincent Chabannes
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 
 file(GLOB files_feelcore test-feelcore*.cpp)
 file(GLOB files_ftxui test-ftxui*.cpp)

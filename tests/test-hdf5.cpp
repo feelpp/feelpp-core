@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Université de Strasbourg
+// SPDX-FileContributor: Vincent Chabannes
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 //!
 
 #include <catch2/catch_session.hpp>

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Université de Strasbourg
+# SPDX-FileContributor: Vincent Chabannes
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 add_subdirectory( feelcore )
 
 add_library(${FEELPP_CORE_LIBRARY} ${FEELPP_CORE_LIB_SRCS} )

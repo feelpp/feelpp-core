@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Université de Strasbourg
+# SPDX-FileContributor: Vincent Chabannes
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 function(feelpp_get_compile_definition varTarget varValue )
   get_property(CD TARGET ${varTarget} PROPERTY INTERFACE_COMPILE_DEFINITIONS)
   list(FIND CD "${varValue}" res)

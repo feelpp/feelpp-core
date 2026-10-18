@@ -1,3 +1,9 @@
+// SPDX-FileCopyrightText: 2026 Université de Strasbourg
+// SPDX-FileContributor: Javier Cladellas
+// SPDX-FileContributor: Vincent Chabannes
+// SPDX-License-Identifier: LGPL-3.0-or-later AND LicenseRef-Provenance-Pending
+// SPDX-FileComment: LGPL covers project-owned contributions; external provenance remains unresolved. See THIRD_PARTY.md.
+
 //!
 
 #pragma once
