@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: 2026 Université de Strasbourg
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+version = 1
+
+[[annotations]]
+path = ".devcontainer/devcontainer.json"
+precedence = "closest"
+SPDX-FileCopyrightText = ["2025 Université de Strasbourg"]
+SPDX-FileContributor = ["Christophe Prud'homme", "Vincent Chabannes"]
+SPDX-License-Identifier = "LGPL-3.0-or-later"
+
+[[annotations]]
+path = ".vscode/extensions.json"
+precedence = "closest"
+SPDX-FileCopyrightText = ["2025 Université de Strasbourg"]
+SPDX-FileContributor = ["Christophe Prud'homme", "Vincent Chabannes"]
+SPDX-License-Identifier = "LGPL-3.0-or-later"
+
+[[annotations]]
+path = ".vscode/feelpp.code-snippets"
+precedence = "closest"
+SPDX-FileCopyrightText = ["2025 Université de Strasbourg"]
+SPDX-FileContributor = ["Christophe Prud'homme", "Vincent Chabannes"]
+SPDX-License-Identifier = "LGPL-3.0-or-later"
+
+[[annotations]]
+path = ".vscode/settings.json"
+precedence = "closest"
+SPDX-FileCopyrightText = ["2025 Université de Strasbourg"]
+SPDX-FileContributor = ["Christophe Prud'homme", "Vincent Chabannes"]
+SPDX-License-Identifier = "LGPL-3.0-or-later"
+
+[[annotations]]
+path = "CMakePresets.json"
+precedence = "closest"
+SPDX-FileCopyrightText = ["2025-2026 Université de Strasbourg"]
+SPDX-FileContributor = ["Christophe Prud'homme", "Vincent Chabannes"]
+SPDX-License-Identifier = "LGPL-3.0-or-later"
+
+[[annotations]]
+path = "package-lock.json"
+precedence = "closest"
+SPDX-FileCopyrightText = ["2025-2026 Université de Strasbourg"]
+SPDX-FileContributor = ["Christophe Prud'homme", "Vincent Chabannes"]
+SPDX-License-Identifier = "LGPL-3.0-or-later"
+
+[[annotations]]
+path = "package.json"
+precedence = "closest"
+SPDX-FileCopyrightText = ["2025-2026 Université de Strasbourg"]
+SPDX-FileContributor = ["Christophe Prud'homme", "Vincent Chabannes"]
+SPDX-License-Identifier = "LGPL-3.0-or-later"

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Université de Strasbourg
+# SPDX-FileContributor: Javier Cladellas
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 set(FEELPP_CORE_LIB_SRCS_TUI
   ${CMAKE_CURRENT_SOURCE_DIR}/taskmanager.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/components.cpp
