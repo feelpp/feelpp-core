@@ -14,6 +14,15 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    # Keep the documentation stack on Asciidoctor 2 until Antora supports newer versions.
+    ignore:
+      - dependency-name: "@asciidoctor/core"
+        versions: [">=3.0.0"]
+      - dependency-name: "asciidoctor"
+        versions: [">=3.0.0"]
+      # Kroki 1 requires Asciidoctor 4; retain the Antora-compatible 0.x line.
+      - dependency-name: "asciidoctor-kroki"
+        versions: [">=1.0.0"]
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
